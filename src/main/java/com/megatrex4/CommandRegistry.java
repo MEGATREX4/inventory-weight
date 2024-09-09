@@ -63,7 +63,7 @@ public class CommandRegistry {
                                                 return 1;
                                             }
 
-                                            long weight = PlayerDataHandler.getPlayerCurrentWeight(targetPlayer); // Implement this method if needed
+                                            long weight = PlayerDataHandler.getPlayerCurrentWeight(targetPlayer);
                                             source.sendFeedback(() -> Text.literal("Current weight for " + playerName + ": " + weight), false);
                                             return 1;
                                         })
@@ -71,7 +71,7 @@ public class CommandRegistry {
                                 .executes(context -> {
                                     ServerCommandSource source = context.getSource();
                                     ServerPlayerEntity player = source.getPlayer();
-                                    long weight = PlayerDataHandler.getPlayerCurrentWeight(player); // Implement this method if needed
+                                    long weight = PlayerDataHandler.getPlayerCurrentWeight(player);
                                     source.sendFeedback(() -> Text.literal("Current weight: " + weight), false);
                                     return 1;
                                 })

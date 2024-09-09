@@ -6,7 +6,7 @@ public class ItemWeights {
     public static final long BLOCK = 81000;
     public static final long INGOT = 9000;
     public static final long NUGGET = 1000;
-    public static final long MAX_WEIGHT = 5000; // Default maximum weight value
+    public static final long ITEM = 500;
 
     // Method to convert weights to points
     public static long getItemWeight(String item) {
@@ -21,6 +21,8 @@ public class ItemWeights {
                 return INGOT / 1000;
             case "nugget":
                 return NUGGET / 1000;
+            case "item":
+                return ITEM / 1000;
             default:
                 return 0;
         }
