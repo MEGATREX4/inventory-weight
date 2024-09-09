@@ -1,5 +1,6 @@
 package com.megatrex4;
 
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -9,7 +10,7 @@ import net.minecraft.util.Identifier;
 public class PlayerDataHandler {
     public static final String MAX_WEIGHT_KEY = "inventoryweight:max";
 
-    public static void setPlayerMaxWeight(ServerPlayerEntity player, long value) {
+    public static void setPlayerMaxWeight(ServerPlayerEntity player, float value) {
         ServerWorld world = player.getServerWorld();
         InventoryWeightState state = world.getPersistentStateManager().getOrCreate(
                 (nbt) -> InventoryWeightState.fromNbt(nbt),
@@ -20,7 +21,7 @@ public class PlayerDataHandler {
         world.getPersistentStateManager().set("inventoryweight_data", state);
     }
 
-    public static long getPlayerMaxWeight(ServerPlayerEntity player) {
+    public static float getPlayerMaxWeight(ServerPlayerEntity player) {
         ServerWorld world = player.getServerWorld();
         InventoryWeightState state = world.getPersistentStateManager().getOrCreate(
                 (nbt) -> InventoryWeightState.fromNbt(nbt),
@@ -30,18 +31,17 @@ public class PlayerDataHandler {
         return state.getMaxWeight();
     }
 
-    public static long getPlayerCurrentWeight(ServerPlayerEntity player) {
-        long totalWeight = 0;
+    public static float getPlayerCurrentWeight(ServerPlayerEntity player) {
+        float totalWeight = 0;
 
         for (ItemStack stack : player.getInventory().main) {
             if (!stack.isEmpty()) {
                 String itemId = Registries.ITEM.getId(stack.getItem()).toString().toLowerCase();
-
-                long itemWeight = ItemWeights.getItemWeight(itemId);
+                float itemWeight = ItemWeights.getItemWeight(itemId);
 
                 if (itemWeight == 0) {
                     String itemCategory = getItemCategory(stack);
-                    itemWeight = ItemWeights.getItemWeight(itemCategory);
+                    itemWeight = ItemWeights.getItemWeight(itemCategory.toLowerCase());
                 }
 
                 // Calculate total weight of this item
@@ -56,23 +56,22 @@ public class PlayerDataHandler {
         String itemId = Registries.ITEM.getId(stack.getItem()).toString().toLowerCase();
 
         if (itemId.contains("bucket")) {
-            return "BUCKETS";
+            return "buckets";
         } else if (itemId.contains("bottle")) {
-            return "BOTTLES";
+            return "bottles";
         } else if (itemId.contains("ingot")) {
-            return "INGOTS";
+            return "ingots";
         } else if (itemId.contains("nugget")) {
-            return "NUGGETS";
+            return "nuggets";
         } else if (isBlock(stack)) {
-            return "BLOCKS";
+            return "blocks";
         } else {
-            return "ITEMS";
+            return "items";
         }
     }
 
     public static boolean isBlock(ItemStack stack) {
-        // This method checks if the ItemStack corresponds to a block
-        Identifier itemId = Registries.ITEM.getId(stack.getItem());
-        return itemId != null && Registries.BLOCK.get(itemId) != null;
+        // Check if the ItemStack's item is an instance of BlockItem
+        return stack.getItem() instanceof BlockItem;
     }
 }

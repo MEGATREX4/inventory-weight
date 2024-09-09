@@ -8,7 +8,8 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
-import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.item.ItemStack;
+import net.minecraft.registry.Registries;
 
 public class CommandRegistry {
     public static void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher) {
@@ -38,7 +39,7 @@ public class CommandRegistry {
                                                 return 1;
                                             }
 
-                                            long weight = PlayerDataHandler.getPlayerMaxWeight(targetPlayer);
+                                            float weight = PlayerDataHandler.getPlayerMaxWeight(targetPlayer);
                                             source.sendFeedback(() -> Text.literal("Max weight for " + playerName + ": " + weight), false);
                                             return 1;
                                         })
@@ -46,7 +47,7 @@ public class CommandRegistry {
                                 .executes(context -> {
                                     ServerCommandSource source = context.getSource();
                                     ServerPlayerEntity player = source.getPlayer();
-                                    long weight = PlayerDataHandler.getPlayerMaxWeight(player);
+                                    float weight = PlayerDataHandler.getPlayerMaxWeight(player);
                                     source.sendFeedback(() -> Text.literal("Max weight: " + weight), false);
                                     return 1;
                                 })
@@ -63,7 +64,7 @@ public class CommandRegistry {
                                                 return 1;
                                             }
 
-                                            long weight = PlayerDataHandler.getPlayerCurrentWeight(targetPlayer);
+                                            float weight = PlayerDataHandler.getPlayerCurrentWeight(targetPlayer);
                                             source.sendFeedback(() -> Text.literal("Current weight for " + playerName + ": " + weight), false);
                                             return 1;
                                         })
@@ -71,12 +72,51 @@ public class CommandRegistry {
                                 .executes(context -> {
                                     ServerCommandSource source = context.getSource();
                                     ServerPlayerEntity player = source.getPlayer();
-                                    long weight = PlayerDataHandler.getPlayerCurrentWeight(player);
+                                    float weight = PlayerDataHandler.getPlayerCurrentWeight(player);
                                     source.sendFeedback(() -> Text.literal("Current weight: " + weight), false);
                                     return 1;
                                 })
                         )
                 )
         );
+
+        dispatcher.register(CommandManager.literal("debugweight")
+                .executes(context -> {
+                    ServerCommandSource source = context.getSource();
+                    ServerPlayerEntity player = source.getPlayer();
+
+                    if (player == null) {
+                        source.sendError(Text.literal("You must be a player to run this command."));
+                        return 1;
+                    }
+
+                    ItemStack itemStack = player.getMainHandStack();
+                    String itemId = itemStack.getItem().toString(); // Use the item's string representation
+
+                    // Debug output to verify the item ID
+                    source.sendFeedback(() -> Text.literal("Item ID: " + itemId), false);
+
+                    // Check if weight is in the JSON file
+                    Float weight = ItemWeights.getCustomItemWeight(itemId);
+                    if (weight != null) {
+                        // Display weight from the JSON file
+                        source.sendFeedback(() -> Text.literal("Weight of item in hand (" + itemId + "): " + weight), false);
+                    } else {
+                        // Fallback to default weights
+                        String itemCategory = PlayerDataHandler.getItemCategory(itemStack);
+                        final String finalItemCategory = itemCategory; // Create a final variable for lambda expression
+                        float fallbackWeight = ItemWeights.getItemWeight(itemCategory); // Use a separate variable for the fallback weight
+
+                        // Display weight from default categories
+                        source.sendFeedback(() -> Text.literal("Weight of item in hand (" + finalItemCategory + "): " + fallbackWeight), false);
+                    }
+
+                    return 1;
+                })
+        );
+
+
+
+
     }
 }
