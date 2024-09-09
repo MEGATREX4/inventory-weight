@@ -10,6 +10,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
+import net.minecraft.util.Identifier;
 
 public class CommandRegistry {
     public static void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher) {
@@ -91,16 +92,17 @@ public class CommandRegistry {
                     }
 
                     ItemStack itemStack = player.getMainHandStack();
-                    String itemId = itemStack.getItem().toString(); // Use the item's string representation
+                    Identifier itemId = Registries.ITEM.getId(itemStack.getItem()); // Get the item ID as Identifier
+                    String itemIdString = (itemId != null) ? itemId.toString() : "unknown"; // Convert Identifier to String
 
                     // Debug output to verify the item ID
-                    source.sendFeedback(() -> Text.literal("Item ID: " + itemId), false);
+                    // source.sendFeedback(() -> Text.literal("Item ID: " + itemIdString), false);
 
                     // Check if weight is in the JSON file
-                    Float weight = ItemWeights.getCustomItemWeight(itemId);
+                    Float weight = ItemWeights.getCustomItemWeight(itemIdString);
                     if (weight != null) {
                         // Display weight from the JSON file
-                        source.sendFeedback(() -> Text.literal("Weight of item in hand (" + itemId + "): " + weight), false);
+                        source.sendFeedback(() -> Text.literal("Weight of item in hand (" + itemIdString + "): " + weight), false);
                     } else {
                         // Fallback to default weights
                         String itemCategory = PlayerDataHandler.getItemCategory(itemStack);
