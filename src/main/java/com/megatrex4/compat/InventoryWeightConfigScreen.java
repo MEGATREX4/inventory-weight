@@ -3,7 +3,10 @@ package com.megatrex4.compat;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
+import me.shedaniel.clothconfig2.impl.builders.DropdownMenuBuilder;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.item.Items;
+import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 
 import com.megatrex4.config.ItemWeightsConfigClient;
@@ -14,6 +17,7 @@ import com.megatrex4.InventoryWeightState;
 import net.minecraft.util.Identifier;
 
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class InventoryWeightConfigScreen {
 
@@ -98,6 +102,25 @@ public class InventoryWeightConfigScreen {
                     .setSaveConsumer(newValue -> ItemWeights.setItemWeight(itemName, newValue))
                     .build());
         }
+
+        itemsCategory.addEntry(entryBuilder.startDropdownMenu(
+                        Text.translatable("option.inventoryweight.items.select_item"),
+                        DropdownMenuBuilder.TopCellElementBuilder.ofItemObject(Items.AIR), // Placeholder item
+                        DropdownMenuBuilder.CellCreatorBuilder.ofItemObject()
+                )
+                .setDefaultValue(Items.AIR) // Default value
+                .setSelections(Registries.ITEM.stream().collect(Collectors.toSet())) // List of items
+                .setSaveConsumer(item -> {
+                    if (item != Items.AIR) {
+                        String itemName = Registries.ITEM.getId(item).toString();
+                        if (!ItemWeights.getCustomItemWeights().containsKey(itemName)) {
+                            // Add new record to the config file
+                            ItemWeights.setItemWeight(itemName, 0.0f); // Set default weight for the new item
+                            ItemWeightConfigItems.saveConfig(); // Save the configuration
+                        }
+                    }
+                })
+                .build());
 
         return builder.build();
     }
