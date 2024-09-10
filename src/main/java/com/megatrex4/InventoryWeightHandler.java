@@ -30,7 +30,7 @@ public class InventoryWeightHandler {
         float maxWeight = PlayerDataHandler.getPlayerMaxWeight(player);
         float inventoryWeight = calculateInventoryWeight(player);
 
-        if (inventoryWeight > maxWeight) {
+        if (inventoryWeight >= maxWeight) {
             if (player.interactionManager.getGameMode() != GameMode.CREATIVE) {
                 applyOverloadEffect(player);
             }
@@ -41,15 +41,9 @@ public class InventoryWeightHandler {
 
     // Applies the overload effect to the player
     private static void applyOverloadEffect(ServerPlayerEntity player) {
-        // Get the current effect instance
         StatusEffectInstance existingEffect = player.getStatusEffect(OVERLOAD_EFFECT);
-
-        if (existingEffect != null) {
-            // If the effect is already applied, extend its duration
-            player.addStatusEffect(new StatusEffectInstance(OVERLOAD_EFFECT, 200, 0, true, true, true));
-        } else {
-            // Apply the effect with a duration of 200 ticks (10 seconds)
-            player.addStatusEffect(new StatusEffectInstance(OVERLOAD_EFFECT, 200, 0, true, true, true));
+        if (existingEffect == null || existingEffect.getDuration() < 100) {  // 100 ticks = 5 seconds
+            player.addStatusEffect(new StatusEffectInstance(OVERLOAD_EFFECT, 200, 6, true, true, true));
         }
     }
 
@@ -77,14 +71,7 @@ public class InventoryWeightHandler {
 
 
     public static void updatePlayerWeight(ServerWorld world, ServerPlayerEntity player) {
-        float inventoryWeight = calculateInventoryWeight(player);
-        float maxWeight = PlayerDataHandler.getPlayerMaxWeight(player);
-
-        if (inventoryWeight > maxWeight) {
-            applyOverloadEffect(player);
-        } else {
-            removeOverloadEffect(player);
-        }
+        checkWeight(player); // This checks if the player's weight exceeds the limit
     }
 
 
