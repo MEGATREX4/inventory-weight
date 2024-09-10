@@ -2,14 +2,14 @@
 	"schemaVersion": 1,
 	"id": "inventory-weight",
 	"version": "${version}",
-	"name": "inventory weight",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"name": "Inventory Weight",
+	"description": "Manage and customize the weight of items in your inventory.",
 	"authors": [
 		"MEGATREX4"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://megatrex4.netlify.app/",
+		"sources": "https://github.com/MEGATREX4/inventory-weight"
 	},
 	"license": "CC0-1.0",
 	"icon": "assets/inventory-weight/icon.png",

@@ -11,6 +11,9 @@ import com.megatrex4.config.ItemWeightConfigItems;
 import com.megatrex4.config.ItemWeightsConfigServer;
 import com.megatrex4.ItemWeights;
 import com.megatrex4.InventoryWeightState;
+import net.minecraft.util.Identifier;
+
+import java.util.Map;
 
 public class InventoryWeightConfigScreen {
 
@@ -31,7 +34,7 @@ public class InventoryWeightConfigScreen {
         // Client Config Category
         ConfigCategory clientCategory = builder.getOrCreateCategory(Text.translatable("category.inventoryweight.client"));
         clientCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.client.someSetting"), ItemWeightsConfigClient.someSetting)
-                .setDefaultValue(1.0f)
+                .setDefaultValue(10.0f)
                 .setSaveConsumer(newValue -> ItemWeightsConfigClient.someSetting = newValue)
                 .build());
 
@@ -40,44 +43,61 @@ public class InventoryWeightConfigScreen {
 
         // Add fields for server settings
         serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.buckets"), ItemWeights.getItemWeight("buckets"))
-                .setDefaultValue(81.0f)
+                .setDefaultValue(810.0f)
                 .setSaveConsumer(newValue -> ItemWeights.setItemWeight("buckets", newValue))
                 .build());
 
         serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.bottles"), ItemWeights.getItemWeight("bottles"))
-                .setDefaultValue(27.0f)
+                .setDefaultValue(270.0f)
                 .setSaveConsumer(newValue -> ItemWeights.setItemWeight("bottles", newValue))
                 .build());
 
         serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.blocks"), ItemWeights.getItemWeight("blocks"))
-                .setDefaultValue(81.0f)
+                .setDefaultValue(810.0f)
                 .setSaveConsumer(newValue -> ItemWeights.setItemWeight("blocks", newValue))
                 .build());
 
         serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.ingots"), ItemWeights.getItemWeight("ingots"))
-                .setDefaultValue(9.0f)
+                .setDefaultValue(90.0f)
                 .setSaveConsumer(newValue -> ItemWeights.setItemWeight("ingots", newValue))
                 .build());
 
         serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.nuggets"), ItemWeights.getItemWeight("nuggets"))
-                .setDefaultValue(1.0f)
+                .setDefaultValue(10.0f)
                 .setSaveConsumer(newValue -> ItemWeights.setItemWeight("nuggets", newValue))
                 .build());
 
         serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.items"), ItemWeights.getItemWeight("items"))
-                .setDefaultValue(0.5f)
+                .setDefaultValue(20.0f)
                 .setSaveConsumer(newValue -> ItemWeights.setItemWeight("items", newValue))
                 .build());
 
-        InventoryWeightState state = InventoryWeightState.fromNbt(null); // Assuming the state is loaded somewhere else
+        InventoryWeightState state = InventoryWeightState.fromNbt(null);
         serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.maxWeight"), state.getMaxWeight())
-                .setDefaultValue(10000.0f)
+                .setDefaultValue(8000.0f)
                 .setSaveConsumer(state::setMaxWeight)
                 .build());
 
         // Items Config Category
         ConfigCategory itemsCategory = builder.getOrCreateCategory(Text.translatable("category.inventoryweight.items"));
-        // Add items-related settings here, similar to how we did for client and server
+
+        // Load item weights from JSON and add configuration entries
+        ItemWeightConfigItems.loadConfig(); // Ensure this loads the items into ItemWeights
+
+        // Ensure that ItemWeights.getCustomItemWeights() returns only the weights from inventory_weights_items.json
+        for (Map.Entry<String, Float> entry : ItemWeights.getCustomItemWeights().entrySet()) {
+            String itemName = entry.getKey();
+            float weight = entry.getValue();
+
+            // Create item display name and hint text
+            Text itemDisplayName = Text.literal(itemName);
+
+            // Add entry with hint and image
+            itemsCategory.addEntry(entryBuilder.startFloatField(itemDisplayName, weight)
+                    .setDefaultValue(weight)
+                    .setSaveConsumer(newValue -> ItemWeights.setItemWeight(itemName, newValue))
+                    .build());
+        }
 
         return builder.build();
     }

@@ -21,19 +21,17 @@ public class ItemWeightConfigItems {
     public static void loadConfig() {
         try {
             if (Files.exists(CONFIG_PATH)) {
-                JsonObject jsonObject = JsonParser.parseReader(new FileReader(CONFIG_PATH.toFile())).getAsJsonObject();
-                for (String key : jsonObject.keySet()) {
-                    float weight = jsonObject.get(key).getAsFloat();
-                    ItemWeights.setItemWeight(key, weight);
+                try (FileReader fileReader = new FileReader(CONFIG_PATH.toFile())) {
+                    JsonObject jsonObject = JsonParser.parseReader(fileReader).getAsJsonObject();
+                    ItemWeights.loadWeightsFromConfig(jsonObject);
                 }
             } else {
                 Files.createDirectories(CONFIG_PATH.getParent());
-                JsonObject jsonObject = new JsonObject();
-                jsonObject.addProperty("minecraft:diamond", 5.0f);
-                jsonObject.addProperty("minecraft:gold_ingot", 2.0f);
-                try (FileWriter fileWriter = new FileWriter(CONFIG_PATH.toFile())) {
-                    GSON.toJson(jsonObject, fileWriter);
-                }
+                JsonObject defaultJsonObject = new JsonObject();
+                defaultJsonObject.addProperty("minecraft:diamond", 5.0f);
+                defaultJsonObject.addProperty("minecraft:gold_ingot", 2.0f);
+                saveConfig(defaultJsonObject); // Save default values to the file
+                ItemWeights.loadWeightsFromConfig(defaultJsonObject);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -43,14 +41,28 @@ public class ItemWeightConfigItems {
     public static void saveConfig() {
         try {
             JsonObject jsonObject = new JsonObject();
+
+            // Only add custom item weights, not static weights
             for (Map.Entry<String, Float> entry : ItemWeights.getCustomItemWeights().entrySet()) {
-                jsonObject.addProperty(entry.getKey(), entry.getValue());
+                String itemName = entry.getKey();
+                if (isDynamicItem(itemName)) {
+                    jsonObject.addProperty(itemName, entry.getValue());
+                }
             }
-            try (FileWriter fileWriter = new FileWriter(CONFIG_PATH.toFile())) {
-                GSON.toJson(jsonObject, fileWriter);
-            }
+            saveConfig(jsonObject); // Save filtered item weights
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    // Helper method to check if the item is dynamic
+    private static boolean isDynamicItem(String itemName) {
+        return !ItemWeights.isStaticItem(itemName);
+    }
+
+    private static void saveConfig(JsonObject jsonObject) throws IOException {
+        try (FileWriter fileWriter = new FileWriter(CONFIG_PATH.toFile())) {
+            GSON.toJson(jsonObject, fileWriter);
         }
     }
 }

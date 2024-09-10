@@ -5,11 +5,16 @@ import net.minecraft.world.PersistentState;
 import com.megatrex4.config.ItemWeightsConfigServer;
 
 public class InventoryWeightState extends PersistentState {
-    private float maxWeight = ItemWeightsConfigServer.getMaxWeightFromConfig();
+    private float maxWeight;
+
+    public InventoryWeightState() {
+        this.maxWeight = ItemWeightsConfigServer.getMaxWeightFromConfig();
+    }
 
     public void setMaxWeight(float value) {
         this.maxWeight = value;
         markDirty();
+        ItemWeightsConfigServer.setMaxWeight(value);
     }
 
     public float getMaxWeight() {
