@@ -35,12 +35,12 @@ public class ItemWeightsConfigServer {
             } else {
                 Files.createDirectories(CONFIG_PATH.getParent());
                 JsonObject jsonObject = new JsonObject();
-                jsonObject.addProperty("buckets", 81.0f);
-                jsonObject.addProperty("bottles", 27.0f);
-                jsonObject.addProperty("blocks", 81.0f);
-                jsonObject.addProperty("ingots", 9.0f);
-                jsonObject.addProperty("nuggets", 1.0f);
-                jsonObject.addProperty("items", 0.5f);
+                jsonObject.addProperty("buckets", ItemWeights.BUCKETS);
+                jsonObject.addProperty("bottles", ItemWeights.BOTTLES);
+                jsonObject.addProperty("blocks", ItemWeights.BLOCKS);
+                jsonObject.addProperty("ingots", ItemWeights.INGOTS);
+                jsonObject.addProperty("nuggets", ItemWeights.NUGGETS);
+                jsonObject.addProperty("items", ItemWeights.ITEMS);
                 jsonObject.addProperty("maxWeight", maxWeight);
                 Files.write(CONFIG_PATH, GSON.toJson(jsonObject).getBytes());
                 ItemWeights.loadWeightsFromConfig(jsonObject);

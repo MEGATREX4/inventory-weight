@@ -5,6 +5,10 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.megatrex4.ItemWeights;
+import com.megatrex4.PlayerDataHandler;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.registry.Registries;
 
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -27,9 +31,7 @@ public class ItemWeightConfigItems {
                 }
             } else {
                 Files.createDirectories(CONFIG_PATH.getParent());
-                JsonObject defaultJsonObject = new JsonObject();
-                defaultJsonObject.addProperty("minecraft:diamond", 5.0f);
-                defaultJsonObject.addProperty("minecraft:gold_ingot", 2.0f);
+                JsonObject defaultJsonObject = createDefaultConfig();
                 saveConfig(defaultJsonObject); // Save default values to the file
                 ItemWeights.loadWeightsFromConfig(defaultJsonObject);
             }
@@ -58,6 +60,23 @@ public class ItemWeightConfigItems {
     // Helper method to check if the item is dynamic
     private static boolean isDynamicItem(String itemName) {
         return !ItemWeights.isStaticItem(itemName);
+    }
+
+    private static JsonObject createDefaultConfig() {
+        JsonObject defaultJsonObject = new JsonObject();
+
+        // Iterate over all registered items
+        for (Item item : Registries.ITEM) {
+            String itemId = Registries.ITEM.getId(item).toString().toLowerCase();
+            ItemStack itemStack = new ItemStack(item);
+            String category = PlayerDataHandler.getItemCategory(itemStack);
+            float weight = ItemWeights.getItemWeight(category.toLowerCase());
+
+            // Add item and its default weight to the JSON object
+            defaultJsonObject.addProperty(itemId, weight);
+        }
+
+        return defaultJsonObject;
     }
 
     private static void saveConfig(JsonObject jsonObject) throws IOException {

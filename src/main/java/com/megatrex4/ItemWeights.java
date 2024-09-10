@@ -7,12 +7,12 @@ import java.util.Map;
 
 public class ItemWeights {
     // Static weights for different categories
-    public static float BUCKETS = 81.0f;
-    public static float BOTTLES = 27.0f;
-    public static float BLOCKS = 81.0f;
-    public static float INGOTS = 9.0f;
-    public static float NUGGETS = 1.0f;
-    public static float ITEMS = 0.5f;
+    public static float BUCKETS = 810.0f;
+    public static float BOTTLES = 270.0f;
+    public static float BLOCKS = 810.0f;
+    public static float INGOTS = 90.0f;
+    public static float NUGGETS = 10.0f;
+    public static float ITEMS = 40.0f;
 
     private static final Map<String, Float> customItemWeights = new HashMap<>();
 

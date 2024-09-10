@@ -47,32 +47,32 @@ public class InventoryWeightConfigScreen {
 
         // Add fields for server settings
         serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.buckets"), ItemWeights.getItemWeight("buckets"))
-                .setDefaultValue(810.0f)
+                .setDefaultValue(ItemWeights.BUCKETS)
                 .setSaveConsumer(newValue -> ItemWeights.setItemWeight("buckets", newValue))
                 .build());
 
         serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.bottles"), ItemWeights.getItemWeight("bottles"))
-                .setDefaultValue(270.0f)
+                .setDefaultValue(ItemWeights.BOTTLES)
                 .setSaveConsumer(newValue -> ItemWeights.setItemWeight("bottles", newValue))
                 .build());
 
         serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.blocks"), ItemWeights.getItemWeight("blocks"))
-                .setDefaultValue(810.0f)
+                .setDefaultValue(ItemWeights.BLOCKS)
                 .setSaveConsumer(newValue -> ItemWeights.setItemWeight("blocks", newValue))
                 .build());
 
         serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.ingots"), ItemWeights.getItemWeight("ingots"))
-                .setDefaultValue(90.0f)
+                .setDefaultValue(ItemWeights.INGOTS)
                 .setSaveConsumer(newValue -> ItemWeights.setItemWeight("ingots", newValue))
                 .build());
 
         serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.nuggets"), ItemWeights.getItemWeight("nuggets"))
-                .setDefaultValue(10.0f)
+                .setDefaultValue(ItemWeights.NUGGETS)
                 .setSaveConsumer(newValue -> ItemWeights.setItemWeight("nuggets", newValue))
                 .build());
 
         serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.items"), ItemWeights.getItemWeight("items"))
-                .setDefaultValue(20.0f)
+                .setDefaultValue(ItemWeights.ITEMS)
                 .setSaveConsumer(newValue -> ItemWeights.setItemWeight("items", newValue))
                 .build());
 
@@ -102,25 +102,6 @@ public class InventoryWeightConfigScreen {
                     .setSaveConsumer(newValue -> ItemWeights.setItemWeight(itemName, newValue))
                     .build());
         }
-
-        itemsCategory.addEntry(entryBuilder.startDropdownMenu(
-                        Text.translatable("option.inventoryweight.items.select_item"),
-                        DropdownMenuBuilder.TopCellElementBuilder.ofItemObject(Items.AIR), // Placeholder item
-                        DropdownMenuBuilder.CellCreatorBuilder.ofItemObject()
-                )
-                .setDefaultValue(Items.AIR) // Default value
-                .setSelections(Registries.ITEM.stream().collect(Collectors.toSet())) // List of items
-                .setSaveConsumer(item -> {
-                    if (item != Items.AIR) {
-                        String itemName = Registries.ITEM.getId(item).toString();
-                        if (!ItemWeights.getCustomItemWeights().containsKey(itemName)) {
-                            // Add new record to the config file
-                            ItemWeights.setItemWeight(itemName, 0.0f); // Set default weight for the new item
-                            ItemWeightConfigItems.saveConfig(); // Save the configuration
-                        }
-                    }
-                })
-                .build());
 
         return builder.build();
     }
