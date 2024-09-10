@@ -16,7 +16,7 @@ public class InventoryWeight implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		LOGGER.info(MOD_ID + "mod initialized!");
+		LOGGER.info(MOD_ID + " mod initialized!");
 
 		ItemWeightsConfigServer.loadConfig();
 		ItemWeightConfigItems.loadConfig();

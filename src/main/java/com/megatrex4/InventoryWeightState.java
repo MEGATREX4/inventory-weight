@@ -2,9 +2,10 @@ package com.megatrex4;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.world.PersistentState;
+import com.megatrex4.config.ItemWeightsConfigServer;
 
 public class InventoryWeightState extends PersistentState {
-    private float maxWeight = 10000; // Default value
+    private float maxWeight = ItemWeightsConfigServer.getMaxWeightFromConfig();
 
     public void setMaxWeight(float value) {
         this.maxWeight = value;
@@ -23,10 +24,9 @@ public class InventoryWeightState extends PersistentState {
 
     public static InventoryWeightState fromNbt(NbtCompound tag) {
         InventoryWeightState state = new InventoryWeightState();
-        if (tag.contains("maxWeight")) {
+        if (tag != null && tag.contains("maxWeight")) {
             state.maxWeight = tag.getFloat("maxWeight");
         }
         return state;
     }
 }
-

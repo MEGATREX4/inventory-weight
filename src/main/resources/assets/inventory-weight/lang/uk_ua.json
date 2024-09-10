@@ -1,0 +1,7 @@
+{
+  "title.inventoryweight.config": "Конфігурація ваги інвентарю",
+  "category.inventoryweight.client": "Налаштування клієнта",
+  "category.inventoryweight.server": "Налаштування сервера",
+  "category.inventoryweight.items": "Налаштування предметів",
+  "option.inventoryweight.client.someSetting": "Якісь налаштування"
+}

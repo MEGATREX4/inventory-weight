@@ -5,7 +5,7 @@
 	"name": "inventory weight",
 	"description": "This is an example description! Tell everyone what your mod is about!",
 	"authors": [
-		"Me!"
+		"MEGATREX4"
 	],
 	"contact": {
 		"homepage": "https://fabricmc.net/",
@@ -17,6 +17,9 @@
 	"entrypoints": {
 		"main": [
 			"com.megatrex4.InventoryWeight"
+		],
+		"modmenu": [
+			"com.megatrex4.compat.InventoryWeightModMenuIntegration"
 		]
 	},
 	"mixins": [

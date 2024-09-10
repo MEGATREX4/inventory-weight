@@ -1,12 +1,13 @@
 package com.megatrex4;
 
+import com.megatrex4.ItemWeights;
+import com.megatrex4.PlayerDataHandler;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
-import com.mojang.brigadier.arguments.StringArgumentType;
+import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
@@ -29,19 +30,13 @@ public class CommandRegistry {
                 )
                 .then(CommandManager.literal("get")
                         .then(CommandManager.literal("max")
-                                .then(CommandManager.argument("player", StringArgumentType.string())
+                                .then(CommandManager.argument("player", EntityArgumentType.player()) // Autocomplete player names
                                         .executes(context -> {
                                             ServerCommandSource source = context.getSource();
-                                            String playerName = StringArgumentType.getString(context, "player");
-                                            ServerPlayerEntity targetPlayer = source.getServer().getPlayerManager().getPlayer(playerName);
-
-                                            if (targetPlayer == null) {
-                                                source.sendError(Text.literal("Player not found."));
-                                                return 1;
-                                            }
+                                            ServerPlayerEntity targetPlayer = EntityArgumentType.getPlayer(context, "player");
 
                                             float weight = PlayerDataHandler.getPlayerMaxWeight(targetPlayer);
-                                            source.sendFeedback(() -> Text.literal("Max weight for " + playerName + ": " + weight), false);
+                                            source.sendFeedback(() -> Text.literal("Max weight for " + targetPlayer.getName().getString() + ": " + weight), false);
                                             return 1;
                                         })
                                 )
@@ -54,19 +49,13 @@ public class CommandRegistry {
                                 })
                         )
                         .then(CommandManager.literal("value")
-                                .then(CommandManager.argument("player", StringArgumentType.string())
+                                .then(CommandManager.argument("player", EntityArgumentType.player()) // Autocomplete player names
                                         .executes(context -> {
                                             ServerCommandSource source = context.getSource();
-                                            String playerName = StringArgumentType.getString(context, "player");
-                                            ServerPlayerEntity targetPlayer = source.getServer().getPlayerManager().getPlayer(playerName);
-
-                                            if (targetPlayer == null) {
-                                                source.sendError(Text.literal("Player not found."));
-                                                return 1;
-                                            }
+                                            ServerPlayerEntity targetPlayer = EntityArgumentType.getPlayer(context, "player");
 
                                             float weight = PlayerDataHandler.getPlayerCurrentWeight(targetPlayer);
-                                            source.sendFeedback(() -> Text.literal("Current weight for " + playerName + ": " + weight), false);
+                                            source.sendFeedback(() -> Text.literal("Current weight for " + targetPlayer.getName().getString() + ": " + weight), false);
                                             return 1;
                                         })
                                 )
@@ -92,33 +81,22 @@ public class CommandRegistry {
                     }
 
                     ItemStack itemStack = player.getMainHandStack();
-                    Identifier itemId = Registries.ITEM.getId(itemStack.getItem()); // Get the item ID as Identifier
-                    String itemIdString = (itemId != null) ? itemId.toString() : "unknown"; // Convert Identifier to String
+                    Identifier itemId = Registries.ITEM.getId(itemStack.getItem());
+                    String itemIdString = (itemId != null) ? itemId.toString() : "unknown";
 
-                    // Debug output to verify the item ID
-                    // source.sendFeedback(() -> Text.literal("Item ID: " + itemIdString), false);
-
-                    // Check if weight is in the JSON file
                     Float weight = ItemWeights.getCustomItemWeight(itemIdString);
                     if (weight != null) {
-                        // Display weight from the JSON file
                         source.sendFeedback(() -> Text.literal("Weight of item in hand (" + itemIdString + "): " + weight), false);
                     } else {
-                        // Fallback to default weights
                         String itemCategory = PlayerDataHandler.getItemCategory(itemStack);
-                        final String finalItemCategory = itemCategory; // Create a final variable for lambda expression
-                        float fallbackWeight = ItemWeights.getItemWeight(itemCategory); // Use a separate variable for the fallback weight
+                        final String finalItemCategory = itemCategory;
+                        float fallbackWeight = ItemWeights.getItemWeight(itemCategory);
 
-                        // Display weight from default categories
                         source.sendFeedback(() -> Text.literal("Weight of item in hand (" + finalItemCategory + "): " + fallbackWeight), false);
                     }
 
                     return 1;
                 })
         );
-
-
-
-
     }
 }
