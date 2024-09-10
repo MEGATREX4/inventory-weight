@@ -1,5 +1,6 @@
 package com.megatrex4.compat;
 
+import com.megatrex4.InventoryWeightUtil;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
@@ -78,7 +79,7 @@ public class InventoryWeightConfigScreen {
 
         InventoryWeightState state = InventoryWeightState.fromNbt(null);
         serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.maxWeight"), state.getMaxWeight())
-                .setDefaultValue(8000.0f)
+                .setDefaultValue(InventoryWeightUtil.MAXWEIGHT)
                 .setSaveConsumer(state::setMaxWeight)
                 .build());
 

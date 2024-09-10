@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.megatrex4.InventoryWeightUtil;
 import com.megatrex4.ItemWeights;
 
 import java.io.FileReader;
@@ -15,9 +16,9 @@ import java.nio.file.Paths;
 import java.util.Map;
 
 public class ItemWeightsConfigServer {
-    private static final Path CONFIG_PATH = Paths.get("config/inventoryweight", "inventory_weights_server.json");
+    public static final Path CONFIG_PATH = Paths.get("config/inventoryweight", "inventory_weights_server.json");
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-    private static float maxWeight = 10000.0f; // Default value
+    private static float maxWeight = InventoryWeightUtil.MAXWEIGHT; // Default value
 
     public static void loadConfig() {
         try {

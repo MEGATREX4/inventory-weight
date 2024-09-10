@@ -19,8 +19,8 @@ import java.nio.file.Paths;
 import java.util.Map;
 
 public class ItemWeightConfigItems {
-    private static final Path CONFIG_PATH = Paths.get("config/inventoryweight", "inventory_weights_items.json");
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    public static final Path CONFIG_PATH = Paths.get("config/inventoryweight", "inventory_weights_items.json");
+    public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     public static void loadConfig() {
         try {

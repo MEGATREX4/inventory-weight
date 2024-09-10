@@ -23,5 +23,9 @@
   "description.inventoryweight.server.ingots": "Defines the weight of each ingot in the inventory.",
   "description.inventoryweight.server.nuggets": "Defines the weight of each nugget in the inventory.",
   "description.inventoryweight.server.items": "Defines the default weight for general items in the inventory.",
-  "description.inventoryweight.server.maxWeight": "The maximum total weight that an inventory can hold."
+  "description.inventoryweight.server.maxWeight": "The maximum total weight that an inventory can hold.",
+
+
+  "__comment__": "Effects",
+  "effect.inventoryweight.overload": "Overload"
 }

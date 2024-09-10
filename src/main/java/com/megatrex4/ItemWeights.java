@@ -1,5 +1,6 @@
 package com.megatrex4;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.util.HashMap;
@@ -7,12 +8,12 @@ import java.util.Map;
 
 public class ItemWeights {
     // Static weights for different categories
-    public static float BUCKETS = 810.0f;
-    public static float BOTTLES = 270.0f;
-    public static float BLOCKS = 810.0f;
-    public static float INGOTS = 90.0f;
-    public static float NUGGETS = 10.0f;
-    public static float ITEMS = 40.0f;
+    public static float BUCKETS = InventoryWeightUtil.BUCKETS;
+    public static float BOTTLES = InventoryWeightUtil.BOTTLES;
+    public static float BLOCKS = InventoryWeightUtil.BLOCKS;
+    public static float INGOTS = InventoryWeightUtil.INGOTS;
+    public static float NUGGETS = InventoryWeightUtil.NUGGETS;
+    public static float ITEMS = InventoryWeightUtil.ITEMS;
 
     private static final Map<String, Float> customItemWeights = new HashMap<>();
 
@@ -58,12 +59,33 @@ public class ItemWeights {
         customItemWeights.put(item, weight);
     }
 
-    public static void loadWeightsFromConfig(JsonObject jsonObject) {
-        // Load custom weights from the JSON object
-        customItemWeights.clear();  // Clear existing custom weights
-        jsonObject.entrySet().stream()
-                .forEach(entry -> customItemWeights.put(entry.getKey(), entry.getValue().getAsFloat()));
+    public static void loadWeightsFromConfig(JsonObject config) {
+        if (config.has("maxWeight")) {
+            // This is part of the server configuration
+            InventoryWeightUtil.MAXWEIGHT = config.get("maxWeight").getAsFloat();
+        }
+
+        if (config.has("buckets")) {
+            // Load item-specific weights (assuming this is server config)
+            BUCKETS = config.get("buckets").getAsFloat();
+            BOTTLES = config.get("bottles").getAsFloat();
+            BLOCKS = config.get("blocks").getAsFloat();
+            INGOTS = config.get("ingots").getAsFloat();
+            NUGGETS = config.get("nuggets").getAsFloat();
+            ITEMS = config.get("items").getAsFloat();
+        }
+
+        for (Map.Entry<String, JsonElement> entry : config.entrySet()) {
+            // Assuming the remaining entries are dynamic item weights from items config
+            if (!entry.getKey().equals("maxWeight") && !entry.getKey().equals("buckets") && !entry.getKey().equals("bottles") &&
+                    !entry.getKey().equals("blocks") && !entry.getKey().equals("ingots") && !entry.getKey().equals("nuggets") &&
+                    !entry.getKey().equals("items")) {
+
+                customItemWeights.put(entry.getKey(), entry.getValue().getAsFloat());
+            }
+        }
     }
+
 
     public static Map<String, Float> getCustomItemWeights() {
         return customItemWeights;

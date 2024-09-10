@@ -3,5 +3,8 @@
   "category.inventoryweight.client": "Налаштування клієнта",
   "category.inventoryweight.server": "Налаштування сервера",
   "category.inventoryweight.items": "Налаштування предметів",
-  "option.inventoryweight.client.someSetting": "Якісь налаштування"
+  "option.inventoryweight.client.someSetting": "Якісь налаштування",
+
+  "__comment__": "Effects",
+  "effect.inventoryweight.overload": "Перевантаження"
 }
