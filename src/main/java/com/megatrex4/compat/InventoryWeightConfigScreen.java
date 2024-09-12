@@ -52,6 +52,11 @@ public class InventoryWeightConfigScreen {
                 .setSaveConsumer(newValue -> ItemWeights.setItemWeight("buckets", newValue))
                 .build());
 
+        serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.creative"), ItemWeights.getItemWeight("creative"))
+                .setDefaultValue(ItemWeights.CREATIVE)
+                .setSaveConsumer(newValue -> ItemWeights.setItemWeight("creative", newValue))
+                .build());
+
         serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.bottles"), ItemWeights.getItemWeight("bottles"))
                 .setDefaultValue(ItemWeights.BOTTLES)
                 .setSaveConsumer(newValue -> ItemWeights.setItemWeight("bottles", newValue))

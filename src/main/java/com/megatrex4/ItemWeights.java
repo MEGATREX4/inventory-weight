@@ -15,6 +15,8 @@ public class ItemWeights {
     public static float NUGGETS = InventoryWeightUtil.NUGGETS;
     public static float ITEMS = InventoryWeightUtil.ITEMS;
 
+    public static float CREATIVE = InventoryWeightUtil.CREATIVE;
+
     private static final Map<String, Float> customItemWeights = new HashMap<>();
 
     // This method is used to load default weights
@@ -25,6 +27,8 @@ public class ItemWeights {
         INGOTS = jsonObject.get("ingots").getAsFloat();
         NUGGETS = jsonObject.get("nuggets").getAsFloat();
         ITEMS = jsonObject.get("items").getAsFloat();
+
+        CREATIVE = jsonObject.get("creative").getAsFloat();
     }
 
     public static float getItemWeight(String item) {
@@ -33,7 +37,6 @@ public class ItemWeights {
             return customItemWeights.get(item);
         }
 
-        // Check if item falls into default categories
         if (isStaticItem(item)) {
             switch (item) {
                 case "buckets":
@@ -46,6 +49,8 @@ public class ItemWeights {
                     return INGOTS;
                 case "nuggets":
                     return NUGGETS;
+                case "creative":
+                    return CREATIVE;
                 case "items":
                     return ITEMS;
             }
@@ -54,6 +59,7 @@ public class ItemWeights {
         // If the item is not recognized or does not match any category, return default for items
         return ITEMS;
     }
+
 
     public static void setItemWeight(String item, float weight) {
         customItemWeights.put(item, weight);
@@ -66,12 +72,12 @@ public class ItemWeights {
         }
 
         if (config.has("buckets")) {
-            // Load item-specific weights (assuming this is server config)
             BUCKETS = config.get("buckets").getAsFloat();
             BOTTLES = config.get("bottles").getAsFloat();
             BLOCKS = config.get("blocks").getAsFloat();
             INGOTS = config.get("ingots").getAsFloat();
             NUGGETS = config.get("nuggets").getAsFloat();
+            CREATIVE = config.get("creative").getAsFloat();
             ITEMS = config.get("items").getAsFloat();
         }
 
@@ -79,7 +85,7 @@ public class ItemWeights {
             // Assuming the remaining entries are dynamic item weights from items config
             if (!entry.getKey().equals("maxWeight") && !entry.getKey().equals("buckets") && !entry.getKey().equals("bottles") &&
                     !entry.getKey().equals("blocks") && !entry.getKey().equals("ingots") && !entry.getKey().equals("nuggets") &&
-                    !entry.getKey().equals("items")) {
+                    !entry.getKey().equals("items") && !entry.getKey().equals("creative")) {
 
                 customItemWeights.put(entry.getKey(), entry.getValue().getAsFloat());
             }
@@ -104,6 +110,7 @@ public class ItemWeights {
             case "ingots":
             case "nuggets":
             case "items":
+            case "creative":
                 return true;
             default:
                 return false;

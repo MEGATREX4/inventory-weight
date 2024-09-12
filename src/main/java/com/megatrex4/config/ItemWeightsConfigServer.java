@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.megatrex4.InventoryWeight;
 import com.megatrex4.InventoryWeightUtil;
 import com.megatrex4.ItemWeights;
 
@@ -42,6 +43,7 @@ public class ItemWeightsConfigServer {
                 jsonObject.addProperty("ingots", ItemWeights.INGOTS);
                 jsonObject.addProperty("nuggets", ItemWeights.NUGGETS);
                 jsonObject.addProperty("items", ItemWeights.ITEMS);
+                jsonObject.addProperty("creative", ItemWeights.CREATIVE); // New category
                 jsonObject.addProperty("maxWeight", maxWeight);
                 Files.write(CONFIG_PATH, GSON.toJson(jsonObject).getBytes());
                 ItemWeights.loadWeightsFromConfig(jsonObject);
@@ -60,6 +62,7 @@ public class ItemWeightsConfigServer {
             jsonObject.addProperty("ingots", ItemWeights.getItemWeight("ingots"));
             jsonObject.addProperty("nuggets", ItemWeights.getItemWeight("nuggets"));
             jsonObject.addProperty("items", ItemWeights.getItemWeight("items"));
+            jsonObject.addProperty("creative", ItemWeights.getItemWeight("creative"));
             jsonObject.addProperty("maxWeight", maxWeight);
 
             try (FileWriter fileWriter = new FileWriter(CONFIG_PATH.toFile())) {

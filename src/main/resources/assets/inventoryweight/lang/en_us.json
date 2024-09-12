@@ -13,6 +13,7 @@
   "option.inventoryweight.server.ingots": "Weight of Ingots",
   "option.inventoryweight.server.nuggets": "Weight of Nuggets",
   "option.inventoryweight.server.items": "Weight of Items",
+  "option.inventoryweight.server.creative": "Weight of Creative Items",
   "option.inventoryweight.server.maxWeight": "Maximum Inventory Weight",
 
   "description.inventoryweight.client.someSetting": "A client-side setting that affects the inventory weight mod.",

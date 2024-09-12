@@ -7,6 +7,8 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.network.packet.s2c.play.OverlayMessageS2CPacket;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import static com.megatrex4.InventoryWeight.MOD_ID;
@@ -37,18 +39,20 @@ public class InventoryWeightHUD implements ClientModInitializer {
         int y = screenHeight - ICON_SIZE - 10;
 
         // Retrieve the cached weight data
-        int currentWeight = ClientPlayerData.getWeightData().getCurrentWeight();
+        int inventoryWeight= ClientPlayerData.getWeightData().getCurrentWeight();
         int maxWeight = ClientPlayerData.getWeightData().getMaxWeight();
+
+
 
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
 
         drawIcon(drawContext, EMPTY_ICON, x, y);
 
-        if (currentWeight >= maxWeight) {
+        if (inventoryWeight>= maxWeight) {
             drawIcon(drawContext, OVERLOAD_ICON, x, y);
         } else {
-            int filledHeight = (int) ((double) currentWeight / maxWeight * ICON_SIZE);
+            int filledHeight = (int) ((double) inventoryWeight/ maxWeight * ICON_SIZE);
             drawIcon(drawContext, FILLED_ICON, x, y + (ICON_SIZE - filledHeight), ICON_SIZE, filledHeight);
         }
 

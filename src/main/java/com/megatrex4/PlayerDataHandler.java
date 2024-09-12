@@ -21,6 +21,7 @@ public class PlayerDataHandler {
         world.getPersistentStateManager().set("inventoryweight_data", state);
     }
 
+    // Get player's specific max weight (base weight)
     public static float getPlayerMaxWeight(ServerPlayerEntity player) {
         ServerWorld world = player.getServerWorld();
         InventoryWeightState state = world.getPersistentStateManager().getOrCreate(
@@ -31,30 +32,42 @@ public class PlayerDataHandler {
         return state.getMaxWeight();
     }
 
-    public static float getPlayerCurrentWeight(ServerPlayerEntity player) {
-        float totalWeight = 0;
+    public static final String MULTIPLIER_KEY = "inventoryweight:multiplier";
 
-        for (ItemStack stack : player.getInventory().main) {
-            if (!stack.isEmpty()) {
-                String itemId = Registries.ITEM.getId(stack.getItem()).toString().toLowerCase();
-                float itemWeight = ItemWeights.getItemWeight(itemId);
+    // Set player's specific weight multiplier
+    public static void setPlayerMultiplier(ServerPlayerEntity player, float multiplier) {
+        ServerWorld world = player.getServerWorld();
+        InventoryWeightState state = world.getPersistentStateManager().getOrCreate(
+                InventoryWeightState::fromNbt,
+                InventoryWeightState::new,
+                "inventoryweight_data"
+        );
+        state.setPlayerMultiplier(player.getUuidAsString(), multiplier);
+        world.getPersistentStateManager().set("inventoryweight_data", state);
+    }
 
-                if (itemWeight == 0) {
-                    String itemCategory = getItemCategory(stack);
-                    itemWeight = ItemWeights.getItemWeight(itemCategory.toLowerCase());
-                }
+    // Get player's specific weight multiplier
+    public static float getPlayerMultiplier(ServerPlayerEntity player) {
+        ServerWorld world = player.getServerWorld();
+        InventoryWeightState state = world.getPersistentStateManager().getOrCreate(
+                InventoryWeightState::fromNbt,
+                InventoryWeightState::new,
+                "inventoryweight_data"
+        );
+        return state.getPlayerMultiplier(player.getUuidAsString());
+    }
 
-                // Calculate total weight of this item
-                totalWeight += itemWeight * stack.getCount();
-            }
-        }
-
-        return totalWeight;
+    //get player`s maxweight with multiplier
+    public static float getPlayerMaxWeightWithMultiplier(ServerPlayerEntity player) {
+        return getPlayerMaxWeight(player) + getPlayerMultiplier(player);
     }
 
     public static String getItemCategory(ItemStack stack) {
         String itemId = Registries.ITEM.getId(stack.getItem()).toString().toLowerCase();
 
+        if (isOperatorUtilitiesItem(itemId)) {
+            return "creative";
+        }
         if (itemId.contains("bucket")) {
             return "buckets";
         } else if (itemId.contains("bottle")) {
@@ -70,8 +83,21 @@ public class PlayerDataHandler {
         }
     }
 
+    private static boolean isOperatorUtilitiesItem(String itemId) {
+        return itemId.equals("minecraft:barrier") ||
+                itemId.equals("minecraft:light") ||
+                itemId.equals("minecraft:structure_block") ||
+                itemId.equals("minecraft:jigsaw") ||
+                itemId.contains("command_block") ||
+                itemId.equals("minecraft:structure_void") ||
+                itemId.contains("portal") ||
+                itemId.equals("minecraft:debug_stick") ||
+                itemId.equals("minecraft:spawner") ||
+                itemId.contains("spawn_egg") ||
+                itemId.equals("minecraft:bedrock");
+    }
+
     public static boolean isBlock(ItemStack stack) {
-        // Check if the ItemStack's item is an instance of BlockItem
         return stack.getItem() instanceof BlockItem;
     }
 }

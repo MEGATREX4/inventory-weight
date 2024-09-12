@@ -7,31 +7,62 @@ import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.packet.s2c.play.OverlayMessageS2CPacket;
+import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
+import net.minecraft.registry.Registries;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.GameMode;
 
 public class InventoryWeightHandler {
     // Reference the correct instance of OverloadEffect
     private static final StatusEffect OVERLOAD_EFFECT = InventoryWeightEffectRegister.OVERLOAD_EFFECT;
+
     public static float calculateInventoryWeight(ServerPlayerEntity player) {
         float totalWeight = 0;
+
+        // Iterate through the player's main inventory
         for (ItemStack stack : player.getInventory().main) {
             if (!stack.isEmpty()) {
-                String itemName = stack.getItem().toString(); // Simplify item name extraction as needed
-                totalWeight += ItemWeights.getItemWeight(itemName) * stack.getCount();
+                // Get the item ID for the stack
+                Identifier itemId = Registries.ITEM.getId(stack.getItem());
+                String itemIdString = (itemId != null) ? itemId.toString() : "unknown";
+
+                // First, check if there is a custom weight for this item
+                Float customWeight = ItemWeights.getCustomItemWeight(itemIdString);
+
+                float itemWeight;
+                if (customWeight != null) {
+                    itemWeight = customWeight;
+                } else {
+                    String itemCategory = PlayerDataHandler.getItemCategory(stack);
+                    itemWeight = ItemWeights.getItemWeight(itemCategory);
+                }
+
+                // Multiply the weight by the count of items in the stack
+                totalWeight += itemWeight * stack.getCount();
             }
         }
+
         return totalWeight;
     }
 
+
     // Checks if the player's inventory weight exceeds the limit and applies/removes the overload effect as needed
     public static void checkWeight(ServerPlayerEntity player) {
-        float maxWeight = PlayerDataHandler.getPlayerMaxWeight(player);
+        float maxWeight = PlayerDataHandler.getPlayerMaxWeightWithMultiplier(player);
         float inventoryWeight = calculateInventoryWeight(player);
 
+        // debugging
+        // player.networkHandler.sendPacket(new OverlayMessageS2CPacket(Text.literal("Inventory Weight: " + inventoryWeight + " / Max Weight: " + maxWeight)));
+
+        // Check if the player's inventory weight exceeds the max weight and apply effects accordingly
         if (inventoryWeight >= maxWeight) {
             if (player.interactionManager.getGameMode() != GameMode.CREATIVE) {
+                // debugging
+                // System.out.println("Max Weight: " + maxWeight + " / " + inventoryWeight + " applying overload effect");
                 applyOverloadEffect(player);
             }
         } else {

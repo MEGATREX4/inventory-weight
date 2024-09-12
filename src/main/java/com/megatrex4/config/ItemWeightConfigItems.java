@@ -65,16 +65,10 @@ public class ItemWeightConfigItems {
     private static JsonObject createDefaultConfig() {
         JsonObject defaultJsonObject = new JsonObject();
 
-        // Iterate over all registered items
-        for (Item item : Registries.ITEM) {
-            String itemId = Registries.ITEM.getId(item).toString().toLowerCase();
-            ItemStack itemStack = new ItemStack(item);
-            String category = PlayerDataHandler.getItemCategory(itemStack);
-            float weight = ItemWeights.getItemWeight(category.toLowerCase());
+        // Add static item weights for some items namespace:item_name with defaultJsonObject.addProperty
+        // Add custom item weights with defaultJsonObject.addProperty
+        defaultJsonObject.addProperty("minecraft:stone", 810.0f);
 
-            // Add item and its default weight to the JSON object
-            defaultJsonObject.addProperty(itemId, weight);
-        }
 
         return defaultJsonObject;
     }

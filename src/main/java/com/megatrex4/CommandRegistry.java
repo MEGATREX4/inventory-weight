@@ -3,6 +3,7 @@ package com.megatrex4;
 import com.megatrex4.ItemWeights;
 import com.megatrex4.PlayerDataHandler;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.server.command.CommandManager;
@@ -17,59 +18,127 @@ public class CommandRegistry {
     public static void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("inventoryweight")
                 .then(CommandManager.literal("set")
-                        .then(CommandManager.argument("value", IntegerArgumentType.integer())
-                                .executes(context -> {
-                                    ServerCommandSource source = context.getSource();
-                                    ServerPlayerEntity player = source.getPlayer();
-                                    int value = IntegerArgumentType.getInteger(context, "value");
-                                    PlayerDataHandler.setPlayerMaxWeight(player, value);
-                                    source.sendFeedback(() -> Text.literal("Max weight set to: " + value), false);
-                                    return 1;
-                                })
+                        // Set Max Base Weight for a specific player or self
+                        .then(CommandManager.literal("base")
+                                .then(CommandManager.argument("value", FloatArgumentType.floatArg())
+                                        .executes(context -> {
+                                            ServerCommandSource source = context.getSource();
+                                            ServerPlayerEntity player = source.getPlayer();
+                                            float value = FloatArgumentType.getFloat(context, "value");
+                                            PlayerDataHandler.setPlayerMaxWeight(player, value);
+                                            source.sendFeedback(() -> Text.literal("Max base weight set to: " + value), false);
+                                            return 1;
+                                        })
+                                )
+                        )
+                        // Set Max Multiplier for a specific player or self
+                        .then(CommandManager.literal("multiplier")
+                                .then(CommandManager.argument("player", EntityArgumentType.player())
+                                        .then(CommandManager.argument("value", FloatArgumentType.floatArg())
+                                                .executes(context -> {
+                                                    ServerCommandSource source = context.getSource();
+                                                    ServerPlayerEntity targetPlayer = EntityArgumentType.getPlayer(context, "player");
+                                                    float value = FloatArgumentType.getFloat(context, "value");
+                                                    PlayerDataHandler.setPlayerMultiplier(targetPlayer, value);
+                                                    source.sendFeedback(() -> Text.literal("Max weight multiplier for " + targetPlayer.getName().getString() + " set to: " + value), false);
+                                                    return 1;
+                                                })
+                                        )
+                                )
+                                .then(CommandManager.argument("value", FloatArgumentType.floatArg())
+                                        .executes(context -> {
+                                            ServerCommandSource source = context.getSource();
+                                            ServerPlayerEntity player = source.getPlayer();
+                                            float value = FloatArgumentType.getFloat(context, "value");
+                                            PlayerDataHandler.setPlayerMultiplier(player, value);
+                                            source.sendFeedback(() -> Text.literal("Max weight multiplier set to: " + value), false);
+                                            return 1;
+                                        })
+                                )
                         )
                 )
                 .then(CommandManager.literal("get")
-                        .then(CommandManager.literal("max")
-                                .then(CommandManager.argument("player", EntityArgumentType.player()) // Autocomplete player names
+                        // Get Max Base Weight
+                        .then(CommandManager.literal("base")
+                                .then(CommandManager.argument("player", EntityArgumentType.player())
                                         .executes(context -> {
                                             ServerCommandSource source = context.getSource();
                                             ServerPlayerEntity targetPlayer = EntityArgumentType.getPlayer(context, "player");
-
-                                            float weight = PlayerDataHandler.getPlayerMaxWeight(targetPlayer);
-                                            source.sendFeedback(() -> Text.literal("Max weight for " + targetPlayer.getName().getString() + ": " + weight), false);
+                                            float baseWeight = PlayerDataHandler.getPlayerMaxWeight(targetPlayer);
+                                            source.sendFeedback(() -> Text.literal("Max base weight for " + targetPlayer.getName().getString() + ": " + baseWeight), false);
                                             return 1;
                                         })
                                 )
                                 .executes(context -> {
                                     ServerCommandSource source = context.getSource();
                                     ServerPlayerEntity player = source.getPlayer();
-                                    float weight = PlayerDataHandler.getPlayerMaxWeight(player);
-                                    source.sendFeedback(() -> Text.literal("Max weight: " + weight), false);
+                                    float baseWeight = PlayerDataHandler.getPlayerMaxWeight(player);
+                                    source.sendFeedback(() -> Text.literal("Max base weight: " + baseWeight), false);
                                     return 1;
                                 })
                         )
-                        .then(CommandManager.literal("value")
-                                .then(CommandManager.argument("player", EntityArgumentType.player()) // Autocomplete player names
+                        // Get Max Multiplier
+                        .then(CommandManager.literal("multiplier")
+                                .then(CommandManager.argument("player", EntityArgumentType.player())
                                         .executes(context -> {
                                             ServerCommandSource source = context.getSource();
                                             ServerPlayerEntity targetPlayer = EntityArgumentType.getPlayer(context, "player");
-
-                                            float weight = PlayerDataHandler.getPlayerCurrentWeight(targetPlayer);
-                                            source.sendFeedback(() -> Text.literal("Current weight for " + targetPlayer.getName().getString() + ": " + weight), false);
+                                            float multiplier = PlayerDataHandler.getPlayerMultiplier(targetPlayer);
+                                            source.sendFeedback(() -> Text.literal("Max weight multiplier for " + targetPlayer.getName().getString() + ": " + multiplier), false);
                                             return 1;
                                         })
                                 )
                                 .executes(context -> {
                                     ServerCommandSource source = context.getSource();
                                     ServerPlayerEntity player = source.getPlayer();
-                                    float weight = PlayerDataHandler.getPlayerCurrentWeight(player);
-                                    source.sendFeedback(() -> Text.literal("Current weight: " + weight), false);
+                                    float multiplier = PlayerDataHandler.getPlayerMultiplier(player);
+                                    source.sendFeedback(() -> Text.literal("Max weight multiplier: " + multiplier), false);
+                                    return 1;
+                                })
+                        )
+                        // get base + multiplier together
+                        .then(CommandManager.literal("combined")
+                                .then(CommandManager.argument("player", EntityArgumentType.player())
+                                        .executes(context -> {
+                                            ServerCommandSource source = context.getSource();
+                                            ServerPlayerEntity targetPlayer = EntityArgumentType.getPlayer(context, "player");
+                                            float combinedValue = PlayerDataHandler.getPlayerMaxWeightWithMultiplier(targetPlayer);
+                                            source.sendFeedback(() -> Text.literal("Combined base weight and multiplier for " + targetPlayer.getName().getString() + ": " + combinedValue), false);
+                                            return 1;
+                                        })
+                                )
+                                .executes(context -> {
+                                    ServerCommandSource source = context.getSource();
+                                    ServerPlayerEntity player = source.getPlayer();
+                                    float combinedValue = PlayerDataHandler.getPlayerMaxWeightWithMultiplier(player);
+                                    source.sendFeedback(() -> Text.literal("Combined base weight and multiplier: " + combinedValue), false);
+                                    return 1;
+                                })
+                        )
+
+                        // Get Current Inventory Weight
+                        .then(CommandManager.literal("value")
+                                .then(CommandManager.argument("player", EntityArgumentType.player())
+                                        .executes(context -> {
+                                            ServerCommandSource source = context.getSource();
+                                            ServerPlayerEntity targetPlayer = EntityArgumentType.getPlayer(context, "player");
+                                            float currentWeight = InventoryWeightHandler.calculateInventoryWeight(targetPlayer);
+                                            source.sendFeedback(() -> Text.literal("Current weight for " + targetPlayer.getName().getString() + ": " + currentWeight), false);
+                                            return 1;
+                                        })
+                                )
+                                .executes(context -> {
+                                    ServerCommandSource source = context.getSource();
+                                    ServerPlayerEntity player = source.getPlayer();
+                                    float currentWeight = InventoryWeightHandler.calculateInventoryWeight(player);
+                                    source.sendFeedback(() -> Text.literal("Current weight: " + currentWeight), false);
                                     return 1;
                                 })
                         )
                 )
         );
 
+        // Debug command to get the weight of the item in hand
         dispatcher.register(CommandManager.literal("debugweight")
                 .executes(context -> {
                     ServerCommandSource source = context.getSource();
