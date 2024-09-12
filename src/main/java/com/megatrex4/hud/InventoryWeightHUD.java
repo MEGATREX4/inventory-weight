@@ -1,5 +1,6 @@
 package com.megatrex4.hud;
 
+import com.megatrex4.client.InventoryWeightClientHandler;
 import com.megatrex4.data.ClientPlayerData;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.ClientModInitializer;
@@ -39,10 +40,8 @@ public class InventoryWeightHUD implements ClientModInitializer {
         int y = screenHeight - ICON_SIZE - 10;
 
         // Retrieve the cached weight data
-        int inventoryWeight= ClientPlayerData.getWeightData().getCurrentWeight();
-        int maxWeight = ClientPlayerData.getWeightData().getMaxWeight();
-
-
+        float inventoryWeight = InventoryWeightClientHandler.getInventoryWeight();
+        float maxWeight = InventoryWeightClientHandler.getMaxWeight();
 
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();

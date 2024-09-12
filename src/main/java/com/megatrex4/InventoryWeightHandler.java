@@ -2,6 +2,7 @@ package com.megatrex4;
 
 import com.megatrex4.effects.InventoryWeightEffectRegister;
 import com.megatrex4.effects.OverloadEffect;
+import com.megatrex4.network.InventoryWeightPacket;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -102,7 +103,13 @@ public class InventoryWeightHandler {
 
 
     public static void updatePlayerWeight(ServerWorld world, ServerPlayerEntity player) {
-        checkWeight(player); // This checks if the player's weight exceeds the limit
+        float inventoryWeight = calculateInventoryWeight(player);
+        float maxWeight = PlayerDataHandler.getPlayerMaxWeightWithMultiplier(player);
+
+        InventoryWeightPacket packet = new InventoryWeightPacket(inventoryWeight, maxWeight);
+        InventoryWeightPacket.send(player, packet);
+
+        checkWeight(player);
     }
 
 

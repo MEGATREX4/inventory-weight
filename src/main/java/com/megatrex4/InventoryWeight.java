@@ -1,11 +1,14 @@
 package com.megatrex4;
 
+import com.megatrex4.client.InventoryWeightClientHandler;
 import com.megatrex4.config.ItemWeightConfigItems;
 import com.megatrex4.config.ItemWeightsConfigClient;
 import com.megatrex4.config.ItemWeightsConfigServer;
 import com.megatrex4.effects.InventoryWeightEffectRegister;
 import com.megatrex4.network.ConfigSyncPacket;
+import com.megatrex4.network.ModMessages;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.registry.Registries;
@@ -25,6 +28,11 @@ public class InventoryWeight implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		LOGGER.info(MOD_ID + " mod initialized!");
+
+		ModMessages.registerS2CPackets();
+		ClientPlayNetworking.registerGlobalReceiver(ModMessages.INVENTORY_WEIGHT_SYNC, (client, handler, buf, responseSender) -> {
+			InventoryWeightClientHandler.receivePacket(client, ModMessages.INVENTORY_WEIGHT_SYNC, buf);
+		});
 
 		ItemWeightsConfigServer.loadConfig();
 		ItemWeightConfigItems.loadConfig();
