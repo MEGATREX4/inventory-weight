@@ -17,6 +17,7 @@
   "option.inventoryweight.server.items": "Weight of Items",
   "option.inventoryweight.server.creative": "Weight of Creative Items",
   "option.inventoryweight.server.maxWeight": "Maximum Inventory Weight",
+  "option.inventoryweight.server.pocketWeight": "Pocket Capacity",
 
   "__comment__": "Effects",
   "effect.inventoryweight.overload": "Overload",

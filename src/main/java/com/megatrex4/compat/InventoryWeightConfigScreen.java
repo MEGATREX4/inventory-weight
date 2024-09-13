@@ -119,6 +119,11 @@ public class InventoryWeightConfigScreen {
                 .setSaveConsumer(state::setMaxWeight)
                 .build());
 
+        serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.pocketWeight"), ItemWeightsConfigServer.getPocketWeightFromConfig())
+                .setDefaultValue(ItemWeightsConfigServer.getPocketWeightFromConfig())
+                .setSaveConsumer(ItemWeightsConfigServer::setPocketWeight)
+                .build());
+
         // Items Config Category
         ConfigCategory itemsCategory = builder.getOrCreateCategory(Text.translatable("category.inventoryweight.items"));
 

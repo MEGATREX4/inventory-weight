@@ -1,3 +1,4 @@
+// InventoryWeightArmor.java
 package com.megatrex4;
 
 import com.google.gson.Gson;
@@ -19,9 +20,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class InventoryWeightArmor {
-    private static final float POCKET_WEIGHT = 500;
+    private static float POCKET_WEIGHT = 500; // Default value
     private static final Map<String, Integer> itemPocketsMap = new HashMap<>();
     private static final Gson GSON = new Gson();
+
+    public static void setPocketWeight(float pocketWeight) {
+        POCKET_WEIGHT = pocketWeight;
+    }
 
     // Load datapack data using Minecraft's resource system
     public static void loadDatapackData(ResourceManager resourceManager) {
@@ -49,8 +54,6 @@ public class InventoryWeightArmor {
             e.printStackTrace(); // Handle the error
         }
     }
-
-
 
     // Get pockets based on datapack data or default
     public static int getPocketsBasedOnProtection(ArmorItem armorItem) {
