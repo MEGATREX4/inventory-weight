@@ -1,10 +1,10 @@
-package com.megatrex4;
+package com.megatrex4.commands;
 
-import com.megatrex4.ItemWeights;
-import com.megatrex4.PlayerDataHandler;
+import com.megatrex4.InventoryWeightHandler;
+import com.megatrex4.util.ItemWeights;
+import com.megatrex4.data.PlayerDataHandler;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.FloatArgumentType;
-import com.mojang.brigadier.arguments.IntegerArgumentType;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;

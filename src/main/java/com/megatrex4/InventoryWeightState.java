@@ -1,5 +1,6 @@
 package com.megatrex4;
 
+import com.megatrex4.util.InventoryWeightUtil;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.world.PersistentState;
 

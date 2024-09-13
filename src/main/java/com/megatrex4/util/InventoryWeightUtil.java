@@ -1,4 +1,4 @@
-package com.megatrex4;
+package com.megatrex4.util;
 
 public class InventoryWeightUtil {
     // Default values

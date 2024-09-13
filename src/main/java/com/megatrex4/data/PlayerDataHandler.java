@@ -1,11 +1,11 @@
-package com.megatrex4;
+package com.megatrex4.data;
 
+import com.megatrex4.InventoryWeightState;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Identifier;
 
 public class PlayerDataHandler {
     public static final String MAX_WEIGHT_KEY = "inventoryweight:max";

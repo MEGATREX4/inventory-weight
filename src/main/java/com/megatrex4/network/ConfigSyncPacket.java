@@ -3,7 +3,7 @@ package com.megatrex4.network;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.megatrex4.InventoryWeight;
-import com.megatrex4.ItemWeights;
+import com.megatrex4.util.ItemWeights;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;

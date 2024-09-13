@@ -4,9 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.megatrex4.InventoryWeight;
-import com.megatrex4.InventoryWeightUtil;
-import com.megatrex4.ItemWeights;
+import com.megatrex4.util.InventoryWeightUtil;
+import com.megatrex4.util.ItemWeights;
 
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -14,7 +13,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Map;
 
 public class ItemWeightsConfigServer {
     public static final Path CONFIG_PATH = Paths.get("config/inventoryweight", "inventory_weights_server.json");

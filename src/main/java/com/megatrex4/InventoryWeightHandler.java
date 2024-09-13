@@ -1,19 +1,17 @@
 package com.megatrex4;
 
+import com.megatrex4.data.PlayerDataHandler;
 import com.megatrex4.effects.InventoryWeightEffectRegister;
 import com.megatrex4.effects.OverloadEffect;
 import com.megatrex4.network.InventoryWeightPacket;
+import com.megatrex4.util.ItemWeights;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.packet.s2c.play.OverlayMessageS2CPacket;
-import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
 import net.minecraft.registry.Registries;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.GameMode;
 

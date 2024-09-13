@@ -1,28 +1,20 @@
 package com.megatrex4.compat;
 
-import com.megatrex4.InventoryWeightUtil;
-import com.megatrex4.hud.InventoryWeightHUD;
+import com.megatrex4.util.HudPosition;
+import com.megatrex4.util.InventoryWeightUtil;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
-import me.shedaniel.clothconfig2.impl.builders.DropdownMenuBuilder;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.item.Items;
-import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 
 import com.megatrex4.config.ItemWeightsConfigClient;
 import com.megatrex4.config.ItemWeightConfigItems;
 import com.megatrex4.config.ItemWeightsConfigServer;
-import com.megatrex4.ItemWeights;
+import com.megatrex4.util.ItemWeights;
 import com.megatrex4.InventoryWeightState;
-import net.minecraft.util.Identifier;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class InventoryWeightConfigScreen {
 

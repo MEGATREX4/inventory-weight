@@ -1,4 +1,4 @@
-package com.megatrex4.compat;
+package com.megatrex4.util;
 
 public enum HudPosition {
     TOP_LEFT("TOP_LEFT"),

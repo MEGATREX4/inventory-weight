@@ -1,4 +1,4 @@
-package com.megatrex4;
+package com.megatrex4.util;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;

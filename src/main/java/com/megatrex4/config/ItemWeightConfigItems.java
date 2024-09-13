@@ -4,11 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.megatrex4.ItemWeights;
-import com.megatrex4.PlayerDataHandler;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
+import com.megatrex4.util.ItemWeights;
 
 import java.io.FileReader;
 import java.io.FileWriter;
