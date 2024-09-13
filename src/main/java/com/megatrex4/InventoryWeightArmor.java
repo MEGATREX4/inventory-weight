@@ -25,6 +25,9 @@ public class InventoryWeightArmor {
 
     // Load datapack data using Minecraft's resource system
     public static void loadDatapackData(ResourceManager resourceManager) {
+        // Clear existing data to ensure no old values are kept
+        itemPocketsMap.clear();
+
         try {
             for (Map.Entry<Identifier, Resource> entry : resourceManager.findResources("inventoryweight", path -> path.getPath().endsWith(".json")).entrySet()) {
                 Identifier identifier = entry.getKey();
@@ -38,7 +41,7 @@ public class InventoryWeightArmor {
                         String itemId = itemObject.get("item").getAsString();
                         int pockets = itemObject.get("pockets").getAsInt();
                         itemPocketsMap.put(itemId, pockets);
-                        System.out.println("Loaded item: " + itemId + " with pockets: " + pockets + ", " + "from datapack " + identifier + " "); // Debugging line
+                        System.out.println("Loaded item: " + itemId + " with pockets: " + pockets); // Debugging line
                     }
                 }
             }
@@ -46,6 +49,7 @@ public class InventoryWeightArmor {
             e.printStackTrace(); // Handle the error
         }
     }
+
 
 
     // Get pockets based on datapack data or default
@@ -57,7 +61,7 @@ public class InventoryWeightArmor {
         }
         // Default calculation if no datapack value
         int protectionValue = armorItem.getProtection();
-        return Math.max(1, 7 - (int)(protectionValue / 2)); // Ensure at least 1 pocket
+        return Math.max(1, 7 - (int)(protectionValue / 1.2));
     }
 
     // Calculate the total armor weight based on pockets
