@@ -20,7 +20,7 @@ public class ItemWeightsConfigServer {
     public static final Path CONFIG_PATH = Paths.get("config/inventoryweight", "inventory_weights_server.json");
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static float maxWeight = InventoryWeightUtil.MAXWEIGHT; // Default value
-    private static float pocketWeight = 500; // Default value
+    private static float pocketWeight = InventoryWeightUtil.POCKET_WEIGHT; // Default value
 
     public static void loadConfig() {
         try {

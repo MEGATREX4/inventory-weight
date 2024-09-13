@@ -6,6 +6,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.megatrex4.util.InventoryWeightUtil;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
@@ -20,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class InventoryWeightArmor {
-    private static float POCKET_WEIGHT = 500; // Default value
+    private static float POCKET_WEIGHT = InventoryWeightUtil.POCKET_WEIGHT; // Default value
     private static final Map<String, Integer> itemPocketsMap = new HashMap<>();
     private static final Gson GSON = new Gson();
 
