@@ -1,6 +1,7 @@
 package com.megatrex4.compat;
 
 import com.megatrex4.InventoryWeightUtil;
+import com.megatrex4.hud.InventoryWeightHUD;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
@@ -17,7 +18,10 @@ import com.megatrex4.ItemWeights;
 import com.megatrex4.InventoryWeightState;
 import net.minecraft.util.Identifier;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class InventoryWeightConfigScreen {
@@ -38,10 +42,45 @@ public class InventoryWeightConfigScreen {
 
         // Client Config Category
         ConfigCategory clientCategory = builder.getOrCreateCategory(Text.translatable("category.inventoryweight.client"));
-        clientCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.client.someSetting"), ItemWeightsConfigClient.someSetting)
-                .setDefaultValue(10.0f)
-                .setSaveConsumer(newValue -> ItemWeightsConfigClient.someSetting = newValue)
-                .build());
+
+        // Add the input field with description
+        clientCategory.addEntry(entryBuilder.startStrField(
+                                Text.translatable("option.inventoryweight.client.hudPosition"), // Input field title
+                                ItemWeightsConfigClient.hudPosition // Default value as the current HudPosition name
+                        )
+                        .setDefaultValue(HudPosition.BOTTOM_RIGHT.getDisplayName()) // Default value
+                        .setSaveConsumer(newValue -> {
+                            // Convert the string input to a HudPosition enum
+                            HudPosition newPosition = HudPosition.fromString(newValue);
+                            if (newPosition != null) {
+                                ItemWeightsConfigClient.hudPosition = newValue; // Store the string value
+                            }
+                        })
+                        .setTooltip(Text.translatable("option.inventoryweight.client.hudPosition.tooltip")) // Description as tooltip
+                        .build()
+        );
+
+        // X Offset for CUSTOM position
+        clientCategory.addEntry(entryBuilder
+                .startFloatField(Text.translatable("option.inventoryweight.client.xOffset"), ItemWeightsConfigClient.xOffset)
+                .setDefaultValue(0.5f)
+                .setMin(0.0f)
+                .setMax(1.0f)
+                .setSaveConsumer(newValue -> ItemWeightsConfigClient.xOffset = newValue)
+                .build()
+        );
+
+        // Y Offset for CUSTOM position
+        clientCategory.addEntry(entryBuilder
+                .startFloatField(Text.translatable("option.inventoryweight.client.yOffset"), ItemWeightsConfigClient.yOffset)
+                .setDefaultValue(0.5f)
+                .setMin(0.0f)
+                .setMax(1.0f)
+                .setSaveConsumer(newValue -> ItemWeightsConfigClient.yOffset = newValue)
+                .build()
+        );
+
+
 
         // Server Config Category
         ConfigCategory serverCategory = builder.getOrCreateCategory(Text.translatable("category.inventoryweight.server"));

@@ -5,7 +5,9 @@
   "category.inventoryweight.server": "Server Settings",
   "category.inventoryweight.items": "Item Settings",
 
-  "option.inventoryweight.client.someSetting": "Some Client Setting",
+  "option.inventoryweight.client.hudPosition": "HUD Position",
+  "option.inventoryweight.client.hudPosition.tooltip": "Options include:§r\n- §6TOP_LEFT§r\n- §6TOP_RIGHT§r\n- §6CENTER_LEFT§r\n- §6CENTER_RIGHT§r\n- §6BOTTOM_LEFT§r\n- §6BOTTOM_RIGHT§r\n- §6HOTBAR_LEFT§r\n- §6HOTBAR_RIGHT§r\n- §6CENTER_HOTBAR§r\n- §6CUSTOM",
+
 
   "option.inventoryweight.server.buckets": "Weight of Buckets",
   "option.inventoryweight.server.bottles": "Weight of Bottles",
@@ -16,17 +18,10 @@
   "option.inventoryweight.server.creative": "Weight of Creative Items",
   "option.inventoryweight.server.maxWeight": "Maximum Inventory Weight",
 
-  "description.inventoryweight.client.someSetting": "A client-side setting that affects the inventory weight mod.",
-
-  "description.inventoryweight.server.buckets": "Defines the weight of each bucket in the inventory.",
-  "description.inventoryweight.server.bottles": "Defines the weight of each bottle in the inventory.",
-  "description.inventoryweight.server.blocks": "Defines the weight of each block in the inventory.",
-  "description.inventoryweight.server.ingots": "Defines the weight of each ingot in the inventory.",
-  "description.inventoryweight.server.nuggets": "Defines the weight of each nugget in the inventory.",
-  "description.inventoryweight.server.items": "Defines the default weight for general items in the inventory.",
-  "description.inventoryweight.server.maxWeight": "The maximum total weight that an inventory can hold.",
-
-
   "__comment__": "Effects",
   "effect.inventoryweight.overload": "Overload"
+
+
+
+
 }
