@@ -1,11 +1,13 @@
 package com.megatrex4.commands;
 
+import com.megatrex4.InventoryWeightArmor;
 import com.megatrex4.InventoryWeightHandler;
 import com.megatrex4.util.ItemWeights;
 import com.megatrex4.data.PlayerDataHandler;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import net.minecraft.command.argument.EntityArgumentType;
+import net.minecraft.item.ArmorItem;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -17,8 +19,8 @@ import net.minecraft.util.Identifier;
 public class CommandRegistry {
     public static void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("inventoryweight")
+                .requires(source -> source.hasPermissionLevel(4))
                 .then(CommandManager.literal("set")
-                        // Set Max Base Weight for a specific player or self
                         .then(CommandManager.literal("base")
                                 .then(CommandManager.argument("value", FloatArgumentType.floatArg())
                                         .executes(context -> {
@@ -26,12 +28,11 @@ public class CommandRegistry {
                                             ServerPlayerEntity player = source.getPlayer();
                                             float value = FloatArgumentType.getFloat(context, "value");
                                             PlayerDataHandler.setPlayerMaxWeight(player, value);
-                                            source.sendFeedback(() -> Text.literal("Max base weight set to: " + value), false);
+                                            source.sendFeedback(() -> Text.translatable("command.inventoryweight.set.base", value), false);
                                             return 1;
                                         })
                                 )
                         )
-                        // Set Max Multiplier for a specific player or self
                         .then(CommandManager.literal("multiplier")
                                 .then(CommandManager.argument("player", EntityArgumentType.player())
                                         .then(CommandManager.argument("value", FloatArgumentType.floatArg())
@@ -40,7 +41,7 @@ public class CommandRegistry {
                                                     ServerPlayerEntity targetPlayer = EntityArgumentType.getPlayer(context, "player");
                                                     float value = FloatArgumentType.getFloat(context, "value");
                                                     PlayerDataHandler.setPlayerMultiplier(targetPlayer, value);
-                                                    source.sendFeedback(() -> Text.literal("Max weight multiplier for " + targetPlayer.getName().getString() + " set to: " + value), false);
+                                                    source.sendFeedback(() -> Text.translatable("command.inventoryweight.set.multiplier.other", targetPlayer.getName().getString(), value), false);
                                                     return 1;
                                                 })
                                         )
@@ -51,21 +52,20 @@ public class CommandRegistry {
                                             ServerPlayerEntity player = source.getPlayer();
                                             float value = FloatArgumentType.getFloat(context, "value");
                                             PlayerDataHandler.setPlayerMultiplier(player, value);
-                                            source.sendFeedback(() -> Text.literal("Max weight multiplier set to: " + value), false);
+                                            source.sendFeedback(() -> Text.translatable("command.inventoryweight.set.multiplier", value), false);
                                             return 1;
                                         })
                                 )
                         )
                 )
                 .then(CommandManager.literal("get")
-                        // Get Max Base Weight
                         .then(CommandManager.literal("base")
                                 .then(CommandManager.argument("player", EntityArgumentType.player())
                                         .executes(context -> {
                                             ServerCommandSource source = context.getSource();
                                             ServerPlayerEntity targetPlayer = EntityArgumentType.getPlayer(context, "player");
                                             float baseWeight = PlayerDataHandler.getPlayerMaxWeight(targetPlayer);
-                                            source.sendFeedback(() -> Text.literal("Max base weight for " + targetPlayer.getName().getString() + ": " + baseWeight), false);
+                                            source.sendFeedback(() -> Text.translatable("command.inventoryweight.get.base.other", targetPlayer.getName().getString(), baseWeight), false);
                                             return 1;
                                         })
                                 )
@@ -73,18 +73,17 @@ public class CommandRegistry {
                                     ServerCommandSource source = context.getSource();
                                     ServerPlayerEntity player = source.getPlayer();
                                     float baseWeight = PlayerDataHandler.getPlayerMaxWeight(player);
-                                    source.sendFeedback(() -> Text.literal("Max base weight: " + baseWeight), false);
+                                    source.sendFeedback(() -> Text.translatable("command.inventoryweight.get.base", baseWeight), false);
                                     return 1;
                                 })
                         )
-                        // Get Max Multiplier
                         .then(CommandManager.literal("multiplier")
                                 .then(CommandManager.argument("player", EntityArgumentType.player())
                                         .executes(context -> {
                                             ServerCommandSource source = context.getSource();
                                             ServerPlayerEntity targetPlayer = EntityArgumentType.getPlayer(context, "player");
                                             float multiplier = PlayerDataHandler.getPlayerMultiplier(targetPlayer);
-                                            source.sendFeedback(() -> Text.literal("Max weight multiplier for " + targetPlayer.getName().getString() + ": " + multiplier), false);
+                                            source.sendFeedback(() -> Text.translatable("command.inventoryweight.get.multiplier.other", targetPlayer.getName().getString(), multiplier), false);
                                             return 1;
                                         })
                                 )
@@ -92,18 +91,17 @@ public class CommandRegistry {
                                     ServerCommandSource source = context.getSource();
                                     ServerPlayerEntity player = source.getPlayer();
                                     float multiplier = PlayerDataHandler.getPlayerMultiplier(player);
-                                    source.sendFeedback(() -> Text.literal("Max weight multiplier: " + multiplier), false);
+                                    source.sendFeedback(() -> Text.translatable("command.inventoryweight.get.multiplier", multiplier), false);
                                     return 1;
                                 })
                         )
-                        // get base + multiplier together
                         .then(CommandManager.literal("combined")
                                 .then(CommandManager.argument("player", EntityArgumentType.player())
                                         .executes(context -> {
                                             ServerCommandSource source = context.getSource();
                                             ServerPlayerEntity targetPlayer = EntityArgumentType.getPlayer(context, "player");
                                             float combinedValue = PlayerDataHandler.getPlayerMaxWeightWithMultiplier(targetPlayer);
-                                            source.sendFeedback(() -> Text.literal("Combined base weight and multiplier for " + targetPlayer.getName().getString() + ": " + combinedValue), false);
+                                            source.sendFeedback(() -> Text.translatable("command.inventoryweight.get.combined.other", targetPlayer.getName().getString(), combinedValue), false);
                                             return 1;
                                         })
                                 )
@@ -111,19 +109,17 @@ public class CommandRegistry {
                                     ServerCommandSource source = context.getSource();
                                     ServerPlayerEntity player = source.getPlayer();
                                     float combinedValue = PlayerDataHandler.getPlayerMaxWeightWithMultiplier(player);
-                                    source.sendFeedback(() -> Text.literal("Combined base weight and multiplier: " + combinedValue), false);
+                                    source.sendFeedback(() -> Text.translatable("command.inventoryweight.get.combined", combinedValue), false);
                                     return 1;
                                 })
                         )
-
-                        // Get Current Inventory Weight
                         .then(CommandManager.literal("value")
                                 .then(CommandManager.argument("player", EntityArgumentType.player())
                                         .executes(context -> {
                                             ServerCommandSource source = context.getSource();
                                             ServerPlayerEntity targetPlayer = EntityArgumentType.getPlayer(context, "player");
                                             float currentWeight = InventoryWeightHandler.calculateInventoryWeight(targetPlayer);
-                                            source.sendFeedback(() -> Text.literal("Current weight for " + targetPlayer.getName().getString() + ": " + currentWeight), false);
+                                            source.sendFeedback(() -> Text.translatable("command.inventoryweight.get.value.other", targetPlayer.getName().getString(), currentWeight), false);
                                             return 1;
                                         })
                                 )
@@ -131,21 +127,21 @@ public class CommandRegistry {
                                     ServerCommandSource source = context.getSource();
                                     ServerPlayerEntity player = source.getPlayer();
                                     float currentWeight = InventoryWeightHandler.calculateInventoryWeight(player);
-                                    source.sendFeedback(() -> Text.literal("Current weight: " + currentWeight), false);
+                                    source.sendFeedback(() -> Text.translatable("command.inventoryweight.get.value", currentWeight), false);
                                     return 1;
                                 })
                         )
                 )
         );
 
-        // Debug command to get the weight of the item in hand
         dispatcher.register(CommandManager.literal("debugweight")
+                .requires(source -> source.hasPermissionLevel(4))
                 .executes(context -> {
                     ServerCommandSource source = context.getSource();
                     ServerPlayerEntity player = source.getPlayer();
 
                     if (player == null) {
-                        source.sendError(Text.literal("You must be a player to run this command."));
+                        source.sendError(Text.translatable("command.error.not_player"));
                         return 1;
                     }
 
@@ -155,13 +151,51 @@ public class CommandRegistry {
 
                     Float weight = ItemWeights.getCustomItemWeight(itemIdString);
                     if (weight != null) {
-                        source.sendFeedback(() -> Text.literal("Weight of item in hand (" + itemIdString + "): " + weight), false);
+                        source.sendFeedback(() -> Text.translatable("command.debugweight", itemIdString, weight), false);
                     } else {
                         String itemCategory = PlayerDataHandler.getItemCategory(itemStack);
                         final String finalItemCategory = itemCategory;
                         float fallbackWeight = ItemWeights.getItemWeight(itemCategory);
 
-                        source.sendFeedback(() -> Text.literal("Weight of item in hand (" + finalItemCategory + "): " + fallbackWeight), false);
+                        source.sendFeedback(() -> Text.translatable("command.debugweight.fallback", finalItemCategory, fallbackWeight), false);
+                    }
+
+                    return 1;
+                })
+        );
+
+        dispatcher.register(CommandManager.literal("debugarmor")
+                .requires(source -> source.hasPermissionLevel(4))
+                .executes(context -> {
+                    ServerCommandSource source = context.getSource();
+                    ServerPlayerEntity player = source.getPlayer();
+
+                    if (player == null) {
+                        source.sendError(Text.translatable("command.error.not_player"));
+                        return 1;
+                    }
+
+                    float totalArmorWeight = InventoryWeightArmor.calculateArmorWeight(player);
+                    StringBuilder pocketsInfo = new StringBuilder();
+
+                    boolean hasArmorWithPockets = false; // Flag to check if any armor has pockets
+
+                    for (ItemStack armorPiece : player.getInventory().armor) {
+                        if (armorPiece.getItem() instanceof ArmorItem) {
+                            String itemId = Registries.ITEM.getId(armorPiece.getItem()).toString();
+                            Integer pockets = InventoryWeightArmor.getItemPockets(itemId);
+                            if (pockets != null) {
+                                pocketsInfo.append(itemId).append(": ").append(pockets).append(" pockets\n");
+                                hasArmorWithPockets = true;
+                            }
+                        }
+                    }
+
+                    if (!hasArmorWithPockets) {
+                        source.sendFeedback(() -> Text.translatable("command.debugarmor.no_pockets"), false);
+                    } else {
+                        source.sendFeedback(() -> Text.translatable("command.debugarmor.pockets", pocketsInfo.toString()), false);
+                        source.sendFeedback(() -> Text.translatable("command.debugarmor.total_weight", totalArmorWeight), false);
                     }
 
                     return 1;

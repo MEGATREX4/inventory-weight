@@ -30,7 +30,7 @@ public class InventoryWeightState extends PersistentState {
 
     // Get multiplier for a specific player
     public float getPlayerMultiplier(String playerUuid) {
-        return this.playerMultipliers.getOrDefault(playerUuid, 1.0f); // Default is 1.0
+        return this.playerMultipliers.getOrDefault(playerUuid, 0.0f); // Default is 1.0
     }
 
     @Override

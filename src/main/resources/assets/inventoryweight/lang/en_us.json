@@ -19,9 +19,23 @@
   "option.inventoryweight.server.maxWeight": "Maximum Inventory Weight",
 
   "__comment__": "Effects",
-  "effect.inventoryweight.overload": "Overload"
+  "effect.inventoryweight.overload": "Overload",
 
-
-
-
+  "command.inventoryweight.set.base": "Max base weight set to: %s",
+  "command.inventoryweight.set.multiplier": "Max weight multiplier set to: %s",
+  "command.inventoryweight.set.multiplier.other": "Max weight multiplier for %s set to: %s",
+  "command.inventoryweight.get.base": "Max base weight: %s",
+  "command.inventoryweight.get.base.other": "Max base weight for %s: %s",
+  "command.inventoryweight.get.multiplier": "Max weight multiplier: %s",
+  "command.inventoryweight.get.multiplier.other": "Max weight multiplier for %s: %s",
+  "command.inventoryweight.get.combined": "Combined base weight and multiplier: %s",
+  "command.inventoryweight.get.combined.other": "Combined base weight and multiplier for %s: %s",
+  "command.inventoryweight.get.value": "Current weight: %s",
+  "command.inventoryweight.get.value.other": "Current weight for %s: %s",
+  "command.debugweight": "Weight of item in hand (%s): %s",
+  "command.debugweight.fallback": "Weight of item in hand (%s): %s",
+  "command.debugarmor.no_pockets": "No armor with pockets found.",
+  "command.debugarmor.pockets": "Armor pockets:\n%s",
+  "command.debugarmor.total_weight": "Total weight capacity from armor: %s",
+  "command.error.not_player": "You must be a player to run this command."
 }

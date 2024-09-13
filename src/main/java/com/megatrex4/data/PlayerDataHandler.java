@@ -1,5 +1,6 @@
 package com.megatrex4.data;
 
+import com.megatrex4.InventoryWeightArmor;
 import com.megatrex4.InventoryWeightState;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
@@ -9,6 +10,7 @@ import net.minecraft.server.world.ServerWorld;
 
 public class PlayerDataHandler {
     public static final String MAX_WEIGHT_KEY = "inventoryweight:max";
+    public static final String ARMOR_MAX_KEY = "inventoryweight:armor_max";
 
     public static void setPlayerMaxWeight(ServerPlayerEntity player, float value) {
         ServerWorld world = player.getServerWorld();
@@ -31,8 +33,6 @@ public class PlayerDataHandler {
         );
         return state.getMaxWeight();
     }
-
-    public static final String MULTIPLIER_KEY = "inventoryweight:multiplier";
 
     // Set player's specific weight multiplier
     public static void setPlayerMultiplier(ServerPlayerEntity player, float multiplier) {
@@ -57,9 +57,14 @@ public class PlayerDataHandler {
         return state.getPlayerMultiplier(player.getUuidAsString());
     }
 
-    //get player`s maxweight with multiplier
+    // Get the player's maximum armor weight
+    public static float getPlayerMaxArmorWeight(ServerPlayerEntity player) {
+        return InventoryWeightArmor.calculateArmorWeight(player); // Convert weight to multiplier factor, adjust as necessary
+    }
+
+    // Get player’s max weight with multiplier and armor weight
     public static float getPlayerMaxWeightWithMultiplier(ServerPlayerEntity player) {
-        return getPlayerMaxWeight(player) + getPlayerMultiplier(player);
+        return getPlayerMaxWeight(player) + getPlayerMultiplier(player) + getPlayerMaxArmorWeight(player);
     }
 
     public static String getItemCategory(ItemStack stack) {
@@ -94,7 +99,8 @@ public class PlayerDataHandler {
                 itemId.equals("minecraft:debug_stick") ||
                 itemId.equals("minecraft:spawner") ||
                 itemId.contains("spawn_egg") ||
-                itemId.equals("minecraft:bedrock");
+                itemId.equals("minecraft:bedrock") ||
+                itemId.contains("creative");
     }
 
     public static boolean isBlock(ItemStack stack) {

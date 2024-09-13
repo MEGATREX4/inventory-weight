@@ -95,6 +95,7 @@ public class InventoryWeightHUD implements ClientModInitializer {
         float maxWeight = InventoryWeightClientHandler.getMaxWeight();
 
         RenderSystem.enableBlend();
+        RenderSystem.setShaderTexture(0, EMPTY_ICON); // Bind the correct texture
         RenderSystem.defaultBlendFunc();
 
         // Draw the empty icon (full icon as background)
