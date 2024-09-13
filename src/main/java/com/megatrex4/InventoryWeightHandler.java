@@ -8,6 +8,7 @@ import com.megatrex4.util.ItemWeights;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.server.world.ServerWorld;
@@ -54,17 +55,18 @@ public class InventoryWeightHandler {
         float maxWeight = PlayerDataHandler.getPlayerMaxWeightWithMultiplier(player);
         float inventoryWeight = calculateInventoryWeight(player);
 
-        // debugging
-        // player.networkHandler.sendPacket(new OverlayMessageS2CPacket(Text.literal("Inventory Weight: " + inventoryWeight + " / Max Weight: " + maxWeight)));
+        // Check if the player is in Creative Mode
+        if (player.interactionManager.getGameMode() == GameMode.CREATIVE) {
+            removeOverloadEffect(player);
+            return; // Exit the method since Creative players are not affected by weight
+        }
 
-        // Check if the player's inventory weight exceeds the max weight and apply effects accordingly
+        // Check if the player's inventory weight exceeds or equals the max weight
         if (inventoryWeight >= maxWeight) {
-            if (player.interactionManager.getGameMode() != GameMode.CREATIVE) {
-                // debugging
-                // System.out.println("Max Weight: " + maxWeight + " / " + inventoryWeight + " applying overload effect");
-                applyOverloadEffect(player);
-            }
+            // Apply overload effect if weight exceeds the max limit
+            applyOverloadEffect(player);
         } else {
+            // Remove the overload effect if weight is below the max limit
             removeOverloadEffect(player);
         }
     }
@@ -76,13 +78,46 @@ public class InventoryWeightHandler {
 
         // Calculate the overload level based on the percentage of inventory fullness
         float percentageFull = (inventoryWeight / maxWeight) * 100;
-        int overloadLevel = Math.min((int) (percentageFull / 3.33), 30); // Max level is capped at 30
 
+        // Calculate overload levels: every 25% above 100% adds 3 levels
+        int overloadLevel = 0;
+        if (percentageFull > 100) {
+            overloadLevel = (int) Math.max(1, ((percentageFull - 100) / 25) * 2);
+        }
+
+        // Cap overload level at a maximum of 70
+        overloadLevel = Math.min(overloadLevel, 70);
+
+        // Check if the player has Strength or Haste effects
+        boolean hasStrengthEffect = player.hasStatusEffect(StatusEffects.STRENGTH);
+        int strengthAmplifier = hasStrengthEffect ? player.getStatusEffect(StatusEffects.STRENGTH).getAmplifier() : 0;
+        boolean hasHasteEffect = player.hasStatusEffect(StatusEffects.HASTE);
+        int hasteAmplifier = hasHasteEffect ? player.getStatusEffect(StatusEffects.HASTE).getAmplifier() : 0;
+
+        // Adjust overload level based on Strength and Haste effects
+        int adjustedOverloadLevel = overloadLevel;
+        if (hasStrengthEffect || hasHasteEffect) {
+            // Reduce amplifier by 1, but not below 1
+            int effectiveAmplifier = Math.max(1, adjustedOverloadLevel - Math.max(1, Math.min((strengthAmplifier + hasteAmplifier) * 2, 10)));
+            adjustedOverloadLevel = Math.min(effectiveAmplifier, 70);
+        }
+
+        // Debugging output
+         System.out.println("Debug Info: ");
+         System.out.println("Max Weight: " + maxWeight);
+         System.out.println("Inventory Weight: " + inventoryWeight);
+         System.out.println("Percentage Full: " + percentageFull);
+         System.out.println("Calculated Overload Level: " + overloadLevel);
+         System.out.println("Adjusted Overload Level: " + adjustedOverloadLevel);
+
+        // Check if the player already has the effect, and apply if necessary
         StatusEffectInstance existingEffect = player.getStatusEffect(OVERLOAD_EFFECT);
         if (existingEffect == null || existingEffect.getDuration() < 100) {  // 100 ticks = 5 seconds
-            player.addStatusEffect(new StatusEffectInstance(OVERLOAD_EFFECT, 200, overloadLevel, true, true, true));
+            player.addStatusEffect(new StatusEffectInstance(OVERLOAD_EFFECT, 200, adjustedOverloadLevel, true, false, false));
         }
     }
+
+
 
 
     // Removes the overload effect from the player

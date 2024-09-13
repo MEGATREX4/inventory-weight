@@ -41,12 +41,11 @@ public class InventoryWeightConfigScreen {
                                 Text.translatable("option.inventoryweight.client.hudPosition"), // Input field title
                                 ItemWeightsConfigClient.hudPosition // Default value as the current HudPosition name
                         )
-                        .setDefaultValue(HudPosition.BOTTOM_RIGHT.getDisplayName()) // Default value
+                        .setDefaultValue(HudPosition.BOTTOM_RIGHT.getDisplayName())
                         .setSaveConsumer(newValue -> {
-                            // Convert the string input to a HudPosition enum
                             HudPosition newPosition = HudPosition.fromString(newValue);
                             if (newPosition != null) {
-                                ItemWeightsConfigClient.hudPosition = newValue; // Store the string value
+                                ItemWeightsConfigClient.hudPosition = newValue;
                             }
                         })
                         .setTooltip(Text.translatable("option.inventoryweight.client.hudPosition.tooltip")) // Description as tooltip
@@ -59,6 +58,7 @@ public class InventoryWeightConfigScreen {
                 .setDefaultValue(0.5f)
                 .setMin(0.0f)
                 .setMax(1.0f)
+                .setTooltip(Text.translatable("option.inventoryweight.client.Offset.tooltip"))
                 .setSaveConsumer(newValue -> ItemWeightsConfigClient.xOffset = newValue)
                 .build()
         );
@@ -69,6 +69,7 @@ public class InventoryWeightConfigScreen {
                 .setDefaultValue(0.5f)
                 .setMin(0.0f)
                 .setMax(1.0f)
+                .setTooltip(Text.translatable("option.inventoryweight.client.Offset.tooltip"))
                 .setSaveConsumer(newValue -> ItemWeightsConfigClient.yOffset = newValue)
                 .build()
         );
@@ -117,11 +118,13 @@ public class InventoryWeightConfigScreen {
         InventoryWeightState state = InventoryWeightState.fromNbt(null);
         serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.maxWeight"), state.getMaxWeight())
                 .setDefaultValue(InventoryWeightUtil.MAXWEIGHT)
+                .setTooltip(Text.translatable("option.inventoryweight.server.maxWeight.tooltip"))
                 .setSaveConsumer(state::setMaxWeight)
                 .build());
 
         serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.pocketWeight"), InventoryWeightArmor.getPocketWeight())
                 .setDefaultValue(InventoryWeightUtil.POCKET_WEIGHT)
+                .setTooltip(Text.translatable("option.inventoryweight.server.pocketWeight.tooltip"))
                 .setSaveConsumer(newValue -> InventoryWeightArmor.setPocketWeight("pocketWeight", newValue))
                 .build());
 

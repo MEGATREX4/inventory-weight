@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.util.Identifier;
 
 import static com.megatrex4.InventoryWeight.MOD_ID;
@@ -26,6 +27,8 @@ public class InventoryWeightHUD implements ClientModInitializer {
     public void onInitializeClient() {
         HudRenderCallback.EVENT.register(this::renderHUD);
     }
+
+    private static final Identifier STRENGTH_ICON = new Identifier(MOD_ID, "textures/gui/inventory_strength.png");
 
     private void renderHUD(DrawContext drawContext, float tickDelta) {
         MinecraftClient client = MinecraftClient.getInstance();
@@ -86,7 +89,6 @@ public class InventoryWeightHUD implements ClientModInitializer {
                 break;
         }
 
-
         // Retrieve the cached weight data
         float inventoryWeight = InventoryWeightClientHandler.getInventoryWeight();
         float maxWeight = InventoryWeightClientHandler.getMaxWeight();
@@ -114,6 +116,9 @@ public class InventoryWeightHUD implements ClientModInitializer {
             drawIcon(drawContext, filledIcon, x, y, ICON_SIZE, ICON_SIZE, 0, 0, 16, 16);
         }
 
+        if (client.player.hasStatusEffect(StatusEffects.STRENGTH) || client.player.hasStatusEffect(StatusEffects.HASTE)) {
+            drawIcon(drawContext, STRENGTH_ICON, x, y, ICON_SIZE, ICON_SIZE, 0, 0, 16, 16);
+        }
 
         RenderSystem.disableBlend();
     }

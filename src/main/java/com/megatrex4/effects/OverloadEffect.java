@@ -6,14 +6,15 @@ import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 
 import java.util.UUID;
 
 public class OverloadEffect extends StatusEffect {
-    private static final double BASE_SPEED_DECREASE = 0.4; // Base decrease in speed (10%)
-    private static final double BASE_ATTACK_SPEED_DECREASE = 0.4; // Base decrease in attack speed (10%)
-    private static final double BASE_DAMAGE_REDUCTION = 0.4; // Base reduction in damage (10%)
+    private static final double BASE_SPEED_DECREASE = 0.3; // Base decrease in speed (10%)
+    private static final double BASE_ATTACK_SPEED_DECREASE = 0.3; // Base decrease in attack speed (10%)
+    private static final double BASE_DAMAGE_REDUCTION = 0.3; // Base reduction in damage (10%)
 
     public static final UUID SPEED_MODIFIER_UUID = UUID.fromString("a53f3d53-2b63-4a78-851f-4c5795876d8c");
     public static final UUID ATTACK_SPEED_MODIFIER_UUID = UUID.fromString("c7d4f84c-9e6e-45d0-888e-df63a7e3d206");
@@ -30,8 +31,7 @@ public class OverloadEffect extends StatusEffect {
 
     @Override
     public void applyUpdateEffect(LivingEntity entity, int amplifier) {
-        if (entity instanceof PlayerEntity) {
-            PlayerEntity player = (PlayerEntity) entity;
+        if (entity instanceof PlayerEntity player) {
 
             // Calculate the effect values based on amplifier level
             double speedDecrease = BASE_SPEED_DECREASE * (amplifier); // Use amplifier + 1 for effect
