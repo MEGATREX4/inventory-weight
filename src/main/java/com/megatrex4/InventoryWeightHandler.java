@@ -103,8 +103,9 @@ public class InventoryWeightHandler {
     public static void updatePlayerWeight(ServerWorld world, ServerPlayerEntity player) {
         float inventoryWeight = calculateInventoryWeight(player);
         float maxWeight = PlayerDataHandler.getPlayerMaxWeightWithMultiplier(player);
+        float pocketWeight = InventoryWeightArmor.getPocketWeight();
 
-        InventoryWeightPacket packet = new InventoryWeightPacket(inventoryWeight, maxWeight);
+        InventoryWeightPacket packet = new InventoryWeightPacket(inventoryWeight, maxWeight, pocketWeight);
         InventoryWeightPacket.send(player, packet);
 
         checkWeight(player);

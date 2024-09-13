@@ -5,6 +5,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.megatrex4.config.ItemWeightsConfigServer;
+import com.megatrex4.util.InventoryWeightUtil;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
@@ -19,9 +21,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class InventoryWeightArmor {
-    private static final float POCKET_WEIGHT = 500;
+    private static float POCKET_WEIGHT = InventoryWeightUtil.POCKET_WEIGHT;
     private static final Map<String, Integer> itemPocketsMap = new HashMap<>();
     private static final Gson GSON = new Gson();
+
+    public static float getPocketWeight() {
+        return ItemWeightsConfigServer.pocketWeight;
+    }
+
+    public static void setPocketWeight(String pocketWeight, Float newValue) {
+        ItemWeightsConfigServer.pocketWeight = newValue;
+        InventoryWeightArmor.POCKET_WEIGHT = newValue;
+        ItemWeightsConfigServer.saveConfig();
+    }
 
     // Load datapack data using Minecraft's resource system
     public static void loadDatapackData(ResourceManager resourceManager) {
@@ -77,4 +89,6 @@ public class InventoryWeightArmor {
 
         return totalArmorWeight;
     }
+
+
 }

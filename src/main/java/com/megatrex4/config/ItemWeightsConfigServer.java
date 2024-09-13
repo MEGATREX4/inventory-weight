@@ -18,6 +18,7 @@ public class ItemWeightsConfigServer {
     public static final Path CONFIG_PATH = Paths.get("config/inventoryweight", "inventory_weights_server.json");
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static float maxWeight = InventoryWeightUtil.MAXWEIGHT; // Default value
+    public static float pocketWeight = InventoryWeightUtil.POCKET_WEIGHT; // Default value
 
     public static void loadConfig() {
         try {
@@ -32,6 +33,12 @@ public class ItemWeightsConfigServer {
                     maxWeight = jsonObject.get("maxWeight").getAsFloat();
                 }
 
+                // Load pocketWeight from the config if present
+                if (jsonObject.has("pocketWeight")) {
+                    pocketWeight = jsonObject.get("pocketWeight").getAsFloat(); // Update server-side value
+                    InventoryWeightUtil.POCKET_WEIGHT = pocketWeight; // Also update the util class
+                }
+
             } else {
                 Files.createDirectories(CONFIG_PATH.getParent());
                 JsonObject jsonObject = new JsonObject();
@@ -41,8 +48,9 @@ public class ItemWeightsConfigServer {
                 jsonObject.addProperty("ingots", ItemWeights.INGOTS);
                 jsonObject.addProperty("nuggets", ItemWeights.NUGGETS);
                 jsonObject.addProperty("items", ItemWeights.ITEMS);
-                jsonObject.addProperty("creative", ItemWeights.CREATIVE); // New category
+                jsonObject.addProperty("creative", ItemWeights.CREATIVE);
                 jsonObject.addProperty("maxWeight", maxWeight);
+                jsonObject.addProperty("pocketWeight", pocketWeight);
                 Files.write(CONFIG_PATH, GSON.toJson(jsonObject).getBytes());
                 ItemWeights.loadWeightsFromConfig(jsonObject);
             }
@@ -50,6 +58,7 @@ public class ItemWeightsConfigServer {
             e.printStackTrace();
         }
     }
+
 
     public static void saveConfig() {
         try {
@@ -62,6 +71,7 @@ public class ItemWeightsConfigServer {
             jsonObject.addProperty("items", ItemWeights.getItemWeight("items"));
             jsonObject.addProperty("creative", ItemWeights.getItemWeight("creative"));
             jsonObject.addProperty("maxWeight", maxWeight);
+            jsonObject.addProperty("pocketWeight", pocketWeight); // Ensure this is saved
 
             try (FileWriter fileWriter = new FileWriter(CONFIG_PATH.toFile())) {
                 GSON.toJson(jsonObject, fileWriter);
@@ -71,13 +81,13 @@ public class ItemWeightsConfigServer {
         }
     }
 
+
     public static float getMaxWeightFromConfig() {
         return maxWeight;
     }
 
     public static void setMaxWeight(float value) {
         maxWeight = value;
-        // Save config immediately to persist changes
         saveConfig();
     }
 }

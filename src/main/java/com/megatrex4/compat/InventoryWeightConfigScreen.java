@@ -1,5 +1,6 @@
 package com.megatrex4.compat;
 
+import com.megatrex4.InventoryWeightArmor;
 import com.megatrex4.util.HudPosition;
 import com.megatrex4.util.InventoryWeightUtil;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
@@ -117,6 +118,11 @@ public class InventoryWeightConfigScreen {
         serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.maxWeight"), state.getMaxWeight())
                 .setDefaultValue(InventoryWeightUtil.MAXWEIGHT)
                 .setSaveConsumer(state::setMaxWeight)
+                .build());
+
+        serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.pocketWeight"), InventoryWeightArmor.getPocketWeight())
+                .setDefaultValue(InventoryWeightUtil.POCKET_WEIGHT)
+                .setSaveConsumer(newValue -> InventoryWeightArmor.setPocketWeight("pocketWeight", newValue))
                 .build());
 
         // Items Config Category

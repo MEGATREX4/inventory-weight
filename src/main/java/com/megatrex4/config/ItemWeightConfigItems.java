@@ -23,13 +23,14 @@ public class ItemWeightConfigItems {
             if (Files.exists(CONFIG_PATH)) {
                 try (FileReader fileReader = new FileReader(CONFIG_PATH.toFile())) {
                     JsonObject jsonObject = JsonParser.parseReader(fileReader).getAsJsonObject();
-                    ItemWeights.loadWeightsFromConfig(jsonObject);
+                    // Load only custom item weights
+                    ItemWeights.loadCustomWeightsFromConfig(jsonObject);
                 }
             } else {
                 Files.createDirectories(CONFIG_PATH.getParent());
                 JsonObject defaultJsonObject = createDefaultConfig();
                 saveConfig(defaultJsonObject); // Save default values to the file
-                ItemWeights.loadWeightsFromConfig(defaultJsonObject);
+                ItemWeights.loadCustomWeightsFromConfig(defaultJsonObject);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -40,32 +41,28 @@ public class ItemWeightConfigItems {
         try {
             JsonObject jsonObject = new JsonObject();
 
-            // Only add custom item weights, not static weights
+            // Add only custom item weights to the JSON object
             for (Map.Entry<String, Float> entry : ItemWeights.getCustomItemWeights().entrySet()) {
                 String itemName = entry.getKey();
                 if (isDynamicItem(itemName)) {
                     jsonObject.addProperty(itemName, entry.getValue());
                 }
             }
-            saveConfig(jsonObject); // Save filtered item weights
+            saveConfig(jsonObject); // Save filtered item weights to file
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    // Helper method to check if the item is dynamic
-    private static boolean isDynamicItem(String itemName) {
+    // Change visibility of this method from private to protected
+    public static boolean isDynamicItem(String itemName) {
         return !ItemWeights.isStaticItem(itemName);
     }
 
     private static JsonObject createDefaultConfig() {
         JsonObject defaultJsonObject = new JsonObject();
-
-        // Add static item weights for some items namespace:item_name with defaultJsonObject.addProperty
-        // Add custom item weights with defaultJsonObject.addProperty
+        // Add default weights for known items
         defaultJsonObject.addProperty("minecraft:stone", 810.0f);
-
-
         return defaultJsonObject;
     }
 

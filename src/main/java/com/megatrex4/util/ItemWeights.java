@@ -2,6 +2,7 @@ package com.megatrex4.util;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.megatrex4.config.ItemWeightConfigItems;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,16 +20,16 @@ public class ItemWeights {
 
     private static final Map<String, Float> customItemWeights = new HashMap<>();
 
-    // This method is used to load default weights
-    public static void loadDefaultWeights(JsonObject jsonObject) {
-        BUCKETS = jsonObject.get("buckets").getAsFloat();
-        BOTTLES = jsonObject.get("bottles").getAsFloat();
-        BLOCKS = jsonObject.get("blocks").getAsFloat();
-        INGOTS = jsonObject.get("ingots").getAsFloat();
-        NUGGETS = jsonObject.get("nuggets").getAsFloat();
-        ITEMS = jsonObject.get("items").getAsFloat();
+    public static void loadCustomWeightsFromConfig(JsonObject jsonObject) {
+        customItemWeights.clear(); // Clear previous data
 
-        CREATIVE = jsonObject.get("creative").getAsFloat();
+        for (Map.Entry<String, JsonElement> entry : jsonObject.entrySet()) {
+            String key = entry.getKey();
+            // Only load dynamic items
+            if (ItemWeightConfigItems.isDynamicItem(key)) {
+                customItemWeights.put(key, entry.getValue().getAsFloat());
+            }
+        }
     }
 
     public static float getItemWeight(String item) {
