@@ -181,13 +181,12 @@ public class CommandRegistry {
                     boolean hasArmorWithPockets = false; // Flag to check if any armor has pockets
 
                     for (ItemStack armorPiece : player.getInventory().armor) {
-                        if (armorPiece.getItem() instanceof ArmorItem) {
-                            String itemId = Registries.ITEM.getId(armorPiece.getItem()).toString();
-                            Integer pockets = InventoryWeightArmor.getItemPockets(itemId);
-                            if (pockets != null) {
-                                pocketsInfo.append(itemId).append(": ").append(pockets).append(" pockets\n");
-                                hasArmorWithPockets = true;
-                            }
+                        if (armorPiece.getItem() instanceof ArmorItem armorItem) {
+                            int pockets = InventoryWeightArmor.getPocketsBasedOnProtection(armorItem); // Use the new method
+                            pocketsInfo.append(Registries.ITEM.getId(armorPiece.getItem()).toString())
+                                    .append(": ").append(pockets)
+                                    .append(" pockets ");
+                            hasArmorWithPockets = true;
                         }
                     }
 

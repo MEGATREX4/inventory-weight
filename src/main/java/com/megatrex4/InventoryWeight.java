@@ -10,6 +10,7 @@ import com.megatrex4.network.ModMessages;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.server.world.ServerWorld;
 import org.slf4j.Logger;
@@ -32,6 +33,11 @@ public class InventoryWeight implements ModInitializer {
 		ItemWeightConfigItems.loadConfig();
 		ItemWeightsConfigClient.loadConfig();
 
+		loadDatapack();
+
+
+
+
 		InventoryWeightEffectRegister.registerEffects();
 
 		// Register commands using CommandRegistrationCallback
@@ -44,6 +50,19 @@ public class InventoryWeight implements ModInitializer {
 			if (world != null && !world.isClient) {
 				InventoryWeightHandler.tick((ServerWorld) world);
 			}
+		});
+	}
+
+	public static void loadDatapack () {
+		// Register server starting event
+		ServerLifecycleEvents.SERVER_STARTING.register(server -> {
+			// Load datapack data when the server starts
+			InventoryWeightArmor.loadDatapackData(server.getResourceManager());
+		});
+
+		// Correctly register START_DATA_PACK_RELOAD
+		ServerLifecycleEvents.START_DATA_PACK_RELOAD.register((server, resourceManager) -> {
+			InventoryWeightArmor.loadDatapackData(resourceManager);
 		});
 	}
 }
