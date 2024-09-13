@@ -15,7 +15,6 @@ import static com.megatrex4.InventoryWeight.MOD_ID;
 public class InventoryWeightHUD implements ClientModInitializer {
 
     private static final Identifier EMPTY_ICON = new Identifier(MOD_ID, "textures/gui/inventory_empty.png");
-    private static final Identifier FILLED_ICON = new Identifier(MOD_ID, "textures/gui/inventory_filled.png");
     private static final Identifier OVERLOAD_ICON = new Identifier(MOD_ID, "textures/gui/inventory_overload.png");
 
     private static final int ICON_SIZE = 16;
@@ -88,8 +87,6 @@ public class InventoryWeightHUD implements ClientModInitializer {
         }
 
 
-
-
         // Retrieve the cached weight data
         float inventoryWeight = InventoryWeightClientHandler.getInventoryWeight();
         float maxWeight = InventoryWeightClientHandler.getMaxWeight();
@@ -103,17 +100,20 @@ public class InventoryWeightHUD implements ClientModInitializer {
 
         // Draw the overload icon if overloaded
         if (inventoryWeight >= maxWeight) {
+            // Draw overload icon if the weight exceeds or equals the max weight
             drawIcon(drawContext, OVERLOAD_ICON, x, y, ICON_SIZE, ICON_SIZE, 0, 0, 16, 16);
-        } else {
-            // Calculate how much of the filled icon to draw
-            int filledHeight = (int) ((double) inventoryWeight / maxWeight * ICON_SIZE);
+        } else if (inventoryWeight > 0) { // Only show filled if the weight is greater than 0
+            // Determine which filled icon to use (from 1 to 12)
+            int filledIndex = (int) Math.ceil((inventoryWeight / maxWeight) * 12);
+            filledIndex = Math.max(1, Math.min(filledIndex, 12)); // Ensure the index is between 1 and 12
 
-            // Draw only the filled portion from bottom to top
-            if (filledHeight > 0) {
-                // Adjust the y position and height to draw only the filled portion
-                drawIcon(drawContext, FILLED_ICON, x, y + (ICON_SIZE - filledHeight), ICON_SIZE, filledHeight, 0, ICON_SIZE - filledHeight, 16, filledHeight);
-            }
+            // Dynamically set the filled icon based on the weight
+            Identifier filledIcon = new Identifier(MOD_ID, "textures/gui/inventory_filled/inventory_filled_" + filledIndex + ".png");
+
+            // Draw the corresponding filled icon
+            drawIcon(drawContext, filledIcon, x, y, ICON_SIZE, ICON_SIZE, 0, 0, 16, 16);
         }
+
 
         RenderSystem.disableBlend();
     }

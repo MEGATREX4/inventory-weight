@@ -38,5 +38,9 @@
   "command.debugarmor.no_pockets": "No armor with pockets found.",
   "command.debugarmor.pockets": "Armor pockets:\n%s",
   "command.debugarmor.total_weight": "Total weight capacity from armor: %s",
-  "command.error.not_player": "You must be a player to run this command."
+  "command.error.not_player": "You must be a player to run this command.",
+
+
+  "inventoryweight.tooltip.weight": "Weight: %s",
+  "inventoryweight.tooltip.pockets": "+%s Pockets"
 }

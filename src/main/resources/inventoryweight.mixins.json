@@ -3,7 +3,13 @@
 	"package": "com.megatrex4.mixin",
 	"compatibilityLevel": "JAVA_17",
 	"mixins": [
-		"ExampleMixin"
+		"ExampleMixin",
+		"BannerItemMixin",
+		"BlockMixin",
+		"FireworkItemMixin",
+		"ItemMixin",
+		"PotionItemMixin",
+		"TippedArrowItemMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

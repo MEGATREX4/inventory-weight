@@ -71,9 +71,16 @@ public class InventoryWeightHandler {
 
     // Applies the overload effect to the player
     private static void applyOverloadEffect(ServerPlayerEntity player) {
+        float maxWeight = PlayerDataHandler.getPlayerMaxWeightWithMultiplier(player);
+        float inventoryWeight = calculateInventoryWeight(player);
+
+        // Calculate the overload level based on the percentage of inventory fullness
+        float percentageFull = (inventoryWeight / maxWeight) * 100;
+        int overloadLevel = Math.min((int) (percentageFull / 3.33), 30); // Max level is capped at 30
+
         StatusEffectInstance existingEffect = player.getStatusEffect(OVERLOAD_EFFECT);
         if (existingEffect == null || existingEffect.getDuration() < 100) {  // 100 ticks = 5 seconds
-            player.addStatusEffect(new StatusEffectInstance(OVERLOAD_EFFECT, 200, 6, true, true, true));
+            player.addStatusEffect(new StatusEffectInstance(OVERLOAD_EFFECT, 200, overloadLevel, true, true, true));
         }
     }
 
@@ -95,9 +102,6 @@ public class InventoryWeightHandler {
             player.removeStatusEffect(OVERLOAD_EFFECT);
         }
     }
-
-
-
 
 
     public static void updatePlayerWeight(ServerWorld world, ServerPlayerEntity player) {

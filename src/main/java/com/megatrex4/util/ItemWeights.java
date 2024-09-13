@@ -3,6 +3,8 @@ package com.megatrex4.util;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.megatrex4.config.ItemWeightConfigItems;
+import net.minecraft.item.ItemStack;
+import net.minecraft.registry.Registries;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,6 +32,10 @@ public class ItemWeights {
                 customItemWeights.put(key, entry.getValue().getAsFloat());
             }
         }
+    }
+
+    public static String getItemId(ItemStack stack) {
+        return Registries.ITEM.getId(stack.getItem()).toString();
     }
 
     public static float getItemWeight(String item) {

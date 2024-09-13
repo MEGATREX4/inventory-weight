@@ -25,6 +25,22 @@ public class InventoryWeightArmor {
     private static final Map<String, Integer> itemPocketsMap = new HashMap<>();
     private static final Gson GSON = new Gson();
 
+    public static boolean hasPockets(ItemStack stack) {
+        if (stack.getItem() instanceof ArmorItem armorItem) {
+            int pockets = InventoryWeightArmor.getPocketsBasedOnProtection(armorItem);
+            return pockets > 0;
+        }
+        return false;
+    }
+
+    public static int getPockets(ItemStack stack) {
+        if (stack.getItem() instanceof ArmorItem armorItem) {
+            return InventoryWeightArmor.getPocketsBasedOnProtection(armorItem);
+        }
+        return 0;
+    }
+
+
     public static float getPocketWeight() {
         return ItemWeightsConfigServer.pocketWeight;
     }
@@ -61,7 +77,6 @@ public class InventoryWeightArmor {
             e.printStackTrace(); // Handle the error
         }
     }
-
 
 
     // Get pockets based on datapack data or default
