@@ -42,7 +42,7 @@ jobs:
       - name: Upload Build Artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: docs/.vitepress/dist # The directory containing your built site
+          path: inventory-weight/.vitepress/dist # The directory containing your built site
 
   # Deploy the site to GitHub Pages
   deploy:
