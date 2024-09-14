@@ -12,7 +12,7 @@ I am the sole developer of the MT Inventory Weight mod. The development took app
 You can download the MT Inventory Weight mod from the [CurseForge](https://www.curseforge.com/members/megatrex4/projects) and [Modrinth](https://modrinth.com/user/MEGATREX4) platforms. These are the primary locations where the mod is made available.
 
 ## **How do I install the MT Inventory Weight mod?**  
-Detailed installation instructions can be found on the [Installation page](guide/installation). This page will guide you through the process of installing the mod step-by-step.
+Detailed installation instructions can be found on the [Installation page](../guide/installation). This page will guide you through the process of installing the mod step-by-step.
 
 ## **What versions of Minecraft is the MT Inventory Weight mod compatible with?**  
 The mod is compatible with all versions for which it is listed on the [CurseForge](https://www.curseforge.com/members/megatrex4/projects) and [Modrinth](https://modrinth.com/user/MEGATREX4) pages. Please check these platforms for specific version compatibility.
