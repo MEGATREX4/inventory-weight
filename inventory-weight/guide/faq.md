@@ -24,7 +24,7 @@ Yes, the MT Inventory Weight mod is designed to work with other mods. It uses de
 If you encounter any bugs or issues, you can report them on the [GitHub page](https://github.com/MEGATREX4/inventory-weight/). This is the best place to track and manage issues.
 
 ## **Is there a way to customize the HUD display?**  
-Yes, you can customize the HUD display if you have  [ClothConfig](https://modrinth.com/mod/cloth-config) and [Modmenu](https://modrinth.com/mod/modmenu) installed. Customizations can be done through the game’s interface or by editing the config file directly.
+Yes, you can customize the HUD display if you have [ClothConfig](https://modrinth.com/mod/cloth-config) and [Modmenu](https://modrinth.com/mod/modmenu) installed. Customizations can be done through the game’s interface or by editing the config file directly.
 
 ## **Are there any known conflicts with other mods?**  
 As of now, I have not identified any specific conflicts with other mods. However, extensive testing has not been conducted, so there might be potential interactions that have not yet been discovered.

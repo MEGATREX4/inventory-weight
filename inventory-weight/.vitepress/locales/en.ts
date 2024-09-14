@@ -40,7 +40,8 @@ export const enConfig: LocaleSpecificConfig<DefaultTheme.Config> = {
             text: 'Нow to Start',
             items: [
               { text: 'Installation', link: '/guide/installation' },
-              { text: 'FAQ', link: '/guide/faq' },
+              { text: 'Compatibility', link: '/guide/compatibility' },
+              { text: 'FAQ', link: '/guide/faq' }
             ]
           },
           {
