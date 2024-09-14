@@ -1,0 +1,18 @@
+title: Inventory Weight Docs
+description: Manage and customize the weight of items in your inventory.
+theme: just-the-docs
+
+url: https://just-the-docs.github.io
+
+aux_links:
+  Contribute: https://github.com/MEGATREX4/inventory-weight/tree/docs
+
+# Example of additional customization options
+logo: "/assets/images/logo.png"
+navigation:
+  - title: "Home"
+    url: "/"
+  - title: "About"
+    url: "/about"
+  - title: "Contact"
+    url: "/contact"
