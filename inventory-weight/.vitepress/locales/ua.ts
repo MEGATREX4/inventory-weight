@@ -66,7 +66,7 @@ export const uaConfig: LocaleSpecificConfig<DefaultTheme.Config> = {
     },
 
     editLink: {
-      pattern: 'https://github.com/MEGATREX4/invuatory-weight/edit/main/docs/:path',
+      pattern: 'https://github.com/MEGATREX4/inventory-weight/edit/docs/inventory-weight/:path',
       text: 'Suggest changes to this page',
     },
   },
