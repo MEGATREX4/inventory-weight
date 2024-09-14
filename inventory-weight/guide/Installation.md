@@ -10,7 +10,7 @@ This guide will walk you through the process of installing mods for Fabric using
 ## 1. Download the Mod {#1-download-the-mod}
 
 ::: warning
-Only download mods from sources you trust. For guidance on finding trustworthy mods, refer to the [Finding Trustworthy Mods](./finding-mods) guide.
+Only download mods from sources you trust.
 :::
 
 Most mods also require the Fabric API, which can be downloaded from [Modrinth](https://modrinth.com/mod/fabric-api) or [CurseForge](https://curseforge.com/minecraft/mc-mods/fabric-api).

@@ -36,7 +36,7 @@ public static float POCKET_WEIGHT = 10000.0f;
 public static float MAXWEIGHT = 80000.0f;
 ```
 
-You can define default item weights in your configuration files. For more information, see the [Configuration Guide](./options/inventory_weights_server.md).
+You can define default item weights in your configuration files. For more information, see the [Configuration Guide](../options/inventory_weights_server.md).
 
 These values will override the defaults provided by the mod when the world or server loads. To apply these configurations:
 
