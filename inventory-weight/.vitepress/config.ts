@@ -9,10 +9,10 @@ export default defineConfig({
   cleanUrls: true,
 
   title: "Inventory Weight",
-  description: "A site about whatever you want.",
+  description: "documentation for the mod that adds weight to items.",
 
   head: [
-    ['link', { rel: 'icon', href: '/logo.ico' }],
+    ['link', { rel: 'icon', href: 'https://i.imgur.com/kBhgr4Z.png' }],
     ['meta', { name: 'viewport', content: 'width=device-width,initial-scale=1' }],
   ],
 
