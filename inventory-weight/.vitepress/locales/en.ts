@@ -34,17 +34,37 @@ export const enConfig: LocaleSpecificConfig<DefaultTheme.Config> = {
 
     sidebar: [
       {
-        text: 'Documentation',
         items: [
           { text: 'Home', link: '/' },
-          { text: 'Inventory Weight', link: '/inventory-weight' },
           {
-            text: 'Guide',
+            text: 'Нow to Start',
             items: [
-              { text: 'Introduction', link: '/guide/introduction' },
-              { text: 'FooFoo', link: '/guide/foofoo' },
-            ],
+              { text: 'Installation', link: '/guide/installation' },
+              { text: 'FAQ', link: '/guide/faq' },
+            ]
           },
+          {
+            text: 'Options',
+            items: [
+              { text: 'Datapacks', link: '/guide/datapacks' },
+              { text: 'Inventory Weights Server', link: '/guide/options/inventory_weights_server' },
+              { text: 'Inventory Weights Client', link: '/guide/options/inventory_weights_client' },
+              { text: 'Inventory Weights Items', link: '/guide/options/inventory_weights_items' },
+            ]
+          },
+          {
+            text: 'Features',
+            items: [
+              { text: 'Default Item Values', link: '/guide/features/item_default_values' },
+              { text: 'Item Custom Values', link: '/guide/features/item_custom_values' },
+              { text: 'Armor Pockets', link: '/guide/features/pockets' },
+              { text: 'Inventory Weight', link: '/guide/features/max_weight' },
+              { text: 'Overload', link: '/guide/features/overload_effect' },
+              { text: 'Commands', link: '/guide/features/commands' },
+              { text: 'Tooltips', link: '/guide/features/tooltips' },
+              { text: 'HUD', link: '/guide/features/hud' },
+            ]
+          }
         ],
       },
     ],
