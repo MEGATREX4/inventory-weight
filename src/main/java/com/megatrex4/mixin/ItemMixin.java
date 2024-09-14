@@ -3,7 +3,6 @@ package com.megatrex4.mixin;
 import com.megatrex4.InventoryWeightArmor;
 import com.megatrex4.data.PlayerDataHandler;
 import com.megatrex4.util.ItemWeights;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -19,6 +18,10 @@ import java.util.List;
 @Mixin(Item.class)
 public abstract class ItemMixin {
 
+    /**
+     * @author MEGATREX4
+     * @reason I need to show the weight of the item in tooltips
+     */
     @Overwrite
     public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
             // Check if the armor has pockets

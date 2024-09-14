@@ -18,15 +18,8 @@ import java.util.List;
 public abstract class BannerItemMixin {
 
     /**
-     * @Overwrite
-     * This method is being overwritten to modify the behavior of the tooltip in the game.
-     * The original method adds standard tooltip information for an item, but this override
-     * customizes the tooltip display based on custom logic.
-     *
-     * @param stack   The ItemStack for which the tooltip is being generated.
-     * @param world   The current world, can be null in certain contexts.
-     * @param tooltip The list of Text objects that will be shown in the tooltip.
-     * @param context Provides additional information about the tooltip context.
+     * @author MEGATREX4
+     * @reason I need to show the weight of the item in tooltips
      */
     @Overwrite
     public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {

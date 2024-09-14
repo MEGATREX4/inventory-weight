@@ -69,7 +69,7 @@ public class InventoryWeightArmor {
                         String itemId = itemObject.get("item").getAsString();
                         int pockets = itemObject.get("pockets").getAsInt();
                         itemPocketsMap.put(itemId, pockets);
-                        System.out.println("Loaded item: " + itemId + " with pockets: " + pockets); // Debugging line
+//                        System.out.println("Loaded item: " + itemId + " with pockets: " + pockets); // Debugging line
                     }
                 }
             }

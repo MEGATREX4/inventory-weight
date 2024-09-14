@@ -102,18 +102,19 @@ public class InventoryWeightHandler {
             adjustedOverloadLevel = Math.min(effectiveAmplifier, 70);
         }
 
-        // Debugging output
-         System.out.println("Debug Info: ");
-         System.out.println("Max Weight: " + maxWeight);
-         System.out.println("Inventory Weight: " + inventoryWeight);
-         System.out.println("Percentage Full: " + percentageFull);
-         System.out.println("Calculated Overload Level: " + overloadLevel);
-         System.out.println("Adjusted Overload Level: " + adjustedOverloadLevel);
+
 
         // Check if the player already has the effect, and apply if necessary
         StatusEffectInstance existingEffect = player.getStatusEffect(OVERLOAD_EFFECT);
-        if (existingEffect == null || existingEffect.getDuration() < 100) {  // 100 ticks = 5 seconds
-            player.addStatusEffect(new StatusEffectInstance(OVERLOAD_EFFECT, 200, adjustedOverloadLevel, true, false, false));
+        if (existingEffect == null || existingEffect.getDuration() < 20) {  // 100 ticks = 5 seconds
+            // Debugging output
+//            System.out.println("Debug Info: ");
+//            System.out.println("Max Weight: " + maxWeight);
+//            System.out.println("Inventory Weight: " + inventoryWeight);
+//            System.out.println("Percentage Full: " + percentageFull);
+//            System.out.println("Calculated Overload Level: " + overloadLevel);
+//            System.out.println("Adjusted Overload Level: " + adjustedOverloadLevel);
+            player.addStatusEffect(new StatusEffectInstance(OVERLOAD_EFFECT, 40, adjustedOverloadLevel - 1, true, false, false));
         }
     }
 

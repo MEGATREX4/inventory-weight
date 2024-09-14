@@ -1,6 +1,5 @@
 package com.megatrex4.network;
 
-import com.mojang.logging.LogUtils;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.PacketByteBuf;

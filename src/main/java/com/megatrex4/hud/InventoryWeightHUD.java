@@ -68,11 +68,11 @@ public class InventoryWeightHUD implements ClientModInitializer {
                 break;
             case "HOTBAR_LEFT":
                 x = screenWidth / 2 - 91 - ICON_SIZE - 10;
-                y = screenHeight - ICON_SIZE - 25;
+                y = screenHeight - ICON_SIZE - 4;
                 break;
             case "HOTBAR_RIGHT":
                 x = screenWidth / 2 + 91 + 10;
-                y = screenHeight - ICON_SIZE - 25;
+                y = screenHeight - ICON_SIZE - 4;
                 break;
             case "CENTER_HOTBAR":
                 x = screenWidth / 2 - ICON_SIZE / 2;
@@ -83,7 +83,6 @@ public class InventoryWeightHUD implements ClientModInitializer {
                 y = (int) (screenHeight * ItemWeightsConfigClient.yOffset) - ICON_SIZE / 2;
                 break;
             default:
-                // Handle unexpected values
                 x = 10;
                 y = 10;
                 break;

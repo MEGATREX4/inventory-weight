@@ -1,8 +1,5 @@
 package com.megatrex4.data;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
-
 public class ClientPlayerData {
     private static ClientPlayerWeightData weightData = new ClientPlayerWeightData();
 

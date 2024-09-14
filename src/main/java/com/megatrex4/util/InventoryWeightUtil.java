@@ -7,11 +7,11 @@ public class InventoryWeightUtil {
     public static float BLOCKS = 810.0f;
     public static float INGOTS = 90.0f;
     public static float NUGGETS = 10.0f;
-    public static float ITEMS = 40.0f;
+    public static float ITEMS = 50.0f;
 
     public static float CREATIVE = 30000.0f;
 
-    public static float POCKET_WEIGHT = 30000.0f;
+    public static float POCKET_WEIGHT = 10000.0f;
 
     public static float MAXWEIGHT = 80000.0f;
 }

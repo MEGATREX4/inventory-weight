@@ -17,6 +17,10 @@ import java.util.List;
 @Mixin(BlockItem.class)
 public abstract class BlockMixin {
 
+    /**
+     * @author MEGATREX4
+     * @reason I need to show the weight of the item in tooltips
+     */
     @Overwrite
     public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
         // Implement your custom tooltip logic directly

@@ -40,5 +40,13 @@
 
 
   "inventoryweight.tooltip.weight": "Вага: %s",
-  "inventoryweight.tooltip.pockets": "+%s кишені"
+  "inventoryweight.tooltip.pockets": "+%s кишені",
+
+  "option.inventoryweight.server.pocketWeight": "Вмістимість кишень",
+  "option.inventoryweight.client.xOffset": "X Зміщення",
+  "option.inventoryweight.client.yOffset": "Y Зміщення",
+  "option.inventoryweight.client.Offset.tooltip": "Працює з CUSTOM опцією в HUD позиції",
+  "option.inventoryweight.server.maxWeight.tooltip": "Встановіть максимальну вагу, яку \nгравець може тримати в інвентарі.",
+  "option.inventoryweight.server.pocketWeight.tooltip": "Встановіть максимальну вагу, яку \nгравець може тримати в кожній кишені.\nКишені - це значення застосовується від броні\n, кількість кишень можна змінювати через датапак"
+
 }
