@@ -4,9 +4,9 @@
   "description": "Manage and customize the weight of items in your inventory.",
   "main": "index.js",
   "scripts": {
-    "docs:dev": "vitepress dev docs",
-    "docs:build": "vitepress build docs",
-    "deploy": "gh-pages -d docs/.vitepress/dist"
+    "docs:dev": "vitepress dev inventory-weight",
+    "docs:build": "vitepress build inventory-weight",
+    "deploy": "gh-pages -d inventory-weight/.vitepress/dist"
   },
   "devDependencies": {
     "gh-pages": "^6.1.1",
@@ -18,7 +18,7 @@
   "license": "MIT",
   "type": "module",
   "directories": {
-    "doc": "docs"
+    "doc": "inventory-weight"
   },
   "dependencies": {
     "algoliasearch": "^4.24.0",
