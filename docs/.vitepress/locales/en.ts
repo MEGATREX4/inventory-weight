@@ -4,7 +4,7 @@ export const enConfig: LocaleSpecificConfig<DefaultTheme.Config> = {
   themeConfig: {
     // Only include the properties that are valid in DefaultTheme.Config
     nav: [
-      { text: 'Home', link: '/en/' }
+      { text: 'Home', link: '/' }
     ],
 
     search: {
@@ -36,12 +36,12 @@ export const enConfig: LocaleSpecificConfig<DefaultTheme.Config> = {
       {
         text: 'Documentation',
         items: [
-          { text: 'Home', link: '/en/' },
-          { text: 'Inventory Weight', link: '/en/inventory-weight' },
+          { text: 'Home', link: '/' },
+          { text: 'Inventory Weight', link: '/inventory-weight' },
           {
             text: 'Guide',
             items: [
-              { text: 'Introduction', link: '/en/guide/introduction' },
+              { text: 'Introduction', link: '/guide/introduction' },
             ],
           },
         ],
