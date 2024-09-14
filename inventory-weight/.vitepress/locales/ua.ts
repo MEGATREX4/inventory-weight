@@ -33,16 +33,38 @@ export const uaConfig: LocaleSpecificConfig<DefaultTheme.Config> = {
 
     sidebar: [
       {
-        text: 'Документація',
         items: [
           { text: 'Головна', link: '/ua/' },
-          { text: 'Вага Інвентарю', link: '/ua/inventory-weight' },
           {
-            text: 'Керівництво',
+            text: 'Як почати',
             items: [
-              { text: 'Вступ', link: '/ua/guide/introduction' }
-            ],
+              { text: 'Встановлення', link: '/ua/guide/installation' },
+              { text: 'Сумісність', link: '/ua/guide/compatibility' },
+              { text: 'Поширені питання', link: '/ua/guide/faq' }
+            ]
           },
+          {
+            text: 'Опції',
+            items: [
+              { text: 'Датапаки', link: '/ua/guide/datapacks' },
+              { text: 'Налаштування сервера', link: '/ua/guide/options/inventory_weights_server' },
+              { text: 'Налаштування клієнта', link: '/ua/guide/options/inventory_weights_client' },
+              { text: 'Налаштування ваги предметів', link: '/ua/guide/options/inventory_weights_items' },
+            ]
+          },
+          {
+            text: 'Функції',
+            items: [
+              { text: 'Стандартні значення предметів', link: '/ua/guide/features/item_default_values' },
+              { text: 'Користувацькі значення предметів', link: '/ua/guide/features/item_custom_values' },
+              { text: 'Кишені на броні', link: '/ua/guide/features/pockets' },
+              { text: 'Вага інвентаря', link: '/ua/guide/features/max_weight' },
+              { text: 'Перевантаження', link: '/ua/guide/features/overload_effect' },
+              { text: 'Команди', link: '/ua/guide/features/commands' },
+              { text: 'Підказки', link: '/ua/guide/features/tooltips' },
+              { text: 'HUD', link: '/ua/guide/features/hud' },
+            ]
+          }
         ],
       },
     ],

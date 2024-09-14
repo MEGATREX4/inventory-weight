@@ -46,7 +46,9 @@ While most items in the game display custom tooltips, there are a few exceptions
 - **Buckets with fish**: Buckets with fish do not have any custom weight tooltips.
 - **Ominous Banners**: Ominous banners also do not have any custom weight tooltips.
 
-These items are treated differently for gameplay reasons and do not impact the player's inventory weight system.
+::: warning
+This is a bug and will be fixed in the near future
+:::
 
 ## **Usage Scenarios**
 

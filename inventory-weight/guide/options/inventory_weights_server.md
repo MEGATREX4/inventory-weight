@@ -83,7 +83,7 @@ To customize the weight of specific item categories, simply adjust the values in
 }
 ```
 
-This change would increase the weight of blocks to `12.0` and ingots to `3.0`, impacting how much of these items a player can carry before they are slowed down or penalized.
+This change would set weight of blocks to `12.0` and ingots to `3.0`, impacting how much of these items a player can carry before they are slowed down or penalized.
 
 ### **Error Handling**
 

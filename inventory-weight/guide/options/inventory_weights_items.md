@@ -54,10 +54,6 @@ In case of an error while reading or writing to the `inventory_weights_items.jso
 
 To add a custom weight to an item, simply open the `inventory_weights_items.json` file in the `config/inventoryweight` directory and add the item ID along with its desired weight. For example:
 
-json
-
-Copy code
-
 ```json
 {     
     "minecraft:iron_ingot": 100.0,
