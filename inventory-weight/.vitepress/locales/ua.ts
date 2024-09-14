@@ -40,7 +40,7 @@ export const uaConfig: LocaleSpecificConfig<DefaultTheme.Config> = {
           {
             text: 'Керівництво',
             items: [
-              { text: 'Вступ', link: '/ua/guide/introduction' },
+              { text: 'Вступ', link: '/ua/guide/introduction' }
             ],
           },
         ],
