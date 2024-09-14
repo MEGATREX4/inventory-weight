@@ -1,19 +1,8 @@
-title: Inventory Weight Docs
-description: Manage and customize the weight of items in your inventory.
+title: Just the Docs Template
+description: A starter template for a Jeykll site using the Just the Docs theme!
 theme: just-the-docs
 
-url: https://megatrex4.github.io
-baseurl: /inventory-weight
+url: https://just-the-docs.github.io
 
 aux_links:
-  Contribute: https://github.com/MEGATREX4/inventory-weight/tree/docs
-
-# Example of additional customization options
-logo: "/assets/images/logo.png"
-navigation:
-  - title: "Home"
-    url: "/"
-  - title: "About"
-    url: "/about"
-  - title: "Contact"
-    url: "/contact"
+  Template Repository: https://github.com/just-the-docs/just-the-docs-template
