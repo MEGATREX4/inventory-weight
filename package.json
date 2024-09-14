@@ -1,22 +1,17 @@
 {
-  "name": "inventory_weight",
-  "version": "1.0.0",
-  "description": "Manage and customize the weight of items in your inventory.",
-  "main": "index.js",
+  "name": "deploying-vite-project",
+  "version": "0.0.0",
   "scripts": {
-    "docs:dev": "vitepress dev docs",
-    "docs:build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs",
-    "predeploy": "vitepress build",
-    "deploy": "vitepress build && gh-pages -d docs/.vitepress/dist"
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
+  "dependencies": {
+    "vue": "^3.0.5"
   },
   "devDependencies": {
-    "gh-pages": "^6.1.1",
-    "vitepress": "^1.3.4",
-    "vitepress-plugin-image-viewer": "^1.1.5",
-    "vitepress-plugin-tabs": "^0.5.0"
-  },
-  "author": "MEGATREX4",
-  "license": "MIT",
-  "type": "module"
+    "@vitejs/plugin-vue": "^1.10.2",
+    "@vue/compiler-sfc": "^3.0.5",
+    "vite": "^2.9.18"
+  }
 }
