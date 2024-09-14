@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "docs:dev": "vitepress dev inventory-weight",
-    "docs:build": "vitepress build inventory-weight",
-    "deploy": "gh-pages -d inventory-weight/.vitepress/dist"
+    "docs:build": "vitepress build inventory-weight"
   },
   "devDependencies": {
     "gh-pages": "^6.1.1",
