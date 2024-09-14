@@ -44,6 +44,6 @@ In vanilla Minecraft, you can carry hundreds of items without feeling any differ
 
 ## **Getting Started:**
 
-- **[Installation Instructions](guide/installation)**: Learn how to install and configure the mod for your Minecraft setup.
+- **[Installation](./guide/installation.md)**: Learn how to install and configure the mod for your Minecraft setup.
 - **[FAQ](guide/faq)**: Find answers to the most common questions about the mod and me.
 
