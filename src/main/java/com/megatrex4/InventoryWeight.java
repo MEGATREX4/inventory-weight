@@ -1,6 +1,5 @@
 package com.megatrex4;
 
-import com.megatrex4.client.InventoryWeightClientHandler;
 import com.megatrex4.commands.CommandRegistry;
 import com.megatrex4.config.ItemWeightConfigItems;
 import com.megatrex4.config.ItemWeightsConfigClient;
@@ -8,7 +7,6 @@ import com.megatrex4.config.ItemWeightsConfigServer;
 import com.megatrex4.effects.InventoryWeightEffectRegister;
 import com.megatrex4.network.ModMessages;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -24,19 +22,14 @@ public class InventoryWeight implements ModInitializer {
 	public void onInitialize() {
 		LOGGER.info(MOD_ID + " mod initialized!");
 
-		ModMessages.registerS2CPackets();
-		ClientPlayNetworking.registerGlobalReceiver(ModMessages.INVENTORY_WEIGHT_SYNC, (client, handler, buf, responseSender) -> {
-			InventoryWeightClientHandler.receivePacket(client, ModMessages.INVENTORY_WEIGHT_SYNC, buf);
-		});
+		// ModMessages already registers payload types and receivers
+		// No need to call registerS2CPackets() or manually register payloads here
 
 		ItemWeightsConfigServer.loadConfig();
 		ItemWeightConfigItems.loadConfig();
 		ItemWeightsConfigClient.loadConfig();
 
 		loadDatapack();
-
-
-
 
 		InventoryWeightEffectRegister.registerEffects();
 
@@ -53,7 +46,7 @@ public class InventoryWeight implements ModInitializer {
 		});
 	}
 
-	public static void loadDatapack () {
+	public static void loadDatapack() {
 		// Register server starting event
 		ServerLifecycleEvents.SERVER_STARTING.register(server -> {
 			// Load datapack data when the server starts

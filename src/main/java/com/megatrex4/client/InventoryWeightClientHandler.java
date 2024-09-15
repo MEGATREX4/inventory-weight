@@ -1,9 +1,11 @@
 package com.megatrex4.client;
 
 import com.megatrex4.network.InventoryWeightPacket;
+import com.megatrex4.network.InventoryWeightPayload;
 import com.megatrex4.network.ModMessages;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -43,4 +45,6 @@ public class InventoryWeightClientHandler {
     public static float getPocketWeight() { // Add getter
         return pocketWeight;
     }
+
+
 }

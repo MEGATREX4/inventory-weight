@@ -2,6 +2,7 @@ package com.megatrex4;
 
 import com.megatrex4.util.InventoryWeightUtil;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.world.PersistentState;
 
 import java.util.HashMap;
@@ -34,7 +35,7 @@ public class InventoryWeightState extends PersistentState {
     }
 
     @Override
-    public NbtCompound writeNbt(NbtCompound tag) {
+    public NbtCompound writeNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) {
         tag.putFloat("maxWeight", maxWeight);
 
         // Save player multipliers to NBT
@@ -68,4 +69,6 @@ public class InventoryWeightState extends PersistentState {
 
         return state;
     }
+
+
 }

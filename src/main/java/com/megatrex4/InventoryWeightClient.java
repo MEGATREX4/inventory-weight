@@ -9,9 +9,6 @@ public class InventoryWeightClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        // Register client-side packet receiver
-        ClientPlayNetworking.registerGlobalReceiver(ConfigSyncPacket.ID, ConfigSyncPacket::receive);
-
         // Register the HUD rendering
         new InventoryWeightHUD().onInitializeClient(); // This initializes HUD
     }
