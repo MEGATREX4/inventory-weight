@@ -1,13 +1,11 @@
 ---
-title: "Commands in MT Inventory Weight"
+title: "Commands"
 description: "A guide on available admin commands in MT Inventory Weight mod, including setting and retrieving player inventory weights."
 ---
 
-# **MT Inventory Weight Mod Commands**
+# **Commands**
 
 In the **MT Inventory Weight** mod, a set of admin commands allows for full control over a player's inventory weight, including setting base values, adding multipliers, and retrieving current weight information. These commands are crucial for managing gameplay balance, adjusting weight limits, or debugging inventory and armor weight in the game.
-
----
 
 ## **Available Commands**
 
@@ -70,8 +68,6 @@ This set of commands allows admins to retrieve information about the weight-rela
   - Retrieves the current total weight of another player's inventory.
   - Example: `/inventoryweight get value player123`
 
----
-
 ### **/debugweight**
 
 The `debugweight` command is useful for debugging individual item weights in the game. It can give information about the weight of the item currently held in the player's main hand.
@@ -84,8 +80,6 @@ The `debugweight` command is useful for debugging individual item weights in the
   Output could be something like:
   - "The item 'minecraft:diamond_sword' weighs 2.5 units."
   - If no custom weight exists, it will show the fallback weight: "The item 'minecraft:wood' weighs 1.0 units."
-
----
 
 ### **/debugarmor**
 
@@ -101,8 +95,6 @@ This command provides detailed information about the player's armor and the pock
   
   If no armor pieces have pockets, it will inform the player: "No pockets detected on equipped armor."
 
----
-
 ## **Usage Scenarios**
 
 1. **Set Player Limits**: 
@@ -115,15 +107,11 @@ This command provides detailed information about the player's armor and the pock
    - Use `/debugweight` to check how much weight an item adds to the player's inventory, especially useful for modded items or debugging custom weights.
    - Use `/debugarmor` to inspect how many pockets armor pieces have and their overall weight contribution.
 
----
-
 ## **Permissions**
 
 All the above commands require the player issuing them to have a permission level of 4 or higher (typically admin-level permissions).
 
 This ensures that only server administrators or players with appropriate permissions can adjust inventory weight settings or retrieve sensitive player weight information.
-
----
 
 ## **Summary**
 

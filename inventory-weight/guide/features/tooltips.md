@@ -1,9 +1,9 @@
 ---
-title: "Custom Tooltips in MT Inventory Weight"
+title: "Custom Tooltips"
 description: "Overview of the custom tooltips added by the MT Inventory Weight mod, displaying item weight and pocket information."
 ---
 
-# **Custom Tooltips in MT Inventory Weight**
+# **Custom Tooltips**
 
 In the **MT Inventory Weight** mod, nearly all items in the game come with custom tooltips that provide additional information about the item's weight and any special attributes, such as the number of pockets for armor pieces. These tooltips are an essential feature for players, helping them understand the weight mechanics and how different items affect their overall inventory capacity.
 
@@ -25,9 +25,9 @@ The weight displayed depends on whether the item has a **custom weight** (a pred
 - **Custom Weights**: Certain items, such as weapons or tools, may have custom weights, which are shown directly in the tooltip.
 - **Default Weights**: Items without a specific custom weight will show a default weight based on their item category.
 
-For instance:
-- **A diamond sword** might have a tooltip displaying a weight of 2.5 units.
-- **Wood blocks** might have a default weight of 1.0 units, applied to all items categorized as blocks.
+For example:
+- **Diamond Sword** might have a tooltip that displays a weight of 2.5 units.
+- **Oak Planks** might have a standard weight of 1.0 units.
 
 ### **Armor and Pockets**
 

@@ -1,9 +1,9 @@
 ---
-title: "Maximum Weight in MT Inventory Weight"
+title: "Maximum Weight"
 description: "A guide on how the maximum weight is determined in the MT Inventory Weight mod, including how multipliers, armor, and admin commands affect it."
 ---
 
-# **Maximum Weight in MT Inventory Weight**
+# **Maximum Weight**
 
 In the **MT Inventory Weight** mod, a player's **Maximum Weight** is the upper limit of how much they can carry in their inventory before penalties like the Overload effect kick in. This maximum weight is influenced by several factors: the player's base maximum weight, additional armor-based weight from pockets, multipliers set by admins, and more. Let's dive into how this system works.
 
@@ -18,7 +18,7 @@ For example, an admin can increase the base weight for players who need to carry
 
 ## **Weight Multipliers**
 
-While referred to as "multipliers," these are actually additional weight values that are **added** to the player's base maximum weight. These multipliers allow players to increase their overall carrying capacity, often applied through in-game rewards, achievements, or via admin commands.
+While referred to as "multipliers," these are actually additional weight values that are **added** to the player's base maximum weight. These multipliers allow players to increase their total carrying capacity, often applied through the use of armor in the game, or an administrator's command.
 
 - **Weight Multiplier**: This is a bonus value added on top of the base weight. It doesn't scale the weight but instead increases the maximum weight directly.
 - **Admin Control**: Admins can add multipliers to a player's maximum weight using commands, giving them more flexibility in determining a player's inventory capacity.

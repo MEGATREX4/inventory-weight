@@ -1,9 +1,9 @@
 ---
-title: "Custom Item Weights for MT Inventory Weight"
+title: "Custom Item Weights"
 description: "How to set and manage custom item weights in the MT Inventory Weight mod."
 ---
 
-# **Custom Item Weights for MT Inventory Weight**
+# **Custom Item Weights**
 
 In **MT Inventory Weight**, you can customize the weights of specific items beyond the default settings. This guide explains how to set custom item weights and manage your configurations.
 

@@ -1,9 +1,9 @@
 ---
-title: "Custom HUD Display in MT Inventory Weight"
+title: "Custom HUD Display"
 description: "Detailed information on the custom HUD display for inventory weight, including visual indicators and settings."
 ---
 
-# **Custom HUD Display in MT Inventory Weight**
+# **Custom HUD Display**
 
 The **MT Inventory Weight** mod enhances the Minecraft experience by adding a custom Heads-Up Display (HUD) that provides visual feedback about the player's inventory weight. This feature helps players monitor their load and manage their inventory more effectively.
 

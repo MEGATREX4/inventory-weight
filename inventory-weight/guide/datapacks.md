@@ -1,9 +1,9 @@
 ---
-title: "Datapack Options for MT Inventory Weight"
+title: "Datapacks"
 description: "How to use datapacks to configure custom item weights in the MT Inventory Weight mod."
 ---
 
-# **Datapack Options for MT Inventory Weight**
+# **Datapacks**
 
 Datapacks are a built-in Minecraft feature that allows you to customize game mechanics by adding or modifying content without altering the core game or mods. In the context of **MT Inventory Weight**, datapacks can be used to configure the number of pockets for armor items.
 

@@ -29,12 +29,7 @@ In the **MT Inventory Weight** mod, the **pocket system** adds extra storage fun
 
 ## Customizing Pocket Weight
 
-The weight each pocket can hold is determined by the **pocket weight** value in the mod’s configuration. This value is adjustable and can be changed as follows:
-
-```java
-InventoryWeightArmor.setPocketWeight("newPocketWeight", newValue);
-```
-
+The weight each pocket can hold is determined by the **pocket weight** value in the mod’s configuration. 
 * This allows you to set how much additional weight each pocket can carry, fine-tuning the balance between protection and storage.
 
 ## Pocket Calculation Example

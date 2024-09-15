@@ -66,7 +66,7 @@ If no configuration exists, the system creates a default config file with preset
 *   **Ingots**: `90.0`
 *   **Nuggets**: `10.0`
 *   **Items**: `50.0`
-*   **Creative mode**: `30000` (weight is irrelevant in creative mode)
+*   **Creative mode**: `30000` (Values for some items associated with Creative mode)
 *   **Max Weight**: `80000`
 *   **Pocket Weight**: `10000`
 

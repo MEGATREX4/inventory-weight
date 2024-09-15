@@ -1,9 +1,9 @@
 ---
-title: "Overload Effect in MT Inventory Weight"
+title: "Overload Effect"
 description: "Details on the Overload effect, its impact, and how it interacts with other effects like Strength and Haste in the MT Inventory Weight mod."
 ---
 
-# **Overload Effect in MT Inventory Weight**
+# **Overload Effect**
 
 The **Overload** effect in the **MT Inventory Weight** mod is a status effect that penalizes players for exceeding their inventory weight limit. This guide explains how the Overload effect works, including its impact on player attributes and interactions with Strength and Haste effects.
 
