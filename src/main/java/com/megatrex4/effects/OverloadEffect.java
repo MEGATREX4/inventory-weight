@@ -5,8 +5,6 @@ import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectCategory;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 
 import java.util.UUID;
@@ -30,7 +28,7 @@ public class OverloadEffect extends StatusEffect {
     }
 
     @Override
-    public void applyUpdateEffect(LivingEntity entity, int amplifier) {
+    public boolean applyUpdateEffect(LivingEntity entity, int amplifier) {
         if (entity instanceof PlayerEntity player) {
 
             // Calculate the effect values based on amplifier level
@@ -54,17 +52,20 @@ public class OverloadEffect extends StatusEffect {
                     .removeModifier(DAMAGE_REDUCTION_MODIFIER_UUID);
 
             // Apply new modifiers
-            EntityAttributeModifier speedModifier = new EntityAttributeModifier(SPEED_MODIFIER_UUID, "overload_speed", -speedDecrease, EntityAttributeModifier.Operation.MULTIPLY_TOTAL);
+            EntityAttributeModifier speedModifier = new EntityAttributeModifier(SPEED_MODIFIER_UUID, "overload_speed", -speedDecrease, EntityAttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
             player.getAttributes().getCustomInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED)
                     .addPersistentModifier(speedModifier);
 
-            EntityAttributeModifier attackSpeedModifier = new EntityAttributeModifier(ATTACK_SPEED_MODIFIER_UUID, "overload_attack_speed", -attackSpeedDecrease, EntityAttributeModifier.Operation.MULTIPLY_TOTAL);
+            EntityAttributeModifier attackSpeedModifier = new EntityAttributeModifier(ATTACK_SPEED_MODIFIER_UUID, "overload_attack_speed", -attackSpeedDecrease, EntityAttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
             player.getAttributes().getCustomInstance(EntityAttributes.GENERIC_ATTACK_SPEED)
                     .addPersistentModifier(attackSpeedModifier);
 
-            EntityAttributeModifier damageReductionModifier = new EntityAttributeModifier(DAMAGE_REDUCTION_MODIFIER_UUID, "overload_damage_reduction", -damageReduction, EntityAttributeModifier.Operation.MULTIPLY_TOTAL);
+            EntityAttributeModifier damageReductionModifier = new EntityAttributeModifier(DAMAGE_REDUCTION_MODIFIER_UUID, "overload_damage_reduction", -damageReduction, EntityAttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
             player.getAttributes().getCustomInstance(EntityAttributes.GENERIC_ARMOR)
                     .addPersistentModifier(damageReductionModifier);
+
+            return true;
         }
+        return false;
     }
 }

@@ -3,14 +3,17 @@ package com.megatrex4.mixin;
 import com.megatrex4.data.PlayerDataHandler;
 import com.megatrex4.util.ItemWeights;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.annotation.Nullable;
+import net.minecraft.client.item.TooltipType;
 import net.minecraft.item.BannerItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.client.item.TooltipContext;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
 
@@ -18,13 +21,10 @@ import java.util.List;
 public abstract class BannerItemMixin {
 
     /**
-     * @author MEGATREX4
-     * @reason I need to show the weight of the item in tooltips
+     * Injects custom tooltip logic to display the weight of the item.
      */
-    @Overwrite
-    public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
-        // Implement your custom tooltip logic directly
-
+    @Inject(method = "appendTooltip", at = @At("HEAD"), cancellable = true)
+    public void appendTooltip(ItemStack stack, Item.TooltipContext context, List<Text> tooltip, TooltipType type, CallbackInfo ci) {
         // Get the item's ID
         String itemId = ItemWeights.getItemId(stack);
 

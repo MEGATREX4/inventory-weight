@@ -32,7 +32,7 @@ public class InventoryWeightHUD implements ClientModInitializer {
 
     private void renderHUD(DrawContext drawContext, float tickDelta) {
         MinecraftClient client = MinecraftClient.getInstance();
-        if (client.player == null || client.options.debugEnabled) {
+        if (client.player == null || client.options.hudHidden) {
             return;
         }
 
