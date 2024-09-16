@@ -1,37 +1,57 @@
-### ****Attention: We need volunteers!** Due to redesigned Networking, **MT Inventory Weight** currently does not work on Minecraft versions 1.20.5-1.20.6 and 1.21-1.21.1. We're seeking help to port the mod for these versions. If you're interested in assisting, please reach out!**
+### ****Attention: We need volunteers!** Due to redesigned Networking, **MT Inventory Weight** currently does not work on Minecraft versions 1.20.5-1.20.6 and 1.21-1.21.1. We're seeking help to port the mod for these versions. If you're interested in assisting, please reach out in our [GitHub](https://github.com/MEGATREX4/inventory-weight) or [Discord](https://discord.gg/hc4XPRBEsq)!**
 
-## **What is MT Inventory Weight?**
+![Flogo](https://cdn.modrinth.com/data/cached_images/c4708259022689f9bc4e8a31208312ea667988bc_0.webp)
 
 **MT Inventory Weight** introduces a realistic weight system to Minecraft, enhancing your gameplay by simulating the impact of carried items on movement. The mod dynamically adjusts based on your inventory's weight, meaning heavier loads affect your movement and actions.
 
 Designed for players seeking a deeper, more strategic survival experience, this mod encourages careful item management, making each decision about what to carry significant.
 
-## **Why Use This Mod?**
+![overload_player](https://cdn.modrinth.com/data/cached_images/36400241b5fdee13eaf1c7c4cc6ca665f01ce604.png)
 
-Vanilla Minecraft allows you to carry hundreds of items without any impact on your gameplay. With **MT Inventory Weight**, you can:
+### **Features:**
 
-- **Add Realism**: Experience how item weight affects your character, adding immersion and depth to survival and RPG-like experiences.
-- **Enhance Strategy**: Stop mindlessly hoarding items. Think about what you carry and how it impacts your mobility.
-- **Increase Difficulty**: Adds a new layer of challenge to Minecraft, especially in survival or hardcore modes.
-- **Modular Configuration**: Configure item and armor weights to customize your gameplay.
+- **[Default Item Values](https://megatrex4.github.io/inventory-weight/guide/features/item_default_values)**: All items automatically receive default values, so the mod will work even if you do not configure it.
+- **[Item Custom Values](https://megatrex4.github.io/inventory-weight/guide/features/item_custom_values)**: Using the config files of the mod, you can customize how much individual items weigh.
+- **[Pockets](https://megatrex4.github.io/inventory-weight/guide/features/pockets)**: Your armor now has “pockets”, which is a feature that adds more weight that you can carry with you.
+- **[Inventory Weight](https://megatrex4.github.io/inventory-weight/guide/features/max_weight)**: Advanced weighing system.
+- **[Overload](https://megatrex4.github.io/inventory-weight/guide/features/overload_effect)**: The effect is applied to you when you carry extra weight, the effect level increases if you carry even more. Effect is affected by haste and strength, if the player has them, the effect of overload decreases with each level of the effect.
+- **[Commands](https://megatrex4.github.io/inventory-weight/guide/features/commands)**: For admins, moderators, and modpack\datapack creators, there are handy commands that can help you  
+- **[Tooltips](https://megatrex4.github.io/inventory-weight/guide/features/tooltips)**: Each item in the game has its own hint, they will display the number of pockets (if it is armor) and weight, which will affect you.
+- **[HUD](https://megatrex4.github.io/inventory-weight/guide/features/hud)**: We have a convenient Heads-Up Display, it shows when the overload effect is applied, it also shows the state when the player has additional effects that affect the weight.
 
-## **Key Features:**
 
-- **Dynamic Inventory Weight Calculation**: The mod calculates your total inventory weight based on items and armor, impacting your movement and speed.
-  
-- **Overload Effects**: Exceeding your maximum weight results in penalties such as reduced movement speed, slower attack speed, and possible stamina loss (configurable).
-  
-- **Armor Weight Impact**: Armor sets have different weight values that affect how much you can carry comfortably.
-  
-- **Pockets & Storage**: Some armor pieces come with pockets, letting you carry more items without penalties.
+<details>
+<summary>Image preview</summary>
 
-- **Customizable Weights**: Adjust item weights through mod settings to fit your gameplay style, making the experience more challenging or easier as you prefer.
+![HUD_EFFECT ICONS](https://cdn.modrinth.com/data/cached_images/4f2e49901c28e0dc4864f430257dd2f765898622.png)
 
-- **Multiplayer Compatibility**: Works seamlessly in both single-player and multiplayer environments.
+</details>
+
+
+
+- **Multiplayer Compatibility**: The mod works well in both single-player and multiplayer environments.
+- **Mod Compatibility**: Mod has been tested on several well-known mods(like Create, AE2, Botania). Mod will work together with any other mod, even if there are no custom settings, all values are based on calculations. 
+
+
+<details>
+<summary>Image preview</summary>
+
+![Create_creative_item](https://cdn.modrinth.com/data/cached_images/379e09047a679a04ff1057bf6e476c819c585e0c.png)
+
+</details>
+
+
 
 ## **Learn More**
 
-For detailed information on how weight is calculated, how to add custom weights to items, and how to include pockets, visit our [wiki](https://megatrex4.github.io/inventory-weight/). The mod integrates well with other mods, automatically calculating weight based on item categories.
+- **Weight Calculation**: Discover how weight is calculated in the mod.
+- **Custom Weights**: Learn how to add custom weights to items.
+- **Pockets**: Find out how to include pockets in armor.
+- **Mod Compatibility**: See how the mod integrates with other mods, automatically calculating weight based on item categories.
+
+
+
+For more detailed information, visit our [**wiki**](https://megatrex4.github.io/inventory-weight/).
 
 ## **Getting Started:**
 
