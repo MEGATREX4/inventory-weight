@@ -1,4 +1,4 @@
-### ****Attention: We need volunteers!** Due to redesigned Networking, **MT Inventory Weight** currently does not work on Minecraft versions 1.20.5-1.20.6 and 1.21-1.21.1. We're seeking help to port the mod for these versions. If you're interested in assisting, please reach out in our [GitHub](https://github.com/MEGATREX4/inventory-weight)!**
+### ****Attention: We need volunteers!** Due to redesigned Networking, **MT Inventory Weight** currently does not work on Minecraft versions 1.20.5-1.20.6 and 1.21-1.21.1. We're seeking help to port the mod for these versions. If you're interested in assisting, please reach out!**
 
 ## **What is MT Inventory Weight?**
 
