@@ -53,46 +53,19 @@ For block-type items, the weight is influenced by several factors:
 
 In creative mode, blocks have a special weight defined by `InventoryWeightUtil.CREATIVE`.
 
-### **Examples and Calculations**
+```java
+            weight += (hardness * 10);
+            weight += Math.min((blastResistance * 50), 10000);
 
-#### **Block of Netherite**
+            // Subtract a value if the block is transparent
+            if (isTransparent) {
+                weight -= 1000;
+            }
 
-- **Rarity**: Common
-- **Blast Resistance**: 1,200
-- **Hardness**: 50
-- **Transparent**: No
-- **Base Weight**: 810.0f (BLOCKS category)
-- **Blast Resistance Weight**: 1,200 * 100 = 120,000 (capped to 3,000)
-- **Hardness Weight**: 50 * 10 = 500
-- **Transparency Adjustment**: 0 (not transparent)
-- **Rarity Weight**: 1.0 (Common)
-- **Total Weight**: (810.0 + 3,000 + 500) * 1.0 ≈ 4,310.0
+            weight *= (getRarityWeight(stack) * 1.3f);
 
-#### **Glass**
-
-- **Rarity**: Common
-- **Blast Resistance**: 0.3
-- **Hardness**: 0.3
-- **Transparent**: Yes
-- **Base Weight**: 810.0f (BLOCKS category)
-- **Blast Resistance Weight**: 0.3 * 100 = 30
-- **Hardness Weight**: 0.3 * 10 = 3
-- **Transparency Adjustment**: -1,000
-- **Rarity Weight**: 1.0 (Common)
-- **Total Weight**: (810.0 + 30 + 3 - 1,000) * 1.0 ≈ -157.0 (capped to 50.0f)
-
-#### **Short Grass**
-
-- **Rarity**: Common
-- **Blast Resistance**: 0
-- **Hardness**: 0
-- **Transparent**: Yes
-- **Base Weight**: 810.0f (BLOCKS category)
-- **Blast Resistance Weight**: 0
-- **Hardness Weight**: 0
-- **Transparency Adjustment**: -1,000
-- **Rarity Weight**: 1.0 (Common)
-- **Total Weight**: (810.0 + 0 + 0 - 1,000) * 1.0 ≈ -190.0 (capped to 50.0f)
+            return (int) Math.floor(Math.max(weight, InventoryWeightUtil.ITEMS));
+```
 
 ## **Item Weights**
 
@@ -103,43 +76,24 @@ For regular items, the weight is influenced by:
 - **Durability**: Weight is modified based on the item’s durability, especially for single-stack items.
 - **Rarity**: Additional weight is applied based on the item's rarity, increasing weight according to rarity tiers.
 
-### **Examples and Calculations**
+```java
+        // Modify weight based on stack size
+        if (maxStackSize > 1) {
+            float stackMultiplier = 1 + (10f / maxStackSize); // Example multiplier
+            weight *= stackMultiplier;
+        }
 
-#### **Netherite Scrap**
+        else if (maxStackSize == 1 && maxDurability > 0) {
+            if (isHasArmor(item)) {
+                weight += (float) (getArmorValue(item) * 10);
+                weight += (InventoryWeightUtil.ITEMS + (((float) maxDurability / 300) * 300));
+            }
+            if (isHasDamage(item)) {
+                weight += (float) (InventoryWeightUtil.ITEMS + ((maxDurability / 1500.0) * 300));
+            }
+        }
 
-- **Rarity**: Common
-- **Stackable**: Yes (64)
-- **Base Weight**: 50.0f (ITEMS category)
-- **Stack Multiplier**: 1 + (10 / 64) ≈ 1.156
-- **Rarity Weight**: 1.0 (Common)
-- **Total Weight**: 50.0 * 1.156 * 1.0 ≈ 57.8
+        weight *= (getRarityWeight(stack) * 1.3f);
 
-#### **Iron Diamond Helmet**
-
-- **Rarity**: Common
-- **Stackable**: No (Durability only affects single items)
-- **Durability**: 363
-- **Armor Value**: 3
-- **Base Weight**: 50.0f (ITEMS category)
-- **Durability Weight**: 50.0 + ((363 / 300) * 300) ≈ 171.0
-- **Armor Weight**: 3 * 10 = 30.0
-- **Rarity Weight**: 1.0 (Common)
-- **Total Weight**: (50.0 + 171.0 + 30.0) * 1.0 ≈ 251.0
-
-#### **Nether Star**
-
-- **Rarity**: Uncommon
-- **Stackable**: 64
-- **Base Weight**: 50.0f (ITEMS category)
-- **Stack Multiplier**: 1 + (10 / 64) ≈ 1.156
-- **Rarity Weight**: 1.2 (Uncommon)
-- **Total Weight**: 50.0 * 1.156 * 1.2 ≈ 69.8
-
-#### **Ender Pearl**
-
-- **Rarity**: Common
-- **Stackable**: 16
-- **Base Weight**: 50.0f (ITEMS category)
-- **Stack Multiplier**: 1 + (10 / 16) ≈ 1.625
-- **Rarity Weight**: 1.0 (Common)
-- **Total Weight**: 50.0 * 1.625 * 1.0 ≈ 81.3
+        return (int) Math.floor(Math.max(weight, 1.0f));
+```
