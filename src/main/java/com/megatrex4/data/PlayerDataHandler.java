@@ -67,28 +67,30 @@ public class PlayerDataHandler {
         return getPlayerMaxWeight(player) + getPlayerMultiplier(player) + getPlayerMaxArmorWeight(player);
     }
 
-    public static String getItemCategory(ItemStack stack) {
+    public static ItemCategoryInfo getItemCategoryInfo(ItemStack stack) {
         String itemId = Registries.ITEM.getId(stack.getItem()).toString().toLowerCase();
+        String category;
 
-        if (isOperatorUtilitiesItem(itemId)) {
-            return "creative";
-        }
-        if (itemId.contains("bucket")) {
-            return "buckets";
-        } else if (itemId.contains("bottle")) {
-            return "bottles";
-        } else if (itemId.contains("ingot")) {
-            return "ingots";
+        if (isCreative(itemId)) {
+            category = "creative";
+        } else if (itemId.contains("bucket")) {
+            category = "buckets";
+        } else if (itemId.contains("bottle") || itemId.contains("potion")) {
+            category = "bottles";
+        } else if (itemId.contains("ingot") || itemId.contains("alloy") || itemId.contains("gem") || itemId.contains("shard")) {
+            category = "ingots";
         } else if (itemId.contains("nugget")) {
-            return "nuggets";
+            category = "nuggets";
         } else if (isBlock(stack)) {
-            return "blocks";
+            category = "blocks";
         } else {
-            return "items";
+            category = "items";
         }
+
+        return new ItemCategoryInfo(stack, category);
     }
 
-    private static boolean isOperatorUtilitiesItem(String itemId) {
+    private static boolean isCreative(String itemId) {
         return itemId.equals("minecraft:barrier") ||
                 itemId.equals("minecraft:light") ||
                 itemId.equals("minecraft:structure_block") ||
@@ -106,4 +108,23 @@ public class PlayerDataHandler {
     public static boolean isBlock(ItemStack stack) {
         return stack.getItem() instanceof BlockItem;
     }
+
+    public static class ItemCategoryInfo {
+        private final ItemStack stack;
+        private final String category;
+
+        public ItemCategoryInfo(ItemStack stack, String category) {
+            this.stack = stack;
+            this.category = category;
+        }
+
+        public ItemStack getStack() {
+            return stack;
+        }
+
+        public String getCategory() {
+            return category;
+        }
+    }
+
 }

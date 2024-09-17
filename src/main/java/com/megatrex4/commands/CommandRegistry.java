@@ -153,16 +153,17 @@ public class CommandRegistry {
                     if (weight != null) {
                         source.sendFeedback(() -> Text.translatable("command.debugweight", itemIdString, weight), false);
                     } else {
-                        String itemCategory = PlayerDataHandler.getItemCategory(itemStack);
-                        final String finalItemCategory = itemCategory;
-                        float fallbackWeight = ItemWeights.getItemWeight(itemCategory);
+                        PlayerDataHandler.ItemCategoryInfo categoryInfo = PlayerDataHandler.getItemCategoryInfo(itemStack);
+                        String itemCategory = categoryInfo.getCategory();
+                        float fallbackWeight = ItemWeights.getItemWeight(categoryInfo.getStack());
 
-                        source.sendFeedback(() -> Text.translatable("command.debugweight.fallback", finalItemCategory, fallbackWeight), false);
+                        source.sendFeedback(() -> Text.translatable("command.debugweight.fallback", itemCategory, fallbackWeight), false);
                     }
 
                     return 1;
                 })
         );
+
 
         dispatcher.register(CommandManager.literal("debugarmor")
                 .requires(source -> source.hasPermissionLevel(4))

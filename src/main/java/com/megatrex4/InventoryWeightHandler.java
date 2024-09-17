@@ -16,6 +16,8 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.GameMode;
 
+import static com.megatrex4.util.ItemWeights.getItemWeight;
+
 public class InventoryWeightHandler {
     // Reference the correct instance of OverloadEffect
     private static final StatusEffect OVERLOAD_EFFECT = InventoryWeightEffectRegister.OVERLOAD_EFFECT;
@@ -23,31 +25,25 @@ public class InventoryWeightHandler {
     public static float calculateInventoryWeight(ServerPlayerEntity player) {
         float totalWeight = 0;
 
-        // Iterate through the player's main inventory
-        for (ItemStack stack : player.getInventory().main) {
-            if (!stack.isEmpty()) {
-                // Get the item ID for the stack
-                Identifier itemId = Registries.ITEM.getId(stack.getItem());
-                String itemIdString = (itemId != null) ? itemId.toString() : "unknown";
+        // Define an array of ItemStack arrays for each inventory section
+        ItemStack[][] inventorySections = {
+                player.getInventory().main.toArray(new ItemStack[0]),
+                player.getInventory().offHand.toArray(new ItemStack[0]),
+                player.getInventory().armor.toArray(new ItemStack[0])
+        };
 
-                // First, check if there is a custom weight for this item
-                Float customWeight = ItemWeights.getCustomItemWeight(itemIdString);
-
-                float itemWeight;
-                if (customWeight != null) {
-                    itemWeight = customWeight;
-                } else {
-                    String itemCategory = PlayerDataHandler.getItemCategory(stack);
-                    itemWeight = ItemWeights.getItemWeight(itemCategory);
+        // Iterate through each section of the inventory
+        for (ItemStack[] section : inventorySections) {
+            for (ItemStack stack : section) {
+                if (!stack.isEmpty()) {
+                    totalWeight += getItemWeight(stack) * stack.getCount();
                 }
-
-                // Multiply the weight by the count of items in the stack
-                totalWeight += itemWeight * stack.getCount();
             }
         }
 
         return totalWeight;
     }
+
 
 
     // Checks if the player's inventory weight exceeds the limit and applies/removes the overload effect as needed

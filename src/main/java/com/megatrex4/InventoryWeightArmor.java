@@ -88,7 +88,8 @@ public class InventoryWeightArmor {
         }
         // Default calculation if no datapack value
         int protectionValue = armorItem.getProtection();
-        return Math.max(1, 7 - (int)(protectionValue / 1.2));
+        float thoghnessValue = armorItem.getToughness();
+        return (int) Math.max(1, 7 - (int)(protectionValue / 1.2)- thoghnessValue);
     }
 
     // Calculate the total armor weight based on pockets

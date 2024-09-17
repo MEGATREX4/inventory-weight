@@ -12,9 +12,9 @@ import net.minecraft.entity.player.PlayerEntity;
 import java.util.UUID;
 
 public class OverloadEffect extends StatusEffect {
-    private static final double BASE_SPEED_DECREASE = 0.3; // Base decrease in speed (10%)
-    private static final double BASE_ATTACK_SPEED_DECREASE = 0.3; // Base decrease in attack speed (10%)
-    private static final double BASE_DAMAGE_REDUCTION = 0.3; // Base reduction in damage (10%)
+    private static final double BASE_SPEED_DECREASE = 0.35; // Base decrease in speed (10%)
+    private static final double BASE_ATTACK_SPEED_DECREASE = 0.35; // Base decrease in attack speed (10%)
+    private static final double BASE_DAMAGE_REDUCTION = 0.35; // Base reduction in damage (10%)
 
     public static final UUID SPEED_MODIFIER_UUID = UUID.fromString("a53f3d53-2b63-4a78-851f-4c5795876d8c");
     public static final UUID ATTACK_SPEED_MODIFIER_UUID = UUID.fromString("c7d4f84c-9e6e-45d0-888e-df63a7e3d206");

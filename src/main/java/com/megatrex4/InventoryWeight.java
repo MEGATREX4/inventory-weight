@@ -5,16 +5,30 @@ import com.megatrex4.commands.CommandRegistry;
 import com.megatrex4.config.ItemWeightConfigItems;
 import com.megatrex4.config.ItemWeightsConfigClient;
 import com.megatrex4.config.ItemWeightsConfigServer;
+import com.megatrex4.data.PlayerDataHandler;
 import com.megatrex4.effects.InventoryWeightEffectRegister;
 import com.megatrex4.network.ModMessages;
+import com.megatrex4.util.ItemWeights;
+import com.megatrex4.util.Tooltips;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.minecraft.client.item.TooltipContext;
+import net.minecraft.item.ArmorItem;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
+import net.minecraft.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
+
+import static net.minecraft.item.trim.ArmorTrim.appendTooltip;
 
 public class InventoryWeight implements ModInitializer {
 	public static final String MOD_ID = "inventoryweight";
@@ -35,7 +49,7 @@ public class InventoryWeight implements ModInitializer {
 
 		loadDatapack();
 
-
+		ItemTooltipCallback.EVENT.register(this::addCustomTooltip);
 
 
 		InventoryWeightEffectRegister.registerEffects();
@@ -53,6 +67,12 @@ public class InventoryWeight implements ModInitializer {
 		});
 	}
 
+	private void addCustomTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip) {
+		World world = null; // Handle null check if world context is needed
+		Tooltips.appendTooltip(stack, world, tooltip, context);
+	}
+
+
 	public static void loadDatapack () {
 		// Register server starting event
 		ServerLifecycleEvents.SERVER_STARTING.register(server -> {
@@ -65,4 +85,6 @@ public class InventoryWeight implements ModInitializer {
 			InventoryWeightArmor.loadDatapackData(resourceManager);
 		});
 	}
+
+
 }
