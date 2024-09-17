@@ -11,7 +11,7 @@ public class InventoryWeightUtil {
 
     public static float CREATIVE = 30000.0f;
 
-    public static float POCKET_WEIGHT = 10000.0f;
+    public static float POCKET_WEIGHT = 17000.0f;
 
-    public static float MAXWEIGHT = 80000.0f;
+    public static float MAXWEIGHT = 160000.0f;
 }
