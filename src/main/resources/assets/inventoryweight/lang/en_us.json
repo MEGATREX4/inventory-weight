@@ -46,6 +46,7 @@
   "command.error.not_player": "You must be a player to run this command.",
 
 
-  "inventoryweight.tooltip.weight": "Weight: %s | %s",
+  "inventoryweight.tooltip.totalweight": "Weight: %s | %s",
+  "inventoryweight.tooltip.weight": "Weight: %s",
   "inventoryweight.tooltip.pockets": "+%s Pockets"
 }

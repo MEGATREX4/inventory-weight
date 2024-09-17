@@ -46,8 +46,12 @@ public class Tooltips {
         // Calculate total weight (item weight multiplied by the stack size)
         float totalWeight = itemWeight * stackCount;
 
-        // Display weight as "individual weight / total weight" (e.g. "50 / 800")
-        tooltip.add(1, Text.translatable("inventoryweight.tooltip.weight", itemWeight, totalWeight)
-                .formatted(Formatting.GRAY));
+        if (totalWeight != itemWeight) {
+            tooltip.add(1, Text.translatable("inventoryweight.tooltip.totalweight", itemWeight, totalWeight)
+                    .formatted(Formatting.GRAY));
+        } else {
+            tooltip.add(1, Text.translatable("inventoryweight.tooltip.weight", itemWeight).formatted(Formatting.GRAY));
+        }
+
     }
 }

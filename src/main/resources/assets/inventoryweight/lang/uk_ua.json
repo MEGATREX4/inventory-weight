@@ -39,7 +39,8 @@
   "command.error.not_player": "Ви повинні бути гравцем, щоб виконати цю команду.",
 
 
-  "inventoryweight.tooltip.weight": "Вага: %s | %s",
+  "inventoryweight.tooltip.totalweight": "Вага: %s | %s",
+  "inventoryweight.tooltip.weight": "Вага: %s",
   "inventoryweight.tooltip.pockets": "+%s кишені",
 
   "option.inventoryweight.server.pocketWeight": "Вмістимість кишень",
