@@ -13,17 +13,17 @@ The Overload effect decreases a player's movement speed, attack speed, and damag
 
 ### **Base Values**
 
-- **Movement Speed Decrease:** Reduces movement speed by 10% at the base level. The decrease increases by 10% per level of the Overload effect, up to a maximum of 90% reduction.
-- **Attack Speed Decrease:** Reduces attack speed by 10% at the base level. The decrease increases by 10% per level of the Overload effect, up to a maximum of 90% reduction.
-- **Damage Reduction Decrease:** Reduces damage reduction by 10% at the base level. The reduction increases by 10% per level of the Overload effect, up to a maximum of 90% reduction.
+- **Movement Speed Decrease:** Reduces movement speed by 30% at the base level. The decrease increases by 30% per level of the Overload effect, up to a maximum of 90% reduction.
+- **Attack Speed Decrease:** Reduces attack speed by 30% at the base level. The decrease increases by 30% per level of the Overload effect, up to a maximum of 90% reduction.
+- **Damage Reduction Decrease:** Reduces damage reduction by 30% at the base level. The reduction increases by 30% per level of the Overload effect, up to a maximum of 90% reduction.
 
 ### **Calculating Overload Level**
 
 The level of the Overload effect is calculated based on how much the player's inventory weight exceeds their maximum weight:
 
 - **Inventory Fullness Percentage:** The percentage of the inventory's weight capacity that is used.
-- **Overload Level Calculation:** For every 25% above the maximum weight, the Overload level increases by 3 levels.
-- **Maximum Overload Level:** Capped at 70.
+- **Overload Level Calculation:** For every 15% above the maximum weight, the Overload level increases by 5 levels.
+- **Maximum Overload Level:** Capped at 128.
 
 ### **Interactions with Strength and Haste Effects**
 
@@ -44,7 +44,7 @@ If a player has both Strength and Haste effects, the reduction is combined. Howe
 1. **Player Inventory Weight:** 150% of max weight.
 2. **Overload Level Calculation:**
    - Percentage Full: 150%
-   - Overload Levels: `(150 - 100) / 25 * 3 = 6`
+   - Overload Levels: `(150 - 100) / 10 * 5 = 25`
    - Capped at 70 levels if exceeding.
 
 3. **Strength II and Haste III Effects:**
