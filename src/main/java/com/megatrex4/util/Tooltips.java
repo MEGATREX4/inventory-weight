@@ -2,6 +2,7 @@ package com.megatrex4.util;
 
 import com.megatrex4.InventoryWeightArmor;
 import com.megatrex4.data.PlayerDataHandler;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
@@ -46,11 +47,39 @@ public class Tooltips {
         // Calculate total weight (item weight multiplied by the stack size)
         float totalWeight = itemWeight * stackCount;
 
-        if (totalWeight != itemWeight) {
-            tooltip.add(1, Text.translatable("inventoryweight.tooltip.totalweight", itemWeight, totalWeight)
+        // Format both weights for display using 'k' notation if applicable
+        String formattedItemWeight = formatWeight(itemWeight);
+        String formattedTotalWeight = formatWeight(itemWeight);
+
+
+        if (Screen.hasShiftDown()) {
+            tooltip.add(1, Text.translatable("inventoryweight.tooltip.weight", formattedItemWeight)
                     .formatted(Formatting.GRAY));
+            tooltip.add(2, Text.translatable("inventoryweight.tooltip.totalweight", formattedTotalWeight)
+                    .formatted(Formatting.GRAY));
+            } else {
+            tooltip.add(1, Text.translatable("inventoryweight.tooltip.weight", formattedItemWeight)
+                    .formatted(Formatting.GRAY));
+            // Retrieve the translated string with placeholders
+            Text tooltipHint = Text.translatable("inventoryweight.tooltip.hint");
+
+            // Replace the placeholders with formatted text
+            tooltip.add(2, Text.literal(tooltipHint.getString().replace("{0}", Formatting.YELLOW.toString())
+                            .replace("{1}", Formatting.RESET.toString()))
+                    .formatted(Formatting.GRAY)); // Format the outer text as yellow
+
+            }
+
+    }
+
+    // Utility method to format weights, adding 'k' for values over 1000
+    private static String formatWeight(float weight) {
+        String suffixK = Text.translatable("inventoryweight.tooltip.k").getString();
+
+        if (weight >= 1000) {
+            return String.format("%.1f" + suffixK, weight / 1000); // e.g., 1860 becomes 1.8k
         } else {
-            tooltip.add(1, Text.translatable("inventoryweight.tooltip.weight", itemWeight).formatted(Formatting.GRAY));
+            return String.valueOf((int) weight); // Show as an integer if below 1000
         }
 
     }
