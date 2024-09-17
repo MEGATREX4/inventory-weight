@@ -39,17 +39,6 @@ Example of an armor tooltip:
 
 Pockets are important because they affect how much additional weight a player can carry by distributing it across the armor, depending on the number of pockets. For more details about pockets, please refer to the [Pockets Documentation](pockets.md).
 
-## **Exceptions to Tooltips**
-
-While most items in the game display custom tooltips, there are a few exceptions:
-
-- **Buckets with fish**: Buckets with fish do not have any custom weight tooltips.
-- **Ominous Banners**: Ominous banners also do not have any custom weight tooltips.
-
-::: warning
-This is a bug and will be fixed in the near future
-:::
-
 ## **Usage Scenarios**
 
 1. **Managing Inventory Weight**: Players can use the tooltips to plan what items to carry in their inventory, prioritizing lighter or more important items.
