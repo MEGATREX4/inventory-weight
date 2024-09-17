@@ -25,7 +25,7 @@ public class BlockWeightCalculator {
 
             // Add Hardness and Blast Resistance values
             weight += (hardness * 10);
-            weight += Math.min((blastResistance * 100), 3000);
+            weight += Math.min((blastResistance * 50), 10000);
 
             // Subtract a value if the block is transparent
             if (isTransparent) {

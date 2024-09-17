@@ -75,14 +75,14 @@ public class InventoryWeightHandler {
         // Calculate the overload level based on the percentage of inventory fullness
         float percentageFull = (inventoryWeight / maxWeight) * 100;
 
-        // Calculate overload levels: every 25% above 100% adds 3 levels
+        // Calculate overload levels: every 10% above 100% adds 5 levels
         int overloadLevel = 0;
         if (percentageFull > 100) {
-            overloadLevel = (int) Math.max(1, ((percentageFull - 100) / 25) * 2);
+            overloadLevel = (int) Math.max(1, ((percentageFull - 100) / 10) * 5);
         }
 
-        // Cap overload level at a maximum of 70
-        overloadLevel = Math.min(overloadLevel, 70);
+        // Cap overload level at a maximum of 128
+        overloadLevel = Math.min(overloadLevel, 128);
 
         // Check if the player has Strength or Haste effects
         boolean hasStrengthEffect = player.hasStatusEffect(StatusEffects.STRENGTH);
