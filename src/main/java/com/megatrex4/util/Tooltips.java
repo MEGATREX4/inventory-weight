@@ -22,7 +22,7 @@ public class Tooltips {
         Float customWeight = ItemWeights.getCustomItemWeight(itemId);
 
         if (customWeight != null) {
-            tooltip.add(1, Text.translatable("inventoryweight.tooltip.weight", customWeight).formatted(Formatting.GRAY));
+            WeightTooltip(tooltip, customWeight, stack.getCount());
         } else {
             // Use getItemCategoryInfo to retrieve both category and item stack
             PlayerDataHandler.ItemCategoryInfo categoryInfo = PlayerDataHandler.getItemCategoryInfo(stack);
@@ -33,12 +33,21 @@ public class Tooltips {
                 itemWeight = 0f;
             }
 
-            tooltip.add(1, Text.translatable("inventoryweight.tooltip.weight", itemWeight).formatted(Formatting.GRAY));
+            WeightTooltip(tooltip, itemWeight, stack.getCount());
         }
 
         // Add custom text for Pockets in the armor section
         if (stack.getItem() instanceof ArmorItem || pockets > 0) {
             tooltip.add(Text.translatable("inventoryweight.tooltip.pockets", pockets).formatted(Formatting.BLUE));
         }
+    }
+
+    private static void WeightTooltip(List<Text> tooltip, Float itemWeight, int stackCount) {
+        // Calculate total weight (item weight multiplied by the stack size)
+        float totalWeight = itemWeight * stackCount;
+
+        // Display weight as "individual weight / total weight" (e.g. "50 / 800")
+        tooltip.add(1, Text.translatable("inventoryweight.tooltip.weight", itemWeight, totalWeight)
+                .formatted(Formatting.GRAY));
     }
 }
