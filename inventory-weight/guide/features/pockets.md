@@ -17,11 +17,11 @@ In the **MT Inventory Weight** mod, the **pocket system** adds extra storage fun
    - Pockets can be assigned to armor either through default calculations or **customized using datapacks**.
 
 3. **Default Pocket Calculation**:
-   - If no specific number of pockets is defined for an armor item via a datapack, the mod uses a formula based on the **protection value** of the armor:
+   - If no specific number of pockets is defined for an armor item via a datapack, the mod uses a formula based on the **protection value** and **toughness** of the armor:
      ```java
-     Math.max(1, 7 - (int)(protectionValue / 1.2));
+     Math.max(1, 7 - (int)(protectionValue / 1.2) - toughnessValue);
      ```
-   - Armor with high protection values will generally have fewer pockets by default.
+   - Armor with higher protection and toughness values will generally have fewer pockets by default.
 
 4. **Custom Pocket Configuration**:
    - You can **override the default pocket assignment** by defining custom values using datapacks.
