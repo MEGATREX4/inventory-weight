@@ -32,8 +32,8 @@
 		"inventoryweight.mixins.json"
 	],
 	"depends": {
-		"fabricloader": ">=0.16.5",
-		"minecraft": "~1.20",
+		"fabricloader": ">=0.15.0",
+		"minecraft": "~1.20.1",
 		"java": ">=17",
 		"fabric-api": "*"
 	},
