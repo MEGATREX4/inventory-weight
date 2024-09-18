@@ -27,7 +27,6 @@ public class Tooltips {
             String formattedWeightWithModifier = formatWeight(shulkerWeight.totalWeight);
             String formattedWeightWithoutModifier = formatWeight(shulkerWeight.baseWeight);
 
-
             if (Screen.hasShiftDown()) {
                 tooltip.add(1, Text.translatable("inventoryweight.tooltip.weight", (int) shulkerWeight.totalWeight)
                         .formatted(Formatting.GRAY));
@@ -35,8 +34,6 @@ public class Tooltips {
                 tooltip.add(2, Text.translatable("inventoryweight.tooltip.weightinside", (int) shulkerWeight.baseWeight)
                         .formatted(Formatting.GRAY));
             } else {
-
-
                 tooltip.add(1, Text.translatable("inventoryweight.tooltip.weight", formattedWeightWithModifier)
                         .formatted(Formatting.GRAY));
 
@@ -51,11 +48,9 @@ public class Tooltips {
                                     .replace("{1}", Formatting.RESET.toString()))
                             .formatted(Formatting.GRAY)); // Format the outer text as yellow
                 }
-                return;
             }
+            return;
         }
-
-
 
         // Add weight next to item name (first position in the tooltip)
         String itemId = ItemWeights.getItemId(stack);
@@ -81,6 +76,7 @@ public class Tooltips {
             tooltip.add(Text.translatable("inventoryweight.tooltip.pockets", pockets).formatted(Formatting.BLUE));
         }
     }
+
 
     private static void WeightTooltip(List<Text> tooltip, Float itemWeight, int stackCount) {
         // Calculate total weight (item weight multiplied by the stack size)
