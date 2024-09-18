@@ -27,6 +27,7 @@ public class Tooltips {
             String formattedWeightWithModifier = formatWeight(shulkerWeight.totalWeight);
             String formattedWeightWithoutModifier = formatWeight(shulkerWeight.baseWeight);
 
+
             if (Screen.hasShiftDown()) {
                 tooltip.add(1, Text.translatable("inventoryweight.tooltip.weight", (int) shulkerWeight.totalWeight)
                         .formatted(Formatting.GRAY));
@@ -42,14 +43,16 @@ public class Tooltips {
                 tooltip.add(2, Text.translatable("inventoryweight.tooltip.weightinside", formattedWeightWithoutModifier)
                         .formatted(Formatting.GRAY));
 
-                Text tooltipHint = Text.translatable("inventoryweight.tooltip.hint");
+                if (shulkerWeight.totalWeight > 1000 || shulkerWeight.baseWeight > 1000) {
+                    Text tooltipHint = Text.translatable("inventoryweight.tooltip.hint");
 
-                // Replace the placeholders with formatted text
-                tooltip.add(3, Text.literal(tooltipHint.getString().replace("{0}", Formatting.YELLOW.toString())
-                                .replace("{1}", Formatting.RESET.toString()))
-                        .formatted(Formatting.GRAY)); // Format the outer text as yellow
+                    // Replace the placeholders with formatted text
+                    tooltip.add(3, Text.literal(tooltipHint.getString().replace("{0}", Formatting.YELLOW.toString())
+                                    .replace("{1}", Formatting.RESET.toString()))
+                            .formatted(Formatting.GRAY)); // Format the outer text as yellow
+                }
+                return;
             }
-            return;
         }
 
 
@@ -101,14 +104,16 @@ public class Tooltips {
                     .formatted(Formatting.GRAY));
 
             // Retrieve the translated string with placeholders
-            Text tooltipHint = Text.translatable("inventoryweight.tooltip.hint");
+            if (itemWeight > 1000 || totalWeight > 1000) {
+                // Retrieve the translated string with placeholders
+                Text tooltipHint = Text.translatable("inventoryweight.tooltip.hint");
 
-            // Replace the placeholders with formatted text
-            tooltip.add(3, Text.literal(tooltipHint.getString().replace("{0}", Formatting.YELLOW.toString())
-                            .replace("{1}", Formatting.RESET.toString()))
-                    .formatted(Formatting.GRAY)); // Format the outer text as yellow
+                // Replace the placeholders with formatted text
+                tooltip.add(3, Text.literal(tooltipHint.getString().replace("{0}", Formatting.YELLOW.toString())
+                                .replace("{1}", Formatting.RESET.toString()))
+                        .formatted(Formatting.GRAY)); // Format the outer text as yellow
+            }
         }
-
 
     }
 
