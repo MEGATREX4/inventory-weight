@@ -14,12 +14,10 @@ public class ItemWeightCalculator {
         int maxStackSize = item.getMaxCount();
         int maxDurability = stack.getMaxDamage();
 
-        // Base weight from category
         float weight = getCategoryBaseWeight(category);
 
-        // Modify weight based on stack size
         if (maxStackSize > 1) {
-            float stackMultiplier = 1 + (10f / maxStackSize); // Example multiplier
+            float stackMultiplier = 1 + (10f / maxStackSize);
             weight *= stackMultiplier;
         }
 
@@ -51,19 +49,16 @@ public class ItemWeightCalculator {
     }
 
     private static boolean isHasDamage(Item item) {
-        // Add logic to determine if the item has damage (durability)
-        return item instanceof ToolItem; // Example
+        return item instanceof ToolItem;
     }
 
     private static boolean isHasArmor(Item item) {
-        // Add logic to determine if the item has armor value
-        return item instanceof ArmorItem; // Example
+        return item instanceof ArmorItem;
     }
 
     private static int getArmorValue(Item item) {
-        // Add logic to retrieve armor value if the item is an armor item
         if (item instanceof ArmorItem) {
-            return ((ArmorItem) item).getProtection(); // Example
+            return ((ArmorItem) item).getProtection();
         }
         return 0;
     }

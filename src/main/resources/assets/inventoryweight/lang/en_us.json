@@ -40,12 +40,17 @@
   "command.debugweight.fallback": "Weight of item in hand (%s): %s",
   "command.error.not_player": "You must be a player to run this command.",
 
-  "__comment__": "Effects",
+  "__comment__": "Effect",
   "effect.inventoryweight.overload": "Overload",
 
   "inventoryweight.tooltip.hint": "[Press {0}Shift{1} for more]",
-  "inventoryweight.tooltip.k": "k",
+  "inventoryweight.tooltip.k": "K",
+  "inventoryweight.tooltip.m": "M",
+  "inventoryweight.tooltip.b": "B",
   "inventoryweight.tooltip.pockets": "+%s Pockets",
   "inventoryweight.tooltip.totalweight": "Stack Weight: %s",
-  "inventoryweight.tooltip.weight": "Weight: %s"
+  "inventoryweight.tooltip.weight": "Weight: %s",
+  "inventoryweight.tooltip.weightinside": "Weight Inside: %s",
+
+  "title.inventoryweight.config": "Inventory Weight Configuration"
 }

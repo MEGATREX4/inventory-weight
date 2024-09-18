@@ -25,10 +25,13 @@
   "effect.inventoryweight.overload": "Перевантаження",
 
   "inventoryweight.tooltip.hint": "[{0}Shift{1} для більше]",
-  "inventoryweight.tooltip.k": "к",
+  "inventoryweight.tooltip.k": " тис",
+  "inventoryweight.tooltip.m": " млн",
+  "inventoryweight.tooltip.b": " млрд",
   "inventoryweight.tooltip.pockets": "+%s кишені",
   "inventoryweight.tooltip.totalweight": "Вага стоса: %s",
   "inventoryweight.tooltip.weight": "Вага: %s",
+  "inventoryweight.tooltip.weightinside": "Вага всередині: %s",
 
   "option.inventoryweight.client.hudPosition": "Позиція HUD",
   "option.inventoryweight.client.hudPosition.tooltip": "Опції включають:§r\n- §6TOP_LEFT§r\n- §6TOP_RIGHT§r\n- §6CENTER_LEFT§r\n- §6CENTER_RIGHT§r\n- §6BOTTOM_LEFT§r\n- §6BOTTOM_RIGHT§r\n- §6HOTBAR_LEFT§r\n- §6HOTBAR_RIGHT§r\n- §6CENTER_HOTBAR§r\n- §6CUSTOM",
