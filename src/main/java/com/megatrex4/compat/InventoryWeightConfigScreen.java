@@ -6,7 +6,9 @@ import com.megatrex4.util.InventoryWeightUtil;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.text.Text;
 
 import com.megatrex4.config.ItemWeightsConfigClient;
@@ -116,11 +118,20 @@ public class InventoryWeightConfigScreen {
                 .build());
 
         InventoryWeightState state = InventoryWeightState.fromNbt(null);
-        serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.maxWeight"), state.getMaxWeight())
+        serverCategory.addEntry(entryBuilder.startFloatField(
+                        Text.translatable("option.inventoryweight.server.maxWeight"),
+                        state.getMaxWeight())
                 .setDefaultValue(InventoryWeightUtil.MAXWEIGHT)
                 .setTooltip(Text.translatable("option.inventoryweight.server.maxWeight.tooltip"))
-                .setSaveConsumer(state::setMaxWeight)
+                .setSaveConsumer(newValue -> {
+                    // Assuming you can access MinecraftServer instance here
+                    MinecraftServer server = MinecraftClient.getInstance().getServer(); // Obtain the MinecraftServer instance
+                    if (server != null) {
+                        state.setMaxWeight(server, newValue);
+                    }
+                })
                 .build());
+
 
         serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.pocketWeight"), InventoryWeightArmor.getPocketWeight())
                 .setDefaultValue(InventoryWeightUtil.POCKET_WEIGHT)

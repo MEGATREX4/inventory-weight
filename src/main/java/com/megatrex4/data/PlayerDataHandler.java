@@ -5,6 +5,7 @@ import com.megatrex4.InventoryWeightState;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 
@@ -13,15 +14,29 @@ public class PlayerDataHandler {
     public static final String ARMOR_MAX_KEY = "inventoryweight:armor_max";
 
     public static void setPlayerMaxWeight(ServerPlayerEntity player, float value) {
-        ServerWorld world = player.getServerWorld();
-        InventoryWeightState state = world.getPersistentStateManager().getOrCreate(
-                (nbt) -> InventoryWeightState.fromNbt(nbt),
-                () -> new InventoryWeightState(),
+        MinecraftServer server = player.getServer();
+        InventoryWeightState state = server.getOverworld().getPersistentStateManager().getOrCreate(
+                InventoryWeightState::fromNbt,
+                InventoryWeightState::new,
                 "inventoryweight_data"
         );
-        state.setMaxWeight(value);
-        world.getPersistentStateManager().set("inventoryweight_data", state);
+        state.setMaxWeight(server, value);
+        server.getOverworld().getPersistentStateManager().set("inventoryweight_data", state);
     }
+
+
+    // Set player's specific weight multiplier
+    public static void setPlayerMultiplier(ServerPlayerEntity player, float multiplier) {
+        MinecraftServer server = player.getServer();
+        InventoryWeightState state = server.getOverworld().getPersistentStateManager().getOrCreate(
+                InventoryWeightState::fromNbt,
+                InventoryWeightState::new,
+                "inventoryweight_data"
+        );
+        state.setPlayerMultiplier(server, player.getUuidAsString(), multiplier);
+        server.getOverworld().getPersistentStateManager().set("inventoryweight_data", state);
+    }
+
 
     // Get player's specific max weight (base weight)
     public static float getPlayerMaxWeight(ServerPlayerEntity player) {
@@ -32,18 +47,6 @@ public class PlayerDataHandler {
                 "inventoryweight_data"
         );
         return state.getMaxWeight();
-    }
-
-    // Set player's specific weight multiplier
-    public static void setPlayerMultiplier(ServerPlayerEntity player, float multiplier) {
-        ServerWorld world = player.getServerWorld();
-        InventoryWeightState state = world.getPersistentStateManager().getOrCreate(
-                InventoryWeightState::fromNbt,
-                InventoryWeightState::new,
-                "inventoryweight_data"
-        );
-        state.setPlayerMultiplier(player.getUuidAsString(), multiplier);
-        world.getPersistentStateManager().set("inventoryweight_data", state);
     }
 
     // Get player's specific weight multiplier

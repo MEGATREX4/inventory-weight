@@ -2,6 +2,8 @@ package com.megatrex4;
 
 import com.megatrex4.util.InventoryWeightUtil;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.PersistentState;
 
 import java.util.HashMap;
@@ -17,16 +19,32 @@ public class InventoryWeightState extends PersistentState {
         return maxWeight;
     }
 
-    public void setMaxWeight(float maxWeight) {
-        this.maxWeight = maxWeight;
-        markDirty(); // Marks this state as changed so it gets saved
+    public void setMaxWeight(MinecraftServer server, float maxWeight) {
+        for (ServerWorld world : server.getWorlds()) {
+            InventoryWeightState state = world.getPersistentStateManager().getOrCreate(
+                    InventoryWeightState::fromNbt,
+                    InventoryWeightState::new,
+                    "inventoryweight_data"
+            );
+            state.maxWeight = maxWeight;
+            state.markDirty();
+        }
     }
 
+
     // Set multiplier for a specific player
-    public void setPlayerMultiplier(String playerUuid, float multiplier) {
-        this.playerMultipliers.put(playerUuid, multiplier);
-        markDirty();
+    public void setPlayerMultiplier(MinecraftServer server, String playerUuid, float multiplier) {
+        for (ServerWorld world : server.getWorlds()) {
+            InventoryWeightState state = world.getPersistentStateManager().getOrCreate(
+                    InventoryWeightState::fromNbt,
+                    InventoryWeightState::new,
+                    "inventoryweight_data"
+            );
+            state.playerMultipliers.put(playerUuid, multiplier);
+            state.markDirty();
+        }
     }
+
 
     // Get multiplier for a specific player
     public float getPlayerMultiplier(String playerUuid) {
