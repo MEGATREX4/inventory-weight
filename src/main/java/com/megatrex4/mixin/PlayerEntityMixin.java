@@ -26,9 +26,8 @@ public abstract class PlayerEntityMixin {
 	protected void overloadJumpEffect(CallbackInfo ci) {
 		if ((LivingEntity) (Object) this instanceof PlayerEntity self) {
             float totalWeight = InventoryWeightHandler.calculateInventoryWeight(self);
-
-
             float baseJumpVelocity = this.getJumpVelocity();
+
 			if (totalWeight > MAXWEIGHT) {
 				if (self.hasStatusEffect(InventoryWeightEffectRegister.OVERLOAD_EFFECT)) {
 					float reducedJumpVelocity = baseJumpVelocity * 0.6f / (self.getStatusEffect(InventoryWeightEffectRegister.OVERLOAD_EFFECT).getAmplifier() + 1);

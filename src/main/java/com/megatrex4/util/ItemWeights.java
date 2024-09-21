@@ -127,13 +127,12 @@ public class ItemWeights {
             // Assuming the remaining entries are dynamic item weights from items config
             if (!entry.getKey().equals("maxWeight") && !entry.getKey().equals("buckets") && !entry.getKey().equals("bottles") &&
                     !entry.getKey().equals("blocks") && !entry.getKey().equals("ingots") && !entry.getKey().equals("nuggets") &&
-                    !entry.getKey().equals("items") && !entry.getKey().equals("creative")) {
+                    !entry.getKey().equals("items") && !entry.getKey().equals("creative") && !entry.getKey().equals("realistic_mode")) {
 
                 customItemWeights.put(entry.getKey(), entry.getValue().getAsFloat());
             }
         }
     }
-
 
     public static Map<String, Float> getCustomItemWeights() {
         return customItemWeights;

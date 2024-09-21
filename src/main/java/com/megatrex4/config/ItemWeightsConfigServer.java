@@ -41,7 +41,7 @@ public class ItemWeightsConfigServer {
                 }
 
                 if (jsonObject.has("realistic_mode")) {
-                    InventoryWeight.REALISTIC_MODE = jsonObject.get("realisticMode").getAsBoolean();
+                    InventoryWeight.REALISTIC_MODE = jsonObject.get("realistic_mode").getAsBoolean();
                 } else {
                     jsonObject.addProperty("realistic_mode", InventoryWeight.REALISTIC_MODE);
                 }
@@ -79,7 +79,7 @@ public class ItemWeightsConfigServer {
             jsonObject.addProperty("items", ItemWeights.getItemWeight("items"));
             jsonObject.addProperty("creative", ItemWeights.getItemWeight("creative"));
             jsonObject.addProperty("maxWeight", maxWeight);
-            jsonObject.addProperty("pocketWeight", pocketWeight); // Ensure this is saved
+            jsonObject.addProperty("pocketWeight", pocketWeight);
             jsonObject.addProperty("realistic_mode", InventoryWeight.REALISTIC_MODE);
 
             try (FileWriter fileWriter = new FileWriter(CONFIG_PATH.toFile())) {
