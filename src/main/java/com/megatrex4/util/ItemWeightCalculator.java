@@ -22,11 +22,11 @@ public class ItemWeightCalculator {
         }
 
         else if (maxStackSize == 1 && maxDurability > 0) {
-            if (isHasArmor(item)) {
+            if (isArmor(item)) {
                 weight += (float) (getArmorValue(item) * 10);
                 weight += (InventoryWeightUtil.ITEMS + (((float) maxDurability / 300) * 300));
             }
-            if (isHasDamage(item)) {
+            if (isTool(item)) {
                 weight += (float) (InventoryWeightUtil.ITEMS + ((maxDurability / 1500.0) * 300));
             }
         }
@@ -48,11 +48,11 @@ public class ItemWeightCalculator {
         };
     }
 
-    private static boolean isHasDamage(Item item) {
+    private static boolean isTool(Item item) {
         return item instanceof ToolItem;
     }
 
-    private static boolean isHasArmor(Item item) {
+    private static boolean isArmor(Item item) {
         return item instanceof ArmorItem;
     }
 

@@ -2,7 +2,6 @@ package com.megatrex4.util;
 
 import com.megatrex4.InventoryWeightArmor;
 import com.megatrex4.data.PlayerDataHandler;
-import net.minecraft.block.Block;
 import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.item.TooltipContext;
@@ -11,13 +10,12 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.world.World;
 
 import java.util.List;
 
 public class Tooltips {
 
-    public static void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
+    public static void appendTooltip(ItemStack stack, List<Text> tooltip, TooltipContext context) {
         // Check if the armor has pockets
         int pockets = InventoryWeightArmor.getPockets(stack);
 
@@ -62,9 +60,9 @@ public class Tooltips {
             // Use getItemCategoryInfo to retrieve both category and item stack
             PlayerDataHandler.ItemCategoryInfo categoryInfo = PlayerDataHandler.getItemCategoryInfo(stack);
             String itemCategory = categoryInfo.getCategory();
-            Float itemWeight = ItemWeights.getItemWeight(stack);
+            float itemWeight = ItemWeights.getItemWeight(stack);
 
-            if (itemWeight == null || itemWeight == 0) {
+            if (itemWeight == 0) {
                 itemWeight = 0f;
             }
 
@@ -87,7 +85,7 @@ public class Tooltips {
         String formattedTotalWeight = formatWeight(totalWeight);
 
         if (Screen.hasShiftDown()) {
-            tooltip.add(1, Text.translatable("inventoryweight.tooltip.weight", (int) Math.round(itemWeight))
+            tooltip.add(1, Text.translatable("inventoryweight.tooltip.weight", Math.round(itemWeight))
                     .formatted(Formatting.GRAY));
 
             tooltip.add(2, Text.translatable("inventoryweight.tooltip.totalweight", (int) totalWeight)

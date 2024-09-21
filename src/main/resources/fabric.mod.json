@@ -5,7 +5,7 @@
 	"name": "Inventory Weight",
 	"description": "Manage and customize the weight of items in your inventory.",
 	"authors": [
-		"MEGATREX4"
+		"MEGATREX4", "DevMC"
 	],
 	"contact": {
 		"homepage": "https://megatrex4.netlify.app/",
@@ -36,8 +36,5 @@
 		"minecraft": "~1.20",
 		"java": ">=17",
 		"fabric-api": "*"
-	},
-	"suggests": {
-		"another-mod": "*"
 	}
 }

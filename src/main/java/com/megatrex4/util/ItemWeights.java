@@ -4,10 +4,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.megatrex4.config.ItemWeightConfigItems;
 import com.megatrex4.data.PlayerDataHandler;
-import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -147,17 +145,9 @@ public class ItemWeights {
 
     // Helper method to check if an item is static
     public static boolean isStaticItem(String item) {
-        switch (item) {
-            case "buckets":
-            case "bottles":
-            case "blocks":
-            case "ingots":
-            case "nuggets":
-            case "items":
-            case "creative":
-                return true;
-            default:
-                return false;
-        }
+		return switch (item) {
+			case "buckets", "bottles", "blocks", "ingots", "nuggets", "items", "creative" -> true;
+			default -> false;
+		};
     }
 }

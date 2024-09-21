@@ -1,7 +1,6 @@
 package com.megatrex4.network;
 
 import com.megatrex4.client.InventoryWeightClientHandler;
-import com.mojang.logging.LogUtils;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.util.Identifier;
 

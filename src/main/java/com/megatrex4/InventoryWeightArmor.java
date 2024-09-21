@@ -69,7 +69,7 @@ public class InventoryWeightArmor {
                         String itemId = itemObject.get("item").getAsString();
                         int pockets = itemObject.get("pockets").getAsInt();
                         itemPocketsMap.put(itemId, pockets);
-//                        System.out.println("Loaded item: " + itemId + " with pockets: " + pockets); // Debugging line
+                        //System.out.println("Loaded item: " + itemId + " with pockets: " + pockets); // Debugging line
                     }
                 }
             }
@@ -88,8 +88,8 @@ public class InventoryWeightArmor {
         }
         // Default calculation if no datapack value
         int protectionValue = armorItem.getProtection();
-        float thoghnessValue = armorItem.getToughness();
-        return (int) Math.max(1, 7 - (int)(protectionValue / 1.2)- thoghnessValue);
+        float toughnessValue = armorItem.getToughness();
+        return (int) Math.max(1, 7 - (int)(protectionValue / 1.2) - toughnessValue);
     }
 
     // Calculate the total armor weight based on pockets

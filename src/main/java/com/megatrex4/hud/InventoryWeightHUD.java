@@ -7,9 +7,9 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.NotNull;
 
 import static com.megatrex4.InventoryWeight.MOD_ID;
 
@@ -19,9 +19,6 @@ public class InventoryWeightHUD implements ClientModInitializer {
     private static final Identifier OVERLOAD_ICON = new Identifier(MOD_ID, "textures/gui/inventory_overload.png");
 
     private static final int ICON_SIZE = 16;
-
-
-
 
     @Override
     public void onInitializeClient() {
@@ -38,15 +35,11 @@ public class InventoryWeightHUD implements ClientModInitializer {
 
         int screenWidth = client.getWindow().getScaledWidth();
         int screenHeight = client.getWindow().getScaledHeight();
-        int x = 0, y = 0;
+        int x, y;
 
         // Ensure you have defined these constants or use the String values directly
         switch (ItemWeightsConfigClient.hudPosition) {
-            case "TOP_LEFT":
-                x = 10;
-                y = 10;
-                break;
-            case "TOP_RIGHT":
+			case "TOP_RIGHT":
                 x = screenWidth - ICON_SIZE - 10;
                 y = 10;
                 break;
@@ -105,11 +98,7 @@ public class InventoryWeightHUD implements ClientModInitializer {
             drawIcon(drawContext, OVERLOAD_ICON, x, y, ICON_SIZE, ICON_SIZE, 0, 0, 16, 16);
         } else if (inventoryWeight > 0) { // Only show filled if the weight is greater than 0
             // Determine which filled icon to use (from 1 to 12)
-            int filledIndex = (int) Math.ceil((inventoryWeight / maxWeight) * 12);
-            filledIndex = Math.max(1, Math.min(filledIndex, 12)); // Ensure the index is between 1 and 12
-
-            // Dynamically set the filled icon based on the weight
-            Identifier filledIcon = new Identifier(MOD_ID, "textures/gui/inventory_filled/inventory_filled_" + filledIndex + ".png");
+            Identifier filledIcon = getIconIdentifier(inventoryWeight, maxWeight);
 
             // Draw the corresponding filled icon
             drawIcon(drawContext, filledIcon, x, y, ICON_SIZE, ICON_SIZE, 0, 0, 16, 16);
@@ -120,6 +109,14 @@ public class InventoryWeightHUD implements ClientModInitializer {
         }
 
         RenderSystem.disableBlend();
+    }
+
+    private static @NotNull Identifier getIconIdentifier(float inventoryWeight, float maxWeight) {
+        int filledIndex = (int) Math.ceil((inventoryWeight / maxWeight) * 12);
+        filledIndex = Math.max(1, Math.min(filledIndex, 12)); // Ensure the index is between 1 and 12
+
+        // Dynamically set the filled icon based on the weight
+		return new Identifier(MOD_ID, "textures/gui/inventory_filled/inventory_filled_" + filledIndex + ".png");
     }
 
     // Helper method to draw the icon texture
