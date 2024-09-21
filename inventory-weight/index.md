@@ -5,6 +5,10 @@ description: "Welcome to the English documentation of the MT Inventory Weight."
 
 # **MT Inventory Weight Documentation**
 
+::: warning
+Now the mod is actively being developed and may change while development is underway, so be vigilant - check change logs, documentation is updated after the fact after the mechanics are complete 
+:::
+
 ## **What is MT Inventory Weight?**
 
 The **MT Inventory Weight** introduces a realistic weight system to Minecraft, adding depth and challenge to your gameplay by simulating the impact of carried items on movement. It dynamically adjusts based on the weight of items in your inventory, meaning that the heavier your load, the more it affects your movement and actions.
