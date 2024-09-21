@@ -1,5 +1,6 @@
 package com.megatrex4.mixin;
 
+import com.megatrex4.InventoryWeight;
 import com.megatrex4.InventoryWeightHandler;
 import com.megatrex4.effects.InventoryWeightEffectRegister;
 import com.megatrex4.util.InventoryWeightUtil;
@@ -39,7 +40,7 @@ public abstract class PlayerEntityMixin {
 					// Set the velocity to the reduced value
 					Vec3d vec3d = self.getVelocity();
 					self.setVelocity(vec3d.x, reducedJumpVelocity, vec3d.z);
-				} else if (totalWeight > 0.1 * MAXWEIGHT && !self.isCreative()) {
+				} else if (totalWeight > 0.1 * MAXWEIGHT && !self.isCreative() && InventoryWeight.REALISTIC_MODE) {
 					double overloadFactor = (totalWeight - (0.1 * MAXWEIGHT)) / (MAXWEIGHT - (0.1 * MAXWEIGHT));
 
 					float reducedJumpVelocity = (float) (baseJumpVelocity * (1 - overloadFactor * BASE_PENALTY));

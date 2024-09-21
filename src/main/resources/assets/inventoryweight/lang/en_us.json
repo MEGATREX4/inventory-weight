@@ -20,6 +20,7 @@
   "option.inventoryweight.server.nuggets": "Weight of Nuggets",
   "option.inventoryweight.server.pocketWeight": "Pocket Capacity",
   "option.inventoryweight.server.pocketWeight.tooltip": "Set the maximum weight that \nthe player can hold in each pocket.\nPockets - this value applied from the armor\n, amount of pockets can be changed via datapacks",
+  "option.inventoryweight.server.realistic_mode": "Realistic Mode",
 
   "command.inventoryweight.get.base": "Max base weight: %s",
   "command.inventoryweight.get.base.other": "Max base weight for %s: %s",
