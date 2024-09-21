@@ -3,7 +3,7 @@
 	"id": "inventoryweight",
 	"version": "${version}",
 	"name": "Inventory Weight",
-	"description": "Manage and customize the weight of items in your inventory.",
+	"description": "Experience Minecraft with realistic weight mechanics! Manage your load, balance inventory, and enhance survival and RPG-like gameplay.",
 	"authors": [
 		"MEGATREX4", "DevMC"
 	],

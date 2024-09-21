@@ -44,6 +44,15 @@ public class InventoryWeightHandler {
         return totalWeight;
     }
 
+    public static void removeAttributes(PlayerEntity player) {
+        player.getAttributes().getCustomInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED)
+                .removeModifier(SPEED_MODIFIER_UUID);
+        player.getAttributes().getCustomInstance(EntityAttributes.GENERIC_ATTACK_SPEED)
+                .removeModifier(ATTACK_SPEED_MODIFIER_UUID);
+        player.getAttributes().getCustomInstance(EntityAttributes.GENERIC_ARMOR)
+                .removeModifier(DAMAGE_REDUCTION_MODIFIER_UUID);
+    }
+
     public static void checkWeight(ServerPlayerEntity player) {
         float maxWeight = PlayerDataHandler.getPlayerMaxWeightWithMultiplier(player);
         float inventoryWeight = calculateInventoryWeight(player);
@@ -51,6 +60,7 @@ public class InventoryWeightHandler {
         // Skip Creative mode players
         if (player.interactionManager.getGameMode() == GameMode.CREATIVE) {
             removeOverloadEffect(player);
+            removeAttributes(player);
             return;
         }
 
@@ -78,13 +88,7 @@ public class InventoryWeightHandler {
             attackSpeedDecrease = Math.min(attackSpeedDecrease, 0.9) - attackSpeedDecrease * 0.3;
             damageReduction = Math.min(damageReduction, 0.9) - damageReduction * 0.3;
 
-            // Remove existing modifiers
-            player.getAttributes().getCustomInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED)
-                    .removeModifier(SPEED_MODIFIER_UUID);
-            player.getAttributes().getCustomInstance(EntityAttributes.GENERIC_ATTACK_SPEED)
-                    .removeModifier(ATTACK_SPEED_MODIFIER_UUID);
-            player.getAttributes().getCustomInstance(EntityAttributes.GENERIC_ARMOR)
-                    .removeModifier(DAMAGE_REDUCTION_MODIFIER_UUID);
+            removeAttributes(player);
 
             // Apply new modifiers
             player.getAttributes().getCustomInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED)

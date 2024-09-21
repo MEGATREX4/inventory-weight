@@ -1,5 +1,6 @@
 package com.megatrex4.effects;
 
+import com.megatrex4.InventoryWeightHandler;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -39,13 +40,7 @@ public class OverloadEffect extends StatusEffect {
             attackSpeedDecrease = Math.min(attackSpeedDecrease, 0.9);
             damageReduction = Math.min(damageReduction, 0.9);
 
-            // Remove any existing modifiers
-            player.getAttributes().getCustomInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED)
-                    .removeModifier(SPEED_MODIFIER_UUID);
-            player.getAttributes().getCustomInstance(EntityAttributes.GENERIC_ATTACK_SPEED)
-                    .removeModifier(ATTACK_SPEED_MODIFIER_UUID);
-            player.getAttributes().getCustomInstance(EntityAttributes.GENERIC_ARMOR)
-                    .removeModifier(DAMAGE_REDUCTION_MODIFIER_UUID);
+            InventoryWeightHandler.removeAttributes(player);
 
             // Apply the updated modifiers
             player.getAttributes().getCustomInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED)
