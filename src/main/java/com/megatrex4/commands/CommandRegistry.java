@@ -2,6 +2,7 @@ package com.megatrex4.commands;
 
 import com.megatrex4.InventoryWeightArmor;
 import com.megatrex4.InventoryWeightHandler;
+import com.megatrex4.config.ItemWeightsConfigServer;
 import com.megatrex4.util.ItemWeights;
 import com.megatrex4.data.PlayerDataHandler;
 import com.mojang.brigadier.CommandDispatcher;
@@ -25,10 +26,9 @@ public class CommandRegistry {
                                 .then(CommandManager.argument("value", FloatArgumentType.floatArg())
                                         .executes(context -> {
                                             ServerCommandSource source = context.getSource();
-                                            ServerPlayerEntity player = source.getPlayer();
                                             float value = FloatArgumentType.getFloat(context, "value");
-                                            PlayerDataHandler.setPlayerMaxWeight(player, value);
-                                            source.sendFeedback(() -> Text.translatable("command.inventoryweight.set.base", value), false);
+                                            ItemWeightsConfigServer.setMaxWeight(value);
+                                            source.sendFeedback(() -> Text.translatable("command.inventoryweight.set.base", value), true);
                                             return 1;
                                         })
                                 )
@@ -41,7 +41,7 @@ public class CommandRegistry {
                                                     ServerPlayerEntity targetPlayer = EntityArgumentType.getPlayer(context, "player");
                                                     float value = FloatArgumentType.getFloat(context, "value");
                                                     PlayerDataHandler.setPlayerMultiplier(targetPlayer, value);
-                                                    source.sendFeedback(() -> Text.translatable("command.inventoryweight.set.multiplier.other", targetPlayer.getName().getString(), value), false);
+                                                    source.sendFeedback(() -> Text.translatable("command.inventoryweight.set.multiplier.other", targetPlayer.getName().getString(), value), true);
                                                     return 1;
                                                 })
                                         )
@@ -52,7 +52,7 @@ public class CommandRegistry {
                                             ServerPlayerEntity player = source.getPlayer();
                                             float value = FloatArgumentType.getFloat(context, "value");
                                             PlayerDataHandler.setPlayerMultiplier(player, value);
-                                            source.sendFeedback(() -> Text.translatable("command.inventoryweight.set.multiplier", value), false);
+                                            source.sendFeedback(() -> Text.translatable("command.inventoryweight.set.multiplier", value), true);
                                             return 1;
                                         })
                                 )

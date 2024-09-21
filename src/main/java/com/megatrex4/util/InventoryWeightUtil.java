@@ -14,4 +14,6 @@ public class InventoryWeightUtil {
     public static float POCKET_WEIGHT = 7000.0f;
 
     public static float MAXWEIGHT = 20000.0f;
+
+    public static boolean REALISTIC_MODE = false;
 }

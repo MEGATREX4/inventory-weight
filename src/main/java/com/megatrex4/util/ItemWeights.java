@@ -2,6 +2,8 @@ package com.megatrex4.util;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+import com.megatrex4.InventoryWeight;
 import com.megatrex4.config.ItemWeightConfigItems;
 import com.megatrex4.data.PlayerDataHandler;
 import net.minecraft.item.ItemStack;
@@ -107,32 +109,29 @@ public class ItemWeights {
         customItemWeights.put(item, weight);
     }
 
-    public static void loadWeightsFromConfig(JsonObject config) {
-        if (config.has("maxWeight")) {
-            // This is part of the server configuration
-            InventoryWeightUtil.MAXWEIGHT = config.get("maxWeight").getAsFloat();
-        }
+    public static void loadWeightsFromConfig(JsonObject jsonObject) {
+        // Assuming the issue lies here
+        for (Map.Entry<String, JsonElement> entry : jsonObject.entrySet()) {
+            String key = entry.getKey();
+            JsonElement element = entry.getValue();
 
-        if (config.has("buckets")) {
-            BUCKETS = config.get("buckets").getAsFloat();
-            BOTTLES = config.get("bottles").getAsFloat();
-            BLOCKS = config.get("blocks").getAsFloat();
-            INGOTS = config.get("ingots").getAsFloat();
-            NUGGETS = config.get("nuggets").getAsFloat();
-            CREATIVE = config.get("creative").getAsFloat();
-            ITEMS = config.get("items").getAsFloat();
-        }
-
-        for (Map.Entry<String, JsonElement> entry : config.entrySet()) {
-            // Assuming the remaining entries are dynamic item weights from items config
-            if (!entry.getKey().equals("maxWeight") && !entry.getKey().equals("buckets") && !entry.getKey().equals("bottles") &&
-                    !entry.getKey().equals("blocks") && !entry.getKey().equals("ingots") && !entry.getKey().equals("nuggets") &&
-                    !entry.getKey().equals("items") && !entry.getKey().equals("creative")) {
-
-                customItemWeights.put(entry.getKey(), entry.getValue().getAsFloat());
+            // Verify if it's a boolean or float and process accordingly
+            if (element.isJsonPrimitive()) {
+                JsonPrimitive primitive = element.getAsJsonPrimitive();
+                if (primitive.isBoolean()) {
+                    // Handle boolean if this is expected
+                    boolean value = primitive.getAsBoolean();
+                    setItemWeight(key, value ? 1.0f : 0.0f); // Example of converting boolean to float
+                } else if (primitive.isNumber()) {
+                    float value = primitive.getAsFloat(); // This is where the error occurred
+                    setItemWeight(key, value);
+                } else {
+                    InventoryWeight.LOGGER.error("Unsupported primitive type for key " + key);
+                }
             }
         }
     }
+
 
 
     public static Map<String, Float> getCustomItemWeights() {

@@ -15,11 +15,18 @@ public class InventoryWeightState extends PersistentState {
     // Declare playerMultipliers as a map of player UUIDs to their respective multipliers
     private final Map<String, Float> playerMultipliers = new HashMap<>();
 
+    public static void setClientMaxWeight(float maxWeight) {
+        InventoryWeightState clientState = new InventoryWeightState();
+        clientState.maxWeight = maxWeight;
+        clientState.markDirty();
+    }
+
+
     public float getMaxWeight() {
         return maxWeight;
     }
 
-    public void setMaxWeight(MinecraftServer server, float maxWeight) {
+    public static void setMaxWeight(MinecraftServer server, float maxWeight) {
         for (ServerWorld world : server.getWorlds()) {
             InventoryWeightState state = world.getPersistentStateManager().getOrCreate(
                     InventoryWeightState::fromNbt,
@@ -54,16 +61,15 @@ public class InventoryWeightState extends PersistentState {
     @Override
     public NbtCompound writeNbt(NbtCompound tag) {
         tag.putFloat("maxWeight", maxWeight);
-
         // Save player multipliers to NBT
         NbtCompound multipliersTag = new NbtCompound();
         for (Map.Entry<String, Float> entry : playerMultipliers.entrySet()) {
             multipliersTag.putFloat(entry.getKey(), entry.getValue());
         }
         tag.put("playerMultipliers", multipliersTag);
-
         return tag;
     }
+
 
     public static InventoryWeightState fromNbt(NbtCompound tag) {
         InventoryWeightState state = new InventoryWeightState();
@@ -86,4 +92,6 @@ public class InventoryWeightState extends PersistentState {
 
         return state;
     }
+
+
 }

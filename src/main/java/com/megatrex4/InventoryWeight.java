@@ -16,6 +16,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.text.Text;
 import net.minecraft.world.World;
 import org.slf4j.Logger;
@@ -25,7 +26,6 @@ import java.util.List;
 
 public class InventoryWeight implements ModInitializer {
 
-	public static boolean REALISTIC_MODE = false;
 
 	public static final String MOD_ID = "inventoryweight";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
@@ -53,6 +53,21 @@ public class InventoryWeight implements ModInitializer {
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
 			CommandRegistry.registerCommands(dispatcher);
 		});
+
+		ServerTickEvents.START_SERVER_TICK.register(server -> {
+			for (World world : server.getWorlds()) {
+				// Check if the world is not client-side
+				if (!world.isClient) {
+					// Retrieve the max weight from the server configuration
+					float maxWeight = ItemWeightsConfigServer.loadMaxWeight();
+					// Set the max weight in the InventoryWeightState for each player
+					world.getPlayers().forEach(player -> {
+						InventoryWeightState.setMaxWeight(server, maxWeight);
+					});
+				}
+			}
+		});
+
 
 		// Register tick event for updating player weights
 		ServerTickEvents.END_WORLD_TICK.register(world -> {

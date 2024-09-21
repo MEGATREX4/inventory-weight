@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public class OverloadEffect extends StatusEffect {
 
-    public  static final double BASE_PENALTY = 0.50;
+    public static final double BASE_PENALTY = 0.50;
 
     public static final UUID SPEED_MODIFIER_UUID = UUID.fromString("a53f3d53-2b63-4a78-851f-4c5795876d8c");
     public static final UUID ATTACK_SPEED_MODIFIER_UUID = UUID.fromString("c7d4f84c-9e6e-45d0-888e-df63a7e3d206");
@@ -42,7 +42,12 @@ public class OverloadEffect extends StatusEffect {
 
             InventoryWeightHandler.removeAttributes(player);
 
-            // Apply the updated modifiers
+            // Check and remove existing modifiers before adding new ones
+            if (player.getAttributes().getCustomInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED)
+                    .getModifier(SPEED_MODIFIER_UUID) != null) {
+                player.getAttributes().getCustomInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED)
+                        .removeModifier(SPEED_MODIFIER_UUID);
+            }
             player.getAttributes().getCustomInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED)
                     .addPersistentModifier(new EntityAttributeModifier(
                             SPEED_MODIFIER_UUID,
@@ -50,6 +55,11 @@ public class OverloadEffect extends StatusEffect {
                             -speedDecrease,
                             EntityAttributeModifier.Operation.MULTIPLY_TOTAL));
 
+            if (player.getAttributes().getCustomInstance(EntityAttributes.GENERIC_ATTACK_SPEED)
+                    .getModifier(ATTACK_SPEED_MODIFIER_UUID) != null) {
+                player.getAttributes().getCustomInstance(EntityAttributes.GENERIC_ATTACK_SPEED)
+                        .removeModifier(ATTACK_SPEED_MODIFIER_UUID);
+            }
             player.getAttributes().getCustomInstance(EntityAttributes.GENERIC_ATTACK_SPEED)
                     .addPersistentModifier(new EntityAttributeModifier(
                             ATTACK_SPEED_MODIFIER_UUID,
@@ -57,7 +67,12 @@ public class OverloadEffect extends StatusEffect {
                             -attackSpeedDecrease,
                             EntityAttributeModifier.Operation.MULTIPLY_TOTAL));
 
-            player.getAttributes().getCustomInstance(EntityAttributes.GENERIC_ARMOR)
+            if (player.getAttributes().getCustomInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE)
+                    .getModifier(DAMAGE_REDUCTION_MODIFIER_UUID) != null) {
+                player.getAttributes().getCustomInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE)
+                        .removeModifier(DAMAGE_REDUCTION_MODIFIER_UUID);
+            }
+            player.getAttributes().getCustomInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE)
                     .addPersistentModifier(new EntityAttributeModifier(
                             DAMAGE_REDUCTION_MODIFIER_UUID,
                             "overload_damage_reduction",
@@ -65,5 +80,4 @@ public class OverloadEffect extends StatusEffect {
                             EntityAttributeModifier.Operation.MULTIPLY_TOTAL));
         }
     }
-
 }

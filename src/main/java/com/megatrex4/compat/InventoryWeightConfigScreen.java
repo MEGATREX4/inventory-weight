@@ -118,20 +118,18 @@ public class InventoryWeightConfigScreen {
                 .setSaveConsumer(newValue -> ItemWeights.setItemWeight("items", newValue))
                 .build());
 
-        InventoryWeightState state = InventoryWeightState.fromNbt(null);
         serverCategory.addEntry(entryBuilder.startFloatField(
                         Text.translatable("option.inventoryweight.server.maxWeight"),
-                        state.getMaxWeight())
+                        ItemWeightsConfigServer.loadMaxWeight())
                 .setDefaultValue(InventoryWeightUtil.MAXWEIGHT)
                 .setTooltip(Text.translatable("option.inventoryweight.server.maxWeight.tooltip"))
                 .setSaveConsumer(newValue -> {
-                    // Assuming you can access MinecraftServer instance here
-                    MinecraftServer server = MinecraftClient.getInstance().getServer(); // Obtain the MinecraftServer instance
-                    if (server != null) {
-                        state.setMaxWeight(server, newValue);
-                    }
+                    ItemWeightsConfigServer.setMaxWeight(newValue); // Update config file
+                    // Here, you should adjust the InventoryWeightState for client-side use
+                    InventoryWeightState.setClientMaxWeight(newValue); // Update client-side state
                 })
                 .build());
+
 
 
         serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.pocketWeight"), InventoryWeightArmor.getPocketWeight())
@@ -140,10 +138,14 @@ public class InventoryWeightConfigScreen {
                 .setSaveConsumer(newValue -> InventoryWeightArmor.setPocketWeight("pocketWeight", newValue))
                 .build());
 
-        serverCategory.addEntry(entryBuilder.startBooleanToggle(Text.translatable("option.inventoryweight.server.realistic_mode"), InventoryWeight.REALISTIC_MODE)
+        serverCategory.addEntry(entryBuilder.startBooleanToggle(Text.translatable("option.inventoryweight.server.realistic_mode"), InventoryWeightUtil.REALISTIC_MODE)
                 .setDefaultValue(false)
-                .setSaveConsumer(newValue -> InventoryWeight.REALISTIC_MODE = newValue)
+                .setSaveConsumer(newValue -> {
+                    InventoryWeightUtil.REALISTIC_MODE = newValue;
+                    ItemWeightsConfigServer.saveRealisticMode(newValue); // Save the value
+                })
                 .build());
+
 
         // Items Config Category
         ConfigCategory itemsCategory = builder.getOrCreateCategory(Text.translatable("category.inventoryweight.items"));

@@ -4,6 +4,8 @@ import com.megatrex4.data.PlayerDataHandler;
 import com.megatrex4.effects.InventoryWeightEffectRegister;
 import com.megatrex4.effects.OverloadEffect;
 import com.megatrex4.network.InventoryWeightPacket;
+import com.megatrex4.util.InventoryWeightUtil;
+import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.effect.StatusEffect;
@@ -76,7 +78,7 @@ public class InventoryWeightHandler {
     private static void applyWeightPenalties(ServerPlayerEntity player) {
         float totalWeight = calculateInventoryWeight(player);
 
-        if (totalWeight > 0.1 * MAXWEIGHT && !player.isCreative() && InventoryWeight.REALISTIC_MODE) {
+        if (totalWeight > 0.1 * MAXWEIGHT && !player.isCreative() && InventoryWeightUtil.REALISTIC_MODE) {
             double overloadFactor = (totalWeight - (0.1 * MAXWEIGHT)) / (MAXWEIGHT - (0.1 * MAXWEIGHT));
 
             // Adjust penalties using the overload factor and amplifier
@@ -90,25 +92,29 @@ public class InventoryWeightHandler {
 
             removeAttributes(player);
 
-            // Apply new modifiers
-            player.getAttributes().getCustomInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED)
-                    .addPersistentModifier(new EntityAttributeModifier(OverloadEffect.SPEED_MODIFIER_UUID,
-                            "overload_speed_penalty", -speedDecrease, EntityAttributeModifier.Operation.MULTIPLY_TOTAL));
+            // Apply new modifiers only if they aren't already applied
+            EntityAttributeInstance speedAttribute = player.getAttributes().getCustomInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED);
+            if (speedAttribute.getModifiers().stream().noneMatch(modifier ->
+                    modifier.getId().equals(OverloadEffect.SPEED_MODIFIER_UUID))) {
+                speedAttribute.addPersistentModifier(new EntityAttributeModifier(OverloadEffect.SPEED_MODIFIER_UUID,
+                        "overload_speed_penalty", -speedDecrease, EntityAttributeModifier.Operation.MULTIPLY_TOTAL));
+            }
 
-            player.getAttributes().getCustomInstance(EntityAttributes.GENERIC_ATTACK_SPEED)
-                    .addPersistentModifier(new EntityAttributeModifier(OverloadEffect.ATTACK_SPEED_MODIFIER_UUID,
-                            "overload_attack_speed_penalty", -attackSpeedDecrease, EntityAttributeModifier.Operation.MULTIPLY_TOTAL));
+            EntityAttributeInstance attackSpeedAttribute = player.getAttributes().getCustomInstance(EntityAttributes.GENERIC_ATTACK_SPEED);
+            if (attackSpeedAttribute.getModifiers().stream().noneMatch(modifier ->
+                    modifier.getId().equals(OverloadEffect.ATTACK_SPEED_MODIFIER_UUID))) {
+                attackSpeedAttribute.addPersistentModifier(new EntityAttributeModifier(OverloadEffect.ATTACK_SPEED_MODIFIER_UUID,
+                        "overload_attack_speed_penalty", -attackSpeedDecrease, EntityAttributeModifier.Operation.MULTIPLY_TOTAL));
+            }
 
-            player.getAttributes().getCustomInstance(EntityAttributes.GENERIC_ARMOR)
-                    .addPersistentModifier(new EntityAttributeModifier(OverloadEffect.DAMAGE_REDUCTION_MODIFIER_UUID,
-                            "overload_damage_reduction_penalty", -damageReduction, EntityAttributeModifier.Operation.MULTIPLY_TOTAL));
+            EntityAttributeInstance damageReductionAttribute = player.getAttributes().getCustomInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE);
+            if (damageReductionAttribute.getModifiers().stream().noneMatch(modifier ->
+                    modifier.getId().equals(OverloadEffect.DAMAGE_REDUCTION_MODIFIER_UUID))) {
+                damageReductionAttribute.addPersistentModifier(new EntityAttributeModifier(OverloadEffect.DAMAGE_REDUCTION_MODIFIER_UUID,
+                        "overload_damage_reduction_penalty", -damageReduction, EntityAttributeModifier.Operation.MULTIPLY_TOTAL));
+            }
         } else {
-            player.getAttributes().getCustomInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED)
-                    .removeModifier(OverloadEffect.SPEED_MODIFIER_UUID);
-            player.getAttributes().getCustomInstance(EntityAttributes.GENERIC_ATTACK_SPEED)
-                    .removeModifier(OverloadEffect.ATTACK_SPEED_MODIFIER_UUID);
-            player.getAttributes().getCustomInstance(EntityAttributes.GENERIC_ARMOR)
-                    .removeModifier(OverloadEffect.DAMAGE_REDUCTION_MODIFIER_UUID);
+            removeAttributes(player);
         }
     }
 
