@@ -23,6 +23,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+import static com.megatrex4.items.InventoryWeightItemGroup.registerItemGroups;
+import static com.megatrex4.items.ItemsRegistry.registerModItems;
+
 public class InventoryWeight implements ModInitializer {
 	public static final String MOD_ID = "inventoryweight";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
@@ -41,6 +44,9 @@ public class InventoryWeight implements ModInitializer {
 		ItemWeightsConfigClient.loadConfig();
 
 		loadDatapack();
+
+		registerModItems();
+		registerItemGroups();
 
 		ItemTooltipCallback.EVENT.register(this::addCustomTooltip);
 

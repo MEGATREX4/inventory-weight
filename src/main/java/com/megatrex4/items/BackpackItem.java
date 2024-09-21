@@ -1,9 +1,8 @@
 package com.megatrex4.items;
 
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
-import net.minecraft.item.Item;
+import dev.emi.trinkets.api.TrinketItem;
 
-public class BackpackItem extends Item {
+public class BackpackItem extends TrinketItem {
 
     public BackpackItem(Settings settings) {
         super(settings);
