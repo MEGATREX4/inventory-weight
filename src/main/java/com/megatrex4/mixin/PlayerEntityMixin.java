@@ -3,7 +3,6 @@ package com.megatrex4.mixin;
 import com.megatrex4.InventoryWeight;
 import com.megatrex4.InventoryWeightHandler;
 import com.megatrex4.effects.InventoryWeightEffectRegister;
-import com.megatrex4.util.InventoryWeightUtil;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
