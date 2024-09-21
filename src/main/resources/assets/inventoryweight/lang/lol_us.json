@@ -44,9 +44,9 @@
   "effect.inventoryweight.overload": "Kity Hard",
 
   "inventoryweight.tooltip.hint": "[Press {0}Shift{1} fur moar]",
-  "inventoryweight.tooltip.k": "K",
-  "inventoryweight.tooltip.m": "M",
-  "inventoryweight.tooltip.b": "B",
+  "inventoryweight.tooltip.k": "Kitteh",
+  "inventoryweight.tooltip.m": "Meow",
+  "inventoryweight.tooltip.b": "Big Boi",
   "inventoryweight.tooltip.pockets": "+%s Pokits",
   "inventoryweight.tooltip.totalweight": "Stack Weyt: %s",
   "inventoryweight.tooltip.weight": "Weyt: %s",
