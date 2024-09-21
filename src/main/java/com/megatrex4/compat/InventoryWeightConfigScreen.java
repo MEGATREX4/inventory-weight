@@ -1,5 +1,6 @@
 package com.megatrex4.compat;
 
+import com.megatrex4.InventoryWeight;
 import com.megatrex4.InventoryWeightArmor;
 import com.megatrex4.util.HudPosition;
 import com.megatrex4.util.InventoryWeightUtil;
@@ -137,6 +138,11 @@ public class InventoryWeightConfigScreen {
                 .setDefaultValue(InventoryWeightUtil.POCKET_WEIGHT)
                 .setTooltip(Text.translatable("option.inventoryweight.server.pocketWeight.tooltip"))
                 .setSaveConsumer(newValue -> InventoryWeightArmor.setPocketWeight("pocketWeight", newValue))
+                .build());
+
+        serverCategory.addEntry(entryBuilder.startBooleanToggle(Text.translatable("option.inventoryweight.server.realistic_mode"), InventoryWeight.REALISTIC_MODE)
+                .setDefaultValue(false)
+                .setSaveConsumer(newValue -> InventoryWeight.REALISTIC_MODE = newValue)
                 .build());
 
         // Items Config Category

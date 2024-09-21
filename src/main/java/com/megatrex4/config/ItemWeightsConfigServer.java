@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.megatrex4.InventoryWeight;
 import com.megatrex4.util.InventoryWeightUtil;
 import com.megatrex4.util.ItemWeights;
 
@@ -39,6 +40,12 @@ public class ItemWeightsConfigServer {
                     InventoryWeightUtil.POCKET_WEIGHT = pocketWeight; // Also update the util class
                 }
 
+                if (jsonObject.has("realistic_mode")) {
+                    InventoryWeight.REALISTIC_MODE = jsonObject.get("realisticMode").getAsBoolean();
+                } else {
+                    jsonObject.addProperty("realistic_mode", InventoryWeight.REALISTIC_MODE);
+                }
+
             } else {
                 Files.createDirectories(CONFIG_PATH.getParent());
                 JsonObject jsonObject = new JsonObject();
@@ -51,6 +58,7 @@ public class ItemWeightsConfigServer {
                 jsonObject.addProperty("creative", ItemWeights.CREATIVE);
                 jsonObject.addProperty("maxWeight", maxWeight);
                 jsonObject.addProperty("pocketWeight", pocketWeight);
+                jsonObject.addProperty("realistic_mode", InventoryWeight.REALISTIC_MODE);
                 Files.write(CONFIG_PATH, GSON.toJson(jsonObject).getBytes());
                 ItemWeights.loadWeightsFromConfig(jsonObject);
             }
@@ -72,6 +80,7 @@ public class ItemWeightsConfigServer {
             jsonObject.addProperty("creative", ItemWeights.getItemWeight("creative"));
             jsonObject.addProperty("maxWeight", maxWeight);
             jsonObject.addProperty("pocketWeight", pocketWeight); // Ensure this is saved
+            jsonObject.addProperty("realistic_mode", InventoryWeight.REALISTIC_MODE);
 
             try (FileWriter fileWriter = new FileWriter(CONFIG_PATH.toFile())) {
                 GSON.toJson(jsonObject, fileWriter);

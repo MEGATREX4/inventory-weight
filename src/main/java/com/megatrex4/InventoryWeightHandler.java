@@ -76,7 +76,7 @@ public class InventoryWeightHandler {
     private static void applyWeightPenalties(ServerPlayerEntity player) {
         float totalWeight = calculateInventoryWeight(player);
 
-        if (totalWeight > 0.1 * MAXWEIGHT && !player.isCreative()) {
+        if (totalWeight > 0.1 * MAXWEIGHT && !player.isCreative() && InventoryWeight.REALISTIC_MODE) {
             double overloadFactor = (totalWeight - (0.1 * MAXWEIGHT)) / (MAXWEIGHT - (0.1 * MAXWEIGHT));
 
             // Adjust penalties using the overload factor and amplifier
