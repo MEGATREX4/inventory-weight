@@ -9,11 +9,11 @@ public class InventoryWeightUtil {
     public static float NUGGETS = 10.0f;
     public static float ITEMS = 50.0f;
 
-    public static float CREATIVE = 30000.0f;
+    public static float CREATIVE = 30_000.0f;
 
-    public static float POCKET_WEIGHT = 7000.0f;
+    public static float POCKET_WEIGHT = 9_000.0f;
 
-    public static float MAXWEIGHT = 20000.0f;
+    public static float MAXWEIGHT = 90_000.0f;
 
     public static boolean REALISTIC_MODE = false;
 }
