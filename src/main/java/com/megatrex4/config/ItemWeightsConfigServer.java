@@ -22,7 +22,6 @@ public class ItemWeightsConfigServer {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static float maxWeight = InventoryWeightUtil.MAXWEIGHT;
     public static float pocketWeight = InventoryWeightUtil.POCKET_WEIGHT;
-    public static boolean realisticMode = InventoryWeightUtil.REALISTIC_MODE;
 
     public static void loadConfig() {
         try {
@@ -45,8 +44,7 @@ public class ItemWeightsConfigServer {
 
                 // Load realisticMode from the config (ensure boolean type)
                 if (jsonObject.has("realisticMode")) {
-                    realisticMode = jsonObject.get("realisticMode").getAsBoolean(); // Corrected to boolean
-                    InventoryWeightUtil.REALISTIC_MODE = realisticMode;
+                    InventoryWeightUtil.REALISTIC_MODE = jsonObject.get("realisticMode").getAsBoolean();
                 }
 
             } else {
@@ -62,7 +60,7 @@ public class ItemWeightsConfigServer {
                 jsonObject.addProperty("creative", ItemWeights.CREATIVE);
                 jsonObject.addProperty("maxWeight", maxWeight);
                 jsonObject.addProperty("pocketWeight", pocketWeight);
-                jsonObject.addProperty("realisticMode", realisticMode);
+                jsonObject.addProperty("realisticMode", InventoryWeightUtil.REALISTIC_MODE);
                 Files.write(CONFIG_PATH, GSON.toJson(jsonObject).getBytes());
                 ItemWeights.loadWeightsFromConfig(jsonObject);
             }
@@ -83,7 +81,7 @@ public class ItemWeightsConfigServer {
             jsonObject.addProperty("creative", ItemWeights.getItemWeight("creative"));
             jsonObject.addProperty("maxWeight", maxWeight);
             jsonObject.addProperty("pocketWeight", pocketWeight);
-            jsonObject.addProperty("realisticMode", realisticMode);
+            jsonObject.addProperty("realisticMode", InventoryWeightUtil.REALISTIC_MODE);
 
             try (FileWriter fileWriter = new FileWriter(CONFIG_PATH.toFile())) {
                 GSON.toJson(jsonObject, fileWriter);
@@ -104,8 +102,7 @@ public class ItemWeightsConfigServer {
     }
 
     public static void saveRealisticMode(boolean value) {
-        realisticMode = value; // Update the class variable
-        InventoryWeightUtil.REALISTIC_MODE = value; // Also update the utility class variable
+        InventoryWeightUtil.REALISTIC_MODE = value; // Update the utility class variable
         saveConfig(); // Call saveConfig to write all settings, including realisticMode
     }
 }

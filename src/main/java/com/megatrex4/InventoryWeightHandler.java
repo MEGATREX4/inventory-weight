@@ -122,9 +122,9 @@ public class InventoryWeightHandler {
         // Calculate percentage of weight
         float percentageFull = (inventoryWeight / maxWeight) * 100;
 
-        // Each 10% above 100% adds 2 levels of overload
-        int overloadLevel = Math.max(0, (int) ((percentageFull - 100) / 10) * 2);
-        overloadLevel = Math.min(overloadLevel, 128); // Cap the overload level at 128
+        // Each 10% above 100% adds 1 level of overload
+        int overloadLevel = Math.max(0, (int) (percentageFull - 100) / 10);
+        overloadLevel = Math.min(overloadLevel, 32); // Cap the overload level at 32
 
         // Reduce overload level if the player has Strength or Haste
         int strengthAmplifier = player.hasStatusEffect(StatusEffects.STRENGTH)
@@ -133,18 +133,20 @@ public class InventoryWeightHandler {
         int hasteAmplifier = player.hasStatusEffect(StatusEffects.HASTE)
                 ? player.getStatusEffect(StatusEffects.HASTE).getAmplifier()
                 : 0;
-        int adjustedOverloadLevel = Math.max(1, overloadLevel - (strengthAmplifier + hasteAmplifier) * 2);
+        int adjustedOverloadLevel = Math.max(1, overloadLevel - (strengthAmplifier + hasteAmplifier));
 
-        // Cap the reduced level to 70
-        adjustedOverloadLevel = Math.min(adjustedOverloadLevel, 70);
+        // Cap the reduced level to 10
+        adjustedOverloadLevel = Math.min(adjustedOverloadLevel, 10);
 
-        // Only apply effect if not already present or about to expire
-        StatusEffectInstance currentEffect = player.getStatusEffect(OVERLOAD_EFFECT);
-        if (currentEffect == null || currentEffect.getDuration() < 20) {
-            player.addStatusEffect(new StatusEffectInstance(OVERLOAD_EFFECT, 40, adjustedOverloadLevel - 1, true, false, false));
+        StatusEffectInstance overload = new StatusEffectInstance(OVERLOAD_EFFECT, 40, adjustedOverloadLevel - 1, true, false, false);
+
+        if (player.hasStatusEffect(OVERLOAD_EFFECT)) {
+            overload.applyUpdateEffect(player);
+            // Update the player's effect
+        } else {
+            player.addStatusEffect(overload);
         }
     }
-
 
     private static void removeOverloadEffect(ServerPlayerEntity player) {
         // Ensure removal of attribute modifiers along with the effect

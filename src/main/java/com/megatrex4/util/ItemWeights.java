@@ -102,9 +102,6 @@ public class ItemWeights {
         return ITEMS;
     }
 
-
-
-
     public static void setItemWeight(String item, float weight) {
         customItemWeights.put(item, weight);
     }
@@ -115,18 +112,14 @@ public class ItemWeights {
             String key = entry.getKey();
             JsonElement element = entry.getValue();
 
-            // Verify if it's a boolean or float and process accordingly
+            // Verify if it's a number and process accordingly
             if (element.isJsonPrimitive()) {
                 JsonPrimitive primitive = element.getAsJsonPrimitive();
-                if (primitive.isBoolean()) {
-                    // Handle boolean if this is expected
-                    boolean value = primitive.getAsBoolean();
-                    setItemWeight(key, value ? 1.0f : 0.0f); // Example of converting boolean to float
-                } else if (primitive.isNumber()) {
-                    float value = primitive.getAsFloat(); // This is where the error occurred
+                if (primitive.isNumber()) {
+                    float value = primitive.getAsFloat();
                     setItemWeight(key, value);
                 } else {
-                    InventoryWeight.LOGGER.error("Unsupported primitive type for key " + key);
+					InventoryWeight.LOGGER.error("Unsupported primitive type for key {}", key);
                 }
             }
         }
