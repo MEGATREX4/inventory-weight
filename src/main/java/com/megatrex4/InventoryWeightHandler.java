@@ -59,8 +59,8 @@ public class InventoryWeightHandler {
         float maxWeight = PlayerDataHandler.getPlayerMaxWeightWithMultiplier(player);
         float inventoryWeight = calculateInventoryWeight(player);
 
-        // Skip Creative mode players
-        if (player.interactionManager.getGameMode() == GameMode.CREATIVE) {
+        // Skip Creative or Spectator mode players
+        if (player.isCreative() || player.isSpectator()) {
             removeOverloadEffect(player);
             removeAttributes(player);
             return;
