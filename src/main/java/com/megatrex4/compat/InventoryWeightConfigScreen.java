@@ -140,12 +140,8 @@ public class InventoryWeightConfigScreen {
 
         serverCategory.addEntry(entryBuilder.startBooleanToggle(Text.translatable("option.inventoryweight.server.realistic_mode"), InventoryWeightUtil.REALISTIC_MODE)
                 .setDefaultValue(false)
-                .setSaveConsumer(newValue -> {
-                    InventoryWeightUtil.REALISTIC_MODE = newValue;
-                    ItemWeightsConfigServer.saveRealisticMode(newValue); // Save the value
-                })
+                .setSaveConsumer(newValue -> InventoryWeightUtil.REALISTIC_MODE = newValue)
                 .build());
-
 
         // Items Config Category
         ConfigCategory itemsCategory = builder.getOrCreateCategory(Text.translatable("category.inventoryweight.items"));

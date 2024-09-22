@@ -75,6 +75,10 @@ public class InventoryWeight implements ModInitializer {
 				InventoryWeightHandler.tick(world);
 			}
 		});
+
+		ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
+			ItemWeightsConfigServer.saveConfig();
+		});
 	}
 
 	private void addCustomTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip) {

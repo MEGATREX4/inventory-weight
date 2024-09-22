@@ -100,9 +100,4 @@ public class ItemWeightsConfigServer {
     public static float loadMaxWeight() {
         return maxWeight;
     }
-
-    public static void saveRealisticMode(boolean value) {
-        InventoryWeightUtil.REALISTIC_MODE = value; // Update the utility class variable
-        saveConfig(); // Call saveConfig to write all settings, including realisticMode
-    }
 }
