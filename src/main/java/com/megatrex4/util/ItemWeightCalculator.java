@@ -1,9 +1,6 @@
 package com.megatrex4.util;
 
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Item;
-import net.minecraft.item.ToolItem;
+import net.minecraft.item.*;
 
 import static com.megatrex4.util.Rarity.getRarityWeight;
 
@@ -19,6 +16,24 @@ public class ItemWeightCalculator {
         if (maxStackSize > 1) {
             float stackMultiplier = 1 + (10f / maxStackSize);
             weight *= stackMultiplier;
+
+            if (item.isFood()) {
+                FoodComponent foodComponent = item.getFoodComponent();
+                if (foodComponent != null) {
+                    weight += foodComponent.getHunger();
+
+                    // Reduce weight if the item is a snack
+                    if (foodComponent.isSnack()) {
+                        weight /= 2;
+                    }
+                    weight += foodComponent.getSaturationModifier() * 20;
+                }
+            }
+
+            if (item.isFireproof()){
+                weight *= 1.25f;
+            }
+
         }
 
         else if (maxStackSize == 1 && maxDurability > 0) {
@@ -30,6 +45,7 @@ public class ItemWeightCalculator {
                 weight += (float) (InventoryWeightUtil.ITEMS + ((maxDurability / 1500.0) * 300));
             }
         }
+
 
         weight *= (getRarityWeight(stack) * 1.3f);
 

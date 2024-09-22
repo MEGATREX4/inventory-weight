@@ -1,9 +1,7 @@
 package com.megatrex4.util;
 
 import com.megatrex4.data.PlayerDataHandler;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockWithEntity;
-import net.minecraft.block.ShulkerBoxBlock;
+import net.minecraft.block.*;
 import net.minecraft.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
@@ -40,16 +38,28 @@ public class BlockWeightCalculator {
             weight += Math.min((blastResistance * 50), 10000);
 
             if (isTransparent) {
-                weight -= 1000;
+                weight /= 10;
             }
 
             if (block instanceof BlockWithEntity) {
                 weight -= 300;
             }
 
+
+
             weight *= (getRarityWeight(stack) * 1.3f);
 
-            return (int) Math.floor(Math.max(weight, InventoryWeightUtil.ITEMS));
+            // Check if the block is a slab
+            if (block instanceof SlabBlock) {
+                weight /= 2;
+            }
+            //if block is stairs
+            if (block instanceof StairsBlock) {
+                weight *= 0.75f;
+            }
+
+
+            return (int) Math.floor(Math.max(weight, InventoryWeightUtil.NUGGETS));
         }
         return InventoryWeightUtil.ITEMS;
     }
