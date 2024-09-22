@@ -49,6 +49,7 @@
   "option.inventoryweight.server.nuggets": "Вага злитків",
   "option.inventoryweight.server.pocketWeight": "Вмістимість кишень",
   "option.inventoryweight.server.pocketWeight.tooltip": "Встановіть максимальну вагу, яку \nгравець може тримати в кожній кишені.\nКишені - це значення застосовується від броні\n, кількість кишень можна змінювати через датапак",
+  "option.inventoryweight.server.realistic_mode": "Реалістичний режим",
 
   "title.inventoryweight.config": "Конфігурація ваги інвентарю"
 }

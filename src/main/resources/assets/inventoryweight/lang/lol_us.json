@@ -20,7 +20,7 @@
   "option.inventoryweight.server.nuggets": "Weyt ov Nuggetz",
   "option.inventoryweight.server.pocketWeight": "Pokit Capacity",
   "option.inventoryweight.server.pocketWeight.tooltip": "Set teh max weyt dat \nteh playur can hold in each pokit.\nPokits - dis valoo applid frum teh armur\n, amount ov pokits can be changed via datapackz",
-  "option.inventoryweight.server.realistic_mode": "Realistic Mode",
+  "option.inventoryweight.server.realistic_mode": "Reelistik Mowd",
 
   "command.inventoryweight.get.base": "Max base weyt: %s",
   "command.inventoryweight.get.base.other": "Max base weyt fur %s: %s",
