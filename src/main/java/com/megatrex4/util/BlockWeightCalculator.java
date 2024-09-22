@@ -2,13 +2,10 @@ package com.megatrex4.util;
 
 import com.megatrex4.data.PlayerDataHandler;
 import net.minecraft.block.*;
-import net.minecraft.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
-
-import java.util.List;
 
 import static com.megatrex4.util.ItemWeights.getItemWeight;
 import static com.megatrex4.util.Rarity.getRarityWeight;
@@ -38,14 +35,12 @@ public class BlockWeightCalculator {
             weight += Math.min((blastResistance * 50), 10000);
 
             if (isTransparent) {
-                weight /= 10;
+                weight /= 5;
             }
 
             if (block instanceof BlockWithEntity) {
-                weight -= 300;
+                weight -= 200;
             }
-
-
 
             weight *= (getRarityWeight(stack) * 1.3f);
 
@@ -59,7 +54,7 @@ public class BlockWeightCalculator {
             }
 
 
-            return (int) Math.floor(Math.max(weight, InventoryWeightUtil.NUGGETS));
+            return (int) Math.floor(Math.max(weight, InventoryWeightUtil.ITEMS));
         }
         return InventoryWeightUtil.ITEMS;
     }
