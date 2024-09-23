@@ -3,6 +3,7 @@ package com.megatrex4.mixin;
 import com.megatrex4.InventoryWeight;
 import com.megatrex4.InventoryWeightHandler;
 import com.megatrex4.effects.InventoryWeightEffectRegister;
+import com.megatrex4.util.InventoryWeightUtil;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
@@ -26,8 +27,9 @@ public abstract class PlayerEntityMixin {
 	protected void overloadJumpEffect(CallbackInfo ci) {
 		if ((LivingEntity) (Object) this instanceof PlayerEntity self) {
             float totalWeight = InventoryWeightHandler.calculateInventoryWeight(self);
-            float baseJumpVelocity = this.getJumpVelocity();
 
+
+            float baseJumpVelocity = this.getJumpVelocity();
 			if (totalWeight > MAXWEIGHT) {
 				if (self.hasStatusEffect(InventoryWeightEffectRegister.OVERLOAD_EFFECT)) {
 					float reducedJumpVelocity = baseJumpVelocity * 0.6f / (self.getStatusEffect(InventoryWeightEffectRegister.OVERLOAD_EFFECT).getAmplifier() + 1);

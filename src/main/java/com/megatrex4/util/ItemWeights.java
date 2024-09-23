@@ -105,6 +105,7 @@ public class ItemWeights {
     public static void setItemWeight(String item, float weight) {
         customItemWeights.put(item, weight);
     }
+
     public static void loadWeightsFromConfig(JsonObject jsonObject) {
         // Assuming the issue lies here
         for (Map.Entry<String, JsonElement> entry : jsonObject.entrySet()) {
@@ -123,6 +124,9 @@ public class ItemWeights {
             }
         }
     }
+
+
+
     public static Map<String, Float> getCustomItemWeights() {
         return customItemWeights;
     }

@@ -24,9 +24,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-import static com.megatrex4.items.InventoryWeightItemGroup.registerItemGroups;
-import static com.megatrex4.items.ItemsRegistry.registerModItems;
-
 public class InventoryWeight implements ModInitializer {
 
 
@@ -48,11 +45,7 @@ public class InventoryWeight implements ModInitializer {
 
 		loadDatapack();
 
-		registerModItems();
-		registerItemGroups();
-
 		ItemTooltipCallback.EVENT.register(this::addCustomTooltip);
-
 
 		InventoryWeightEffectRegister.registerEffects();
 

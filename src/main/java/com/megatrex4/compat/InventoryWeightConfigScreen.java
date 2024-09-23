@@ -129,6 +129,9 @@ public class InventoryWeightConfigScreen {
                     InventoryWeightState.setClientMaxWeight(newValue); // Update client-side state
                 })
                 .build());
+
+
+
         serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.pocketWeight"), InventoryWeightArmor.getPocketWeight())
                 .setDefaultValue(InventoryWeightUtil.POCKET_WEIGHT)
                 .setTooltip(Text.translatable("option.inventoryweight.server.pocketWeight.tooltip"))
