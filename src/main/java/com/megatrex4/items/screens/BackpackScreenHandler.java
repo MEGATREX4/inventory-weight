@@ -36,13 +36,23 @@ public class BackpackScreenHandler extends ScreenHandler {
 
 
     private void addBackpackSlots() {
-        Inventory backpackInventory = new SimpleInventory(rows * 9);// Create an Inventory with size based on rows
+        Inventory backpackInventory = new SimpleInventory(rows * 9); // Create an Inventory with size based on rows
+        int slotHeight = 18;
+        int gap = 3;
+
+        // Calculate the initial Y position for backpack slots
+        int initialSlotY = (slotHeight * 4) - (rows * slotHeight + gap);
+
         for (int i = 0; i < rows; ++i) {
             for (int j = 0; j < 9; ++j) {
-                this.addSlot(new Slot(backpackInventory, j + i * 9, 8 + j * 18, 18 + i * 18));
+                // Positioning the slots above the player inventory
+                this.addSlot(new Slot(backpackInventory, j + i * 9, 8 + j * 18, initialSlotY + i * slotHeight)); // Corrected position
             }
         }
     }
+
+
+
 
     private void addPlayerInventory(PlayerInventory playerInventory) {
         for (int i = 0; i < 3; ++i) {

@@ -53,5 +53,7 @@
   "inventoryweight.tooltip.weight": "Weight: %s",
   "inventoryweight.tooltip.weightinside": "Weight Inside: %s",
 
-  "title.inventoryweight.config": "Inventory Weight Configuration"
+  "title.inventoryweight.config": "Inventory Weight Configuration",
+
+  "item.inventoryweight.leather_backpack": "Leather Backpack"
 }
