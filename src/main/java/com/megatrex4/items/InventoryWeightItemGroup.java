@@ -3,6 +3,7 @@ import com.megatrex4.InventoryWeight;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.text.Text;
@@ -12,7 +13,7 @@ public class InventoryWeightItemGroup {
             new Identifier(InventoryWeight.MOD_ID, "inventoryweight"),
             FabricItemGroup.builder()
                     .displayName(Text.translatable("itemGroup.inventoryweight.title"))
-                    .icon(() -> new ItemStack(ItemsRegistry.LEATHER_BACKPACK))
+                    .icon(() -> new ItemStack(Items.ANVIL))
                     .entries((displayContext, entries) -> {
                         entries.add(ItemsRegistry.LEATHER_BACKPACK);
                     }).build());

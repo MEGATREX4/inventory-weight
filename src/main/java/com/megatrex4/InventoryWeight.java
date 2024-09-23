@@ -6,18 +6,26 @@ import com.megatrex4.config.ItemWeightConfigItems;
 import com.megatrex4.config.ItemWeightsConfigClient;
 import com.megatrex4.config.ItemWeightsConfigServer;
 import com.megatrex4.effects.InventoryWeightEffectRegister;
+import com.megatrex4.items.BackpackItemRenderer;
+import com.megatrex4.items.ItemsRegistry;
 import com.megatrex4.network.ModMessages;
 import com.megatrex4.util.Tooltips;
+import dev.emi.trinkets.api.client.TrinketRendererRegistry;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
+import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +52,8 @@ public class InventoryWeight implements ModInitializer {
 
 		registerModItems();
 		registerItemGroups();
+
+		TrinketRendererRegistry.registerRenderer(ItemsRegistry.LEATHER_BACKPACK, new BackpackItemRenderer());
 
 		ItemWeightsConfigServer.loadConfig();
 		ItemWeightConfigItems.loadConfig();
