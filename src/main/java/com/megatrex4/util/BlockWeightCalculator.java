@@ -59,8 +59,6 @@ public class BlockWeightCalculator {
         return InventoryWeightUtil.ITEMS;
     }
 
-
-
     // Updated method to return two values (with and without the modifier)
     public static ShulkerBoxWeightResult calculateShulkerBoxWeight(ItemStack shulkerBoxStack) {
         if (!(shulkerBoxStack.getItem() instanceof BlockItem) ||
@@ -105,8 +103,5 @@ public class BlockWeightCalculator {
             this.baseWeight = baseWeight;
         }
     }
-
-
-
 
 }

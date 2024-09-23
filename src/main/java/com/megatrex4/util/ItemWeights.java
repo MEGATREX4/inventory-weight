@@ -125,8 +125,6 @@ public class ItemWeights {
         }
     }
 
-
-
     public static Map<String, Float> getCustomItemWeights() {
         return customItemWeights;
     }
