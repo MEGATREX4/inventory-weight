@@ -11,7 +11,7 @@ import net.minecraft.util.Identifier;
 
 public class InventoryWeightItemGroup {
 
-    public static final ItemGroup MEALS_UKRAINIAN_DELIGHT = Registry.register(Registries.ITEM_GROUP,
+    public static final ItemGroup INVENTORY_WEIGHT = Registry.register(Registries.ITEM_GROUP,
             new Identifier(InventoryWeight.MOD_ID, "inventoryweight"),
             FabricItemGroup.builder()
                     .displayName(Text.translatable("itemGroup.inventoryweight.title"))
