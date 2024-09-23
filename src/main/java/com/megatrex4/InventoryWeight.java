@@ -8,6 +8,7 @@ import com.megatrex4.config.ItemWeightsConfigServer;
 import com.megatrex4.effects.InventoryWeightEffectRegister;
 import com.megatrex4.items.BackpackItemRenderer;
 import com.megatrex4.items.ItemsRegistry;
+import com.megatrex4.items.screens.ScreenHandlersRegistry;
 import com.megatrex4.network.ModMessages;
 import com.megatrex4.util.Tooltips;
 import dev.emi.trinkets.api.client.TrinketRendererRegistry;
@@ -34,6 +35,7 @@ import java.util.List;
 
 import static com.megatrex4.items.InventoryWeightItemGroup.registerItemGroups;
 import static com.megatrex4.items.ItemsRegistry.registerModItems;
+import static com.megatrex4.items.screens.ScreenHandlersRegistry.registerModScreenHandlers;
 
 public class InventoryWeight implements ModInitializer {
 
@@ -52,6 +54,8 @@ public class InventoryWeight implements ModInitializer {
 
 		registerModItems();
 		registerItemGroups();
+
+		registerModScreenHandlers();
 
 		TrinketRendererRegistry.registerRenderer(ItemsRegistry.LEATHER_BACKPACK, new BackpackItemRenderer());
 
