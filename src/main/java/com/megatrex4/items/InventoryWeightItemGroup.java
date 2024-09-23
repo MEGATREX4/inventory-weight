@@ -16,6 +16,7 @@ public class InventoryWeightItemGroup {
                     .icon(() -> new ItemStack(Items.ANVIL))
                     .entries((displayContext, entries) -> {
                         entries.add(ItemsRegistry.LEATHER_BACKPACK);
+                        entries.add(ItemsRegistry.IRON_BACKPACK);
                     }).build());
     public static void registerItemGroups() {
         InventoryWeight.LOGGER.info("Registering Item Groups for " + InventoryWeight.MOD_ID);
