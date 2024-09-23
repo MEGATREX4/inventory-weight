@@ -24,6 +24,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+import static com.megatrex4.items.InventoryWeightItemGroup.registerItemGroups;
+import static com.megatrex4.items.ItemsRegistry.registerModItems;
+
 public class InventoryWeight implements ModInitializer {
 
 
@@ -38,6 +41,9 @@ public class InventoryWeight implements ModInitializer {
 		ClientPlayNetworking.registerGlobalReceiver(ModMessages.INVENTORY_WEIGHT_SYNC, (client, handler, buf, responseSender) -> {
 			InventoryWeightClientHandler.receivePacket(client, ModMessages.INVENTORY_WEIGHT_SYNC, buf);
 		});
+
+		registerModItems();
+		registerItemGroups();
 
 		ItemWeightsConfigServer.loadConfig();
 		ItemWeightConfigItems.loadConfig();
