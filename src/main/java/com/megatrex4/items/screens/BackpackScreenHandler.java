@@ -6,75 +6,94 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.collection.DefaultedList;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.*;
+
 public class BackpackScreenHandler extends ScreenHandler {
+    private final int padding = 8; // Padding around the slots
+    private final int titleSpace = 10; // Space for the title
     private final int rows;
     private final DefaultedList<ItemStack> backpackItems;
+    private final ItemStack backpackStack;
 
-
-    public int getRows() {
-        return this.rows;
-    }
-
+    // Constructor
     public BackpackScreenHandler(@Nullable ScreenHandlerType<?> type, int syncId, PlayerInventory playerInventory, ItemStack stack) {
         super(type, syncId);
         this.rows = ((BackpackItem) stack.getItem()).getRows();
+        this.backpackStack = stack;
         this.backpackItems = DefaultedList.ofSize(rows * 9, ItemStack.EMPTY);
+
         addBackpackSlots();
         addPlayerInventory(playerInventory);
         addPlayerHotbar(playerInventory);
     }
 
+    public int getRows() {
+        return this.rows;
+    }
 
-
-
-
+    // Method to add backpack slots
     private void addBackpackSlots() {
-        Inventory backpackInventory = new SimpleInventory(rows * 9); // Create an Inventory with size based on rows
-        int slotHeight = 18;
-        int gap = 3;
+        Dimension dimension = getDimension(); // Use Dimension for proper screen layout
+        Inventory backpackInventory = new SimpleInventory(rows * 9);
 
-        // Calculate the initial Y position for backpack slots
-        int initialSlotY = (slotHeight * 4) - (rows * slotHeight + gap);
-
-        for (int i = 0; i < rows; ++i) {
-            for (int j = 0; j < 9; ++j) {
-                // Positioning the slots above the player inventory
-                this.addSlot(new Slot(backpackInventory, j + i * 9, 8 + j * 18, initialSlotY + i * slotHeight)); // Corrected position
+        // Add the backpack slots dynamically based on rows and columns
+        for (int y = 0; y < rows; ++y) {
+            for (int x = 0; x < 9; ++x) {
+                Point backpackSlotPosition = getBackpackSlotPosition(dimension, x, y);
+                this.addSlot(new Slot(backpackInventory, x + y * 9, backpackSlotPosition.x + 1, backpackSlotPosition.y + 1));
             }
         }
     }
 
-
-
-
+    // Method to add player inventory slots
     private void addPlayerInventory(PlayerInventory playerInventory) {
-        for (int i = 0; i < 3; ++i) {
-            for (int l = 0; l < 9; ++l) {
-                this.addSlot(new Slot(playerInventory, l + i * 9 + 9, 8 + l * 18, 84 + i * 18));
+        Dimension dimension = getDimension(); // Use Dimension for proper screen layout
+        for (int y = 0; y < 3; ++y) { // Player inventory rows (3 rows)
+            for (int x = 0; x < 9; ++x) { // 9 columns for each row
+                Point playerInvSlotPosition = getPlayerInvSlotPosition(dimension, x, y);
+                this.addSlot(new Slot(playerInventory, x + y * 9 + 9, playerInvSlotPosition.x + 1, playerInvSlotPosition.y + 1));
             }
         }
     }
 
+    // Method to add hotbar slots
     private void addPlayerHotbar(PlayerInventory playerInventory) {
-        for (int i = 0; i < 9; ++i) {
-            this.addSlot(new Slot(playerInventory, i, 8 + i * 18, 142));
+        Dimension dimension = getDimension(); // Use Dimension for proper screen layout
+        for (int x = 0; x < 9; ++x) { // Hotbar always has 1 row, 9 slots
+            Point playerInvSlotPosition = getPlayerInvSlotPosition(dimension, x, 3);
+            this.addSlot(new Slot(playerInventory, x, playerInvSlotPosition.x + 1, playerInvSlotPosition.y + 1));
         }
     }
 
-    @Override
-    public ItemStack quickMove(PlayerEntity player, int slot) {
-        return null; // Implement item movement logic if needed
+    // Get dimensions based on the number of rows and columns in the backpack
+    public Dimension getDimension() {
+            return new Dimension(padding * 2 + 9 * 18, padding * 2 + titleSpace * 2 + 8 + (rows + 4) * 18);
+    }
+
+    // Calculate backpack slot position
+    public Point getBackpackSlotPosition(Dimension dimension, int x, int y) {
+        return new Point((int) (dimension.getWidth() / 2 - 9 * 9 + x * 18), (int) (padding + titleSpace + y * 18));
+    }
+
+    // Calculate player inventory slot position
+    public Point getPlayerInvSlotPosition(Dimension dimension, int x, int y) {
+        return new Point((int) (dimension.getWidth() / 2 - 9 * 9 + x * 18),
+                (int) (dimension.getHeight() - padding - 4 * 18 - 3 + y * 18 + (y == 3 ? 4 : 0)));
     }
 
     @Override
     public boolean canUse(PlayerEntity player) {
-        return true; // Adjust if necessary
+        return true;
+    }
+
+    @Override
+    public ItemStack quickMove(PlayerEntity player, int slot) {
+        return ItemStack.EMPTY; // Implement item movement logic if needed
     }
 }

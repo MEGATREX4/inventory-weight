@@ -17,6 +17,10 @@ public class InventoryWeightItemGroup {
                     .entries((displayContext, entries) -> {
                         entries.add(ItemsRegistry.LEATHER_BACKPACK);
                         entries.add(ItemsRegistry.IRON_BACKPACK);
+                        entries.add(ItemsRegistry.GOLD_BACKPACK);
+                        entries.add(ItemsRegistry.DIAMOND_BACKPACK);
+                        entries.add(ItemsRegistry.OBSIDIAN_BACKPACK);
+                        entries.add(ItemsRegistry.NETHERITE_BACKPACK);
                     }).build());
     public static void registerItemGroups() {
         InventoryWeight.LOGGER.info("Registering Item Groups for " + InventoryWeight.MOD_ID);

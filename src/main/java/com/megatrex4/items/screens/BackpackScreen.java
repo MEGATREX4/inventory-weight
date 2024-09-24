@@ -34,11 +34,14 @@ public class BackpackScreen extends HandledScreen<BackpackScreenHandler> {
 
         int rows = handler.getRows();
 
+        if (rows == 3){
+            titleY+=5;
+        }
         if (rows < 3){
-            titleY+=18+1;
+            titleY+=18-5;
         }
         if (rows < 2){
-            titleY+=18+1;
+            titleY+=18-5;
         }
         if (rows > 3){
             for (int i = 3; i < rows; i++ ){
@@ -59,7 +62,12 @@ public class BackpackScreen extends HandledScreen<BackpackScreenHandler> {
         int x = (this.width - this.backgroundWidth) / 2;
         int y = (this.height - this.backgroundHeight) / 2;
 
-        renderBackgroundTexture(context, x, y, backgroundWidth, backgroundHeight, 0xFFFFFFFF);
+        int row =  handler.getRows();
+
+        int backgroundYHeight = (4*18)+(row*18) + 45;
+        int backgroundY = (this.height - backgroundYHeight) / 2;
+
+        renderBackgroundTexture(context, x, backgroundY, backgroundWidth, backgroundYHeight, 0xFFFFFFFF);
 
         // Draw the slots
         for (Slot slot : getScreenHandler().slots) {
