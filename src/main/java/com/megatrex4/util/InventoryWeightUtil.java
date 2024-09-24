@@ -16,4 +16,6 @@ public class InventoryWeightUtil {
     public static float MAXWEIGHT = 90_000.0f;
 
     public static boolean REALISTIC_MODE = false;
+
+    public static float OVERLOAD_PENALTY_STRENGTH = 1.0f;
 }

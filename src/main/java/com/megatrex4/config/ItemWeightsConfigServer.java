@@ -61,6 +61,8 @@ public class ItemWeightsConfigServer {
                 jsonObject.addProperty("maxWeight", maxWeight);
                 jsonObject.addProperty("pocketWeight", pocketWeight);
                 jsonObject.addProperty("realisticMode", InventoryWeightUtil.REALISTIC_MODE);
+                jsonObject.addProperty("overloadPenaltyStrength", InventoryWeightUtil.OVERLOAD_PENALTY_STRENGTH);
+
                 Files.write(CONFIG_PATH, GSON.toJson(jsonObject).getBytes());
                 ItemWeights.loadWeightsFromConfig(jsonObject);
             }
@@ -82,6 +84,7 @@ public class ItemWeightsConfigServer {
             jsonObject.addProperty("maxWeight", maxWeight);
             jsonObject.addProperty("pocketWeight", pocketWeight);
             jsonObject.addProperty("realisticMode", InventoryWeightUtil.REALISTIC_MODE);
+            jsonObject.addProperty("overloadPenaltyStrength", InventoryWeightUtil.OVERLOAD_PENALTY_STRENGTH);
 
             try (FileWriter fileWriter = new FileWriter(CONFIG_PATH.toFile())) {
                 GSON.toJson(jsonObject, fileWriter);

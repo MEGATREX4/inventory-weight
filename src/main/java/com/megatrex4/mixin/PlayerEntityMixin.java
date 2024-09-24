@@ -1,6 +1,5 @@
 package com.megatrex4.mixin;
 
-import com.megatrex4.InventoryWeight;
 import com.megatrex4.InventoryWeightHandler;
 import com.megatrex4.effects.InventoryWeightEffectRegister;
 import com.megatrex4.util.InventoryWeightUtil;
@@ -32,9 +31,9 @@ public abstract class PlayerEntityMixin {
             float baseJumpVelocity = this.getJumpVelocity();
 			if (totalWeight > MAXWEIGHT) {
 				if (self.hasStatusEffect(InventoryWeightEffectRegister.OVERLOAD_EFFECT)) {
-					float reducedJumpVelocity = baseJumpVelocity * 0.6f / (self.getStatusEffect(InventoryWeightEffectRegister.OVERLOAD_EFFECT).getAmplifier() + 1);
+					float reducedJumpVelocity = baseJumpVelocity * 0.6f / (self.getStatusEffect(InventoryWeightEffectRegister.OVERLOAD_EFFECT).getAmplifier() + 1) / InventoryWeightUtil.OVERLOAD_PENALTY_STRENGTH;
 
-					// Cap the jump reduction at 20% of the base jump height
+					// Cap the jump reduction at 10% of the base jump height
 					if (reducedJumpVelocity < baseJumpVelocity * 0.2f) reducedJumpVelocity = baseJumpVelocity * 0.2f;
 
 					// Set the velocity to the reduced value

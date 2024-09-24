@@ -1,6 +1,7 @@
 package com.megatrex4.effects;
 
 import com.megatrex4.InventoryWeightHandler;
+import com.megatrex4.util.InventoryWeightUtil;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -31,9 +32,9 @@ public class OverloadEffect extends StatusEffect {
     public void applyUpdateEffect(LivingEntity entity, int amplifier) {
         if (entity instanceof PlayerEntity player) {
             // Calculate the effect values based on amplifier level
-            double speedDecrease = BASE_PENALTY + (0.05 * amplifier);  // Start with 50% + 5% per amplifier level
-            double attackSpeedDecrease = BASE_PENALTY + (0.05 * amplifier); // Same for attack speed
-            double damageReduction = BASE_PENALTY / 2 + (0.05 * amplifier); // Reduce damage by 30% + 5% per level
+            double speedDecrease = BASE_PENALTY + (0.05 * amplifier) * InventoryWeightUtil.OVERLOAD_PENALTY_STRENGTH; // Start with 50% + 5% per amplifier level
+            double attackSpeedDecrease = BASE_PENALTY + (0.05 * amplifier) * InventoryWeightUtil.OVERLOAD_PENALTY_STRENGTH; // Same for attack speed
+            double damageReduction = BASE_PENALTY / 2 + (0.05 * amplifier) * InventoryWeightUtil.OVERLOAD_PENALTY_STRENGTH; // Reduce damage by 30% + 5% per level
 
             // Ensure the values do not exceed 90%
             speedDecrease = Math.min(speedDecrease, 0.9);

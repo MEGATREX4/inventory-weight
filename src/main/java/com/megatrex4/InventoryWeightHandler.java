@@ -8,6 +8,7 @@ import com.megatrex4.util.InventoryWeightUtil;
 import dev.emi.trinkets.api.SlotReference;
 import dev.emi.trinkets.api.TrinketComponent;
 import dev.emi.trinkets.api.TrinketsApi;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -19,10 +20,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Pair;
-import net.minecraft.world.GameMode;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -34,8 +32,6 @@ import static com.megatrex4.util.ItemWeights.getItemWeight;
 public class InventoryWeightHandler {
 
     private static final StatusEffect OVERLOAD_EFFECT = InventoryWeightEffectRegister.OVERLOAD_EFFECT;
-
-    private static boolean trinketsChecked = false;
 
     public static float calculateInventoryWeight(PlayerEntity player) {
         float totalWeight = 0;
@@ -63,30 +59,22 @@ public class InventoryWeightHandler {
 
     private static float calculateTrinketsWeight(PlayerEntity player) {
         float trinketsWeight = 0;
-        if (!trinketsChecked) { // Check if we have already checked for Trinkets API
-            try {
-                // Try to access the Trinkets API using reflection
-                Class<?> trinketsApiClass = Class.forName("dev.emi.trinkets.api.TrinketsApi");
-                Method getTrinketComponentMethod = trinketsApiClass.getMethod("getTrinketComponent", PlayerEntity.class);
-                Optional<?> trinketComponent = (Optional<?>) getTrinketComponentMethod.invoke(null, player);
+        if (FabricLoader.getInstance().isModLoaded("trinkets")) {
+            Optional<?> trinketComponent = TrinketsApi.getTrinketComponent(player);
 
-                if (trinketComponent.isPresent()) {
-                    List<net.minecraft.util.Pair<SlotReference, ItemStack>> equippedItems =
-                            ((TrinketComponent) trinketComponent.get()).getAllEquipped();
-                    for (Pair<SlotReference, ItemStack> slot : equippedItems) {
-                        ItemStack trinketStack = slot.getRight();
-                        if (!trinketStack.isEmpty()) {
-                            trinketsWeight += getItemWeight(trinketStack);
-                        }
+            if (trinketComponent.isPresent()) {
+                List<net.minecraft.util.Pair<SlotReference, ItemStack>> equippedItems =
+                        ((TrinketComponent) trinketComponent.get()).getAllEquipped();
+                for (Pair<SlotReference, ItemStack> slot : equippedItems) {
+                    ItemStack trinketStack = slot.getRight();
+                    if (!trinketStack.isEmpty()) {
+                        trinketsWeight += getItemWeight(trinketStack);
                     }
                 }
-            } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                InventoryWeight.LOGGER.error("Trinkets API is not present, skip TrinketsWeight calculation");
-            } finally {
-                trinketsChecked = true; // Set the flag to true after the first check
             }
+        } else {
+            InventoryWeight.LOGGER.debug("Trinkets API is not present, skipping TrinketsWeight calculation");
         }
-
         return trinketsWeight;
     }
 

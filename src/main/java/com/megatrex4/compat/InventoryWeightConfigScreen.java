@@ -1,15 +1,12 @@
 package com.megatrex4.compat;
 
-import com.megatrex4.InventoryWeight;
 import com.megatrex4.InventoryWeightArmor;
 import com.megatrex4.util.HudPosition;
 import com.megatrex4.util.InventoryWeightUtil;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.text.Text;
 
 import com.megatrex4.config.ItemWeightsConfigClient;
@@ -82,7 +79,37 @@ public class InventoryWeightConfigScreen {
         // Server Config Category
         ConfigCategory serverCategory = builder.getOrCreateCategory(Text.translatable("category.inventoryweight.server"));
 
-        // Add fields for server settings
+        serverCategory.addEntry(entryBuilder.startBooleanToggle(Text.translatable("option.inventoryweight.server.realistic_mode"), InventoryWeightUtil.REALISTIC_MODE)
+                .setDefaultValue(false)
+                .setSaveConsumer(newValue -> InventoryWeightUtil.REALISTIC_MODE = newValue)
+                .build());
+
+        serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.overloadPenaltyMultiplier"), InventoryWeightUtil.OVERLOAD_PENALTY_STRENGTH)
+                .setDefaultValue(1)
+                .setMin(0.01F).setMax(100F) // Max values
+                .setTooltip(Text.translatable("option.inventoryweight.server.overloadPenaltyMultiplier.tooltip"))
+                .setSaveConsumer(newValue -> InventoryWeightUtil.OVERLOAD_PENALTY_STRENGTH = newValue)
+                .build());
+
+        serverCategory.addEntry(entryBuilder.startFloatField(
+                        Text.translatable("option.inventoryweight.server.maxWeight"),
+                        ItemWeightsConfigServer.loadMaxWeight())
+                .setDefaultValue(InventoryWeightUtil.MAXWEIGHT)
+                .setTooltip(Text.translatable("option.inventoryweight.server.maxWeight.tooltip"))
+                .setSaveConsumer(newValue -> {
+                    ItemWeightsConfigServer.setMaxWeight(newValue); // Update config file
+                    // Here, you should adjust the InventoryWeightState for client-side use
+                    InventoryWeightState.setClientMaxWeight(newValue); // Update client-side state
+                })
+                .build());
+
+        serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.pocketWeight"), InventoryWeightArmor.getPocketWeight())
+                .setDefaultValue(InventoryWeightUtil.POCKET_WEIGHT)
+                .setTooltip(Text.translatable("option.inventoryweight.server.pocketWeight.tooltip"))
+                .setSaveConsumer(newValue -> InventoryWeightArmor.setPocketWeight("pocketWeight", newValue))
+                .build());
+
+        // Add fields for item group settings
         serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.buckets"), ItemWeights.getItemWeight("buckets"))
                 .setDefaultValue(ItemWeights.BUCKETS)
                 .setSaveConsumer(newValue -> ItemWeights.setItemWeight("buckets", newValue))
@@ -116,31 +143,6 @@ public class InventoryWeightConfigScreen {
         serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.items"), ItemWeights.getItemWeight("items"))
                 .setDefaultValue(ItemWeights.ITEMS)
                 .setSaveConsumer(newValue -> ItemWeights.setItemWeight("items", newValue))
-                .build());
-
-        serverCategory.addEntry(entryBuilder.startFloatField(
-                        Text.translatable("option.inventoryweight.server.maxWeight"),
-                        ItemWeightsConfigServer.loadMaxWeight())
-                .setDefaultValue(InventoryWeightUtil.MAXWEIGHT)
-                .setTooltip(Text.translatable("option.inventoryweight.server.maxWeight.tooltip"))
-                .setSaveConsumer(newValue -> {
-                    ItemWeightsConfigServer.setMaxWeight(newValue); // Update config file
-                    // Here, you should adjust the InventoryWeightState for client-side use
-                    InventoryWeightState.setClientMaxWeight(newValue); // Update client-side state
-                })
-                .build());
-
-
-
-        serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.pocketWeight"), InventoryWeightArmor.getPocketWeight())
-                .setDefaultValue(InventoryWeightUtil.POCKET_WEIGHT)
-                .setTooltip(Text.translatable("option.inventoryweight.server.pocketWeight.tooltip"))
-                .setSaveConsumer(newValue -> InventoryWeightArmor.setPocketWeight("pocketWeight", newValue))
-                .build());
-
-        serverCategory.addEntry(entryBuilder.startBooleanToggle(Text.translatable("option.inventoryweight.server.realistic_mode"), InventoryWeightUtil.REALISTIC_MODE)
-                .setDefaultValue(false)
-                .setSaveConsumer(newValue -> InventoryWeightUtil.REALISTIC_MODE = newValue)
                 .build());
 
         // Items Config Category
