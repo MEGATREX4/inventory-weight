@@ -13,6 +13,15 @@ base {
 repositories {
 	maven { url "https://maven.shedaniel.me/" }
 	maven { url "https://maven.terraformersmc.com/releases/" }
+
+	maven {
+		name = "TerraformersMC"
+		url = "https://maven.terraformersmc.com/"
+	}
+	maven {
+		name = "Ladysnake Libs"
+		url = 'https://maven.ladysnake.org/releases'
+	}
 }
 
 dependencies {
@@ -27,8 +36,7 @@ dependencies {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 	modImplementation("com.terraformersmc:modmenu:${project.modmenu_version}")
-
-	
+	modImplementation "dev.emi:trinkets:${trinkets_version}"
 }
 
 processResources {

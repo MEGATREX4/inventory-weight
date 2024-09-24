@@ -13,6 +13,11 @@ public class ItemWeightCalculator {
 
         float weight = getCategoryBaseWeight(category);
 
+        String itemId = ItemWeights.getItemId(stack);
+        if (itemId.contains("backpack")){
+            return BackpackWeightCalculator.calculateBackpackWeight(stack).totalWeight;
+        }
+
         if (maxStackSize > 1) {
             float stackMultiplier = 1 + (10f / maxStackSize);
             weight *= stackMultiplier;

@@ -16,6 +16,11 @@ public class BlockWeightCalculator {
         if (stack.getItem() instanceof BlockItem) {
             Block block = ((BlockItem) stack.getItem()).getBlock();
 
+            String itemId = ItemWeights.getItemId(stack);
+            if (isBackpack(itemId)){
+                return BackpackWeightCalculator.calculateBackpackWeight(stack).totalWeight;
+            }
+
             if (block instanceof ShulkerBoxBlock) {
                 return BlockWeightCalculator.calculateShulkerBoxWeight(stack).totalWeight;
             }
@@ -57,6 +62,24 @@ public class BlockWeightCalculator {
             return (int) Math.floor(Math.max(weight, InventoryWeightUtil.ITEMS));
         }
         return InventoryWeightUtil.ITEMS;
+    }
+
+    private static boolean isBackpack(String itemId) {
+        // Check if itemId matches any known backpack type
+        String[] knownBackpacks = {
+                "Backpack", "Large_Backpack", "Extreme_Backpack",
+                "Iron_Armorpack", "Golden_Armorpack", "Netherite_Armorpack",
+                "Blockpack", "Orepack", "Enderpack", "Cactuspack",
+                "Plantpack", "Magicpack", "Lunchpack", "Toolpack"
+        };
+
+        for (String backpackName : knownBackpacks) {
+            if (itemId.equalsIgnoreCase(backpackName) || itemId.contains(backpackName.toLowerCase())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     // Updated method to return two values (with and without the modifier)
