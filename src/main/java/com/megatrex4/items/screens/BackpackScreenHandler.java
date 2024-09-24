@@ -1,11 +1,14 @@
 package com.megatrex4.items.screens;
 
 import com.megatrex4.items.BackpackItem;
+import com.megatrex4.util.BackpackInventoryUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.Slot;
@@ -15,10 +18,9 @@ import org.jetbrains.annotations.Nullable;
 import java.awt.*;
 
 public class BackpackScreenHandler extends ScreenHandler {
-    private final int padding = 8; // Padding around the slots
-    private final int titleSpace = 10; // Space for the title
+    private final int padding = 8;
+    private final int titleSpace = 10;
     private final int rows;
-    private final DefaultedList<ItemStack> backpackItems;
     private final ItemStack backpackStack;
 
     // Constructor
@@ -26,48 +28,47 @@ public class BackpackScreenHandler extends ScreenHandler {
         super(type, syncId);
         this.rows = ((BackpackItem) stack.getItem()).getRows();
         this.backpackStack = stack;
-        this.backpackItems = DefaultedList.ofSize(rows * 9, ItemStack.EMPTY);
 
-        addBackpackSlots();
-        addPlayerInventory(playerInventory);
-        addPlayerHotbar(playerInventory);
+        setupContainer(playerInventory, backpackStack);
     }
 
     public int getRows() {
         return this.rows;
     }
 
-    // Method to add backpack slots
-    private void addBackpackSlots() {
-        Dimension dimension = getDimension(); // Use Dimension for proper screen layout
-        Inventory backpackInventory = new SimpleInventory(rows * 9);
+    private void setupContainer(PlayerInventory playerInventory, ItemStack backpackStack) {
+        Dimension dimension = getDimension();
+        int rowWidth = 9;
+        int numberOfRows = rows;
 
-        // Add the backpack slots dynamically based on rows and columns
-        for (int y = 0; y < rows; ++y) {
-            for (int x = 0; x < 9; ++x) {
+        NbtList tag = backpackStack.getOrCreateNbt().getList("Inventory", NbtElement.COMPOUND_TYPE);
+        BackpackInventory inventory = new BackpackInventory(rowWidth * numberOfRows) {
+            @Override
+            public void markDirty() {
+                backpackStack.getOrCreateNbt().put("Inventory", BackpackInventoryUtil.toTag(this));
+                super.markDirty();
+            }
+        };
+
+        BackpackInventoryUtil.fromTag(tag, inventory);
+
+        for (int y = 0; y < numberOfRows; y++) {
+            for (int x = 0; x < rowWidth; x++) {
                 Point backpackSlotPosition = getBackpackSlotPosition(dimension, x, y);
-                this.addSlot(new Slot(backpackInventory, x + y * 9, backpackSlotPosition.x + 1, backpackSlotPosition.y + 1));
+                addSlot(new BackpackLockedSlot(inventory, y * rowWidth + x, backpackSlotPosition.x + 1, backpackSlotPosition.y + 1));
             }
         }
-    }
 
-    // Method to add player inventory slots
-    private void addPlayerInventory(PlayerInventory playerInventory) {
-        Dimension dimension = getDimension(); // Use Dimension for proper screen layout
-        for (int y = 0; y < 3; ++y) { // Player inventory rows (3 rows)
-            for (int x = 0; x < 9; ++x) { // 9 columns for each row
+        for (int y = 0; y < 3; ++y) {
+            for (int x = 0; x < 9; ++x) {
                 Point playerInvSlotPosition = getPlayerInvSlotPosition(dimension, x, y);
-                this.addSlot(new Slot(playerInventory, x + y * 9 + 9, playerInvSlotPosition.x + 1, playerInvSlotPosition.y + 1));
+                this.addSlot(new BackpackLockedSlot(playerInventory, x + y * 9 + 9, playerInvSlotPosition.x + 1, playerInvSlotPosition.y + 1));
             }
         }
-    }
 
-    // Method to add hotbar slots
-    private void addPlayerHotbar(PlayerInventory playerInventory) {
-        Dimension dimension = getDimension(); // Use Dimension for proper screen layout
-        for (int x = 0; x < 9; ++x) { // Hotbar always has 1 row, 9 slots
+        for (int x = 0; x < 9; ++x) {
             Point playerInvSlotPosition = getPlayerInvSlotPosition(dimension, x, 3);
-            this.addSlot(new Slot(playerInventory, x, playerInvSlotPosition.x + 1, playerInvSlotPosition.y + 1));
+            this.addSlot(new BackpackLockedSlot(playerInventory, x, playerInvSlotPosition.x + 1, playerInvSlotPosition.y + 1));
         }
     }
 
@@ -88,12 +89,39 @@ public class BackpackScreenHandler extends ScreenHandler {
     }
 
     @Override
+    public ItemStack quickMove(PlayerEntity player, int slot) {
+        return null;
+    }
+
+    @Override
     public boolean canUse(PlayerEntity player) {
         return true;
     }
 
-    @Override
-    public ItemStack quickMove(PlayerEntity player, int slot) {
-        return ItemStack.EMPTY; // Implement item movement logic if needed
+    private class BackpackLockedSlot extends Slot {
+
+        public BackpackLockedSlot(Inventory inventory, int index, int x, int y) {
+            super(inventory, index, x, y);
+        }
+
+        @Override
+        public boolean canTakeItems(PlayerEntity playerEntity) {
+            return stackMovementIsAllowed(getStack());
+        }
+
+        @Override
+        public boolean canInsert(ItemStack stack) {
+            return stackMovementIsAllowed(stack);
+        }
+
+        private boolean stackMovementIsAllowed(ItemStack stack) {
+            return !(stack.getItem() instanceof BackpackItem) && stack != backpackStack;
+        }
+    }
+    public static class BackpackInventory extends SimpleInventory {
+
+        public BackpackInventory(int slots) {
+            super(slots);
+        }
     }
 }

@@ -17,9 +17,6 @@ import static com.megatrex4.InventoryWeight.MOD_ID;
 
 public class BackpackScreen extends HandledScreen<BackpackScreenHandler> {
 
-    private static final int SLOT_HEIGHT = 18;
-    private static final int GAP = 3;
-
     // Add identifiers for background and slot textures
     private static final Identifier BACKGROUND_TEXTURE = new Identifier(MOD_ID, "textures/gui/backpack_background.png");
     private static final Identifier SLOT_TEXTURE = new Identifier(MOD_ID, "textures/gui/backpack_slot.png");
@@ -29,70 +26,57 @@ public class BackpackScreen extends HandledScreen<BackpackScreenHandler> {
     }
 
     @Override
-    protected void drawForeground(DrawContext context, int mouseX, int mouseY) {
-        int titleY = 0;
-
-        int rows = handler.getRows();
-
-        if (rows == 3){
-            titleY+=5;
-        }
-        if (rows < 3){
-            titleY+=18-5;
-        }
-        if (rows < 2){
-            titleY+=18-5;
-        }
-        if (rows > 3){
-            for (int i = 3; i < rows; i++ ){
-                titleY-=18;
-            }
-        }
-
-        context.drawText(this.textRenderer, this.title, this.playerInventoryTitleX, titleY, 4210752, false);
-
-        // Optionally, draw player inventory title
-        context.drawText(this.textRenderer, this.playerInventoryTitle, this.playerInventoryTitleX, this.playerInventoryTitleY, 4210752, false);
+    public void drawForeground(DrawContext context, int mouseX, int mouseY) {
+        context.drawText(this.textRenderer, title, titleX, titleY, 0x00000, false);
+        context.drawText(this.textRenderer, playerInventoryTitle, playerInventoryTitleX, playerInventoryTitleY, 0x00000, false);
     }
 
     @Override
     protected void drawBackground(DrawContext context, float delta, int mouseX, int mouseY) {
         RenderSystem.clearColor(1.0F, 1.0F, 1.0F, 1.0F);
-
         int x = (this.width - this.backgroundWidth) / 2;
         int y = (this.height - this.backgroundHeight) / 2;
-
-        int row =  handler.getRows();
-
-        int backgroundYHeight = (4*18)+(row*18) + 45;
-        int backgroundY = (this.height - backgroundYHeight) / 2;
-
-        renderBackgroundTexture(context, x, backgroundY, backgroundWidth, backgroundYHeight, 0xFFFFFFFF);
-
-        // Draw the slots
+        renderBackgroundTexture(context, new Rectangle(x, y, backgroundWidth, backgroundHeight), delta, 0xFFFFFFFF);
         for (Slot slot : getScreenHandler().slots) {
             context.drawTexture(SLOT_TEXTURE, x + slot.x - 1, y + slot.y - 1, 0, 0, 18, 18, 18, 18);
         }
     }
 
-    public void renderBackgroundTexture(DrawContext context, int x, int y, int width, int height, int color) {
+    public void renderBackgroundTexture(DrawContext context, Rectangle bounds, float delta, int color) {
+        float alpha = ((color >> 24) & 0xFF) / 255f;
+        float red = ((color >> 16) & 0xFF) / 255f;
+        float green = ((color >> 8) & 0xFF) / 255f;
+        float blue = (color & 0xFF) / 255f;
+        RenderSystem.clearColor(red, green, blue, alpha);
+        int x = bounds.x, y = bounds.y, width = bounds.width, height = bounds.height;
         int xTextureOffset = 0;
         int yTextureOffset = 66;
 
-        // Draw Corners
+        // 9 Patch Texture
+
+        // Four Corners
         context.drawTexture(BACKGROUND_TEXTURE, x, y, 106 + xTextureOffset, 124 + yTextureOffset, 8, 8);
         context.drawTexture(BACKGROUND_TEXTURE, x + width - 8, y, 248 + xTextureOffset, 124 + yTextureOffset, 8, 8);
         context.drawTexture(BACKGROUND_TEXTURE, x, y + height - 8, 106 + xTextureOffset, 182 + yTextureOffset, 8, 8);
         context.drawTexture(BACKGROUND_TEXTURE, x + width - 8, y + height - 8, 248 + xTextureOffset, 182 + yTextureOffset, 8, 8);
 
-        // Draw Edges
-        drawTexturedQuad(context, BACKGROUND_TEXTURE, x + 8, x + width - 8, y, y + 8, 0, (114 + xTextureOffset) / 256f, (248 + xTextureOffset) / 256f, (124 + yTextureOffset) / 256f, (132 + yTextureOffset) / 256f);
-        drawTexturedQuad(context, BACKGROUND_TEXTURE, x + 8, x + width - 8, y + height - 8, y + height, 0, (114 + xTextureOffset) / 256f, (248 + xTextureOffset) / 256f, (182 + yTextureOffset) / 256f, (190 + yTextureOffset) / 256f);
-        drawTexturedQuad(context, BACKGROUND_TEXTURE, x, x + 8, y + 8, y + height - 8, 0, (106 + xTextureOffset) / 256f, (114 + xTextureOffset) / 256f, (132 + yTextureOffset) / 256f, (182 + yTextureOffset) / 256f);
-        drawTexturedQuad(context, BACKGROUND_TEXTURE, x + width - 8, x + width, y + 8, y + height - 8, 0, (248 + xTextureOffset) / 256f, (256 + xTextureOffset) / 256f, (132 + yTextureOffset) / 256f, (182 + yTextureOffset) / 256f);
+        // Sides
+        drawTexturedQuad(context, BACKGROUND_TEXTURE, x + 8, x + width - 8, y, y + 8, getZOffset(), (114 + xTextureOffset) / 256f, (248 + xTextureOffset) / 256f, (124 + yTextureOffset) / 256f,
+                (132 + yTextureOffset) / 256f);
+        drawTexturedQuad(context, BACKGROUND_TEXTURE, x + 8, x + width - 8, y + height - 8, y + height, getZOffset(), (114 + xTextureOffset) / 256f, (248 + xTextureOffset) / 256f,
+                (182 + yTextureOffset) / 256f, (190 + yTextureOffset) / 256f);
+        drawTexturedQuad(context, BACKGROUND_TEXTURE, x, x + 8, y + 8, y + height - 8, getZOffset(), (106 + xTextureOffset) / 256f, (114 + xTextureOffset) / 256f, (132 + yTextureOffset) / 256f,
+                (182 + yTextureOffset) / 256f);
+        drawTexturedQuad(context, BACKGROUND_TEXTURE, x + width - 8, x + width, y + 8, y + height - 8, getZOffset(), (248 + xTextureOffset) / 256f, (256 + xTextureOffset) / 256f,
+                (132 + yTextureOffset) / 256f, (182 + yTextureOffset) / 256f);
 
-        // Draw Center
-        drawTexturedQuad(context, BACKGROUND_TEXTURE, x + 8, x + width - 8, y + 8, y + height - 8, 0, (114 + xTextureOffset) / 256f, (248 + xTextureOffset) / 256f, (132 + yTextureOffset) / 256f, (182 + yTextureOffset) / 256f);
+        // Center
+        drawTexturedQuad(context, BACKGROUND_TEXTURE, x + 8, x + width - 8, y + 8, y + height - 8, getZOffset(), (114 + xTextureOffset) / 256f, (248 + xTextureOffset) / 256f, (132 + yTextureOffset) / 256f,
+                (182 + yTextureOffset) / 256f);
+    }
+
+    private int getZOffset() {
+        return 0;
     }
 
 

@@ -1,9 +1,9 @@
 package com.megatrex4.items;
 
 import com.google.common.collect.Multimap;
-import com.megatrex4.items.screens.BackpackScreen;
 import com.megatrex4.items.screens.BackpackScreenHandler;
 import com.megatrex4.items.screens.ScreenHandlersRegistry;
+import com.megatrex4.util.BackpackInventoryUtil;
 import dev.emi.trinkets.api.SlotAttributes;
 import dev.emi.trinkets.api.SlotReference;
 import dev.emi.trinkets.api.TrinketItem;
@@ -16,17 +16,15 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
 
 import java.util.UUID;
 
-public class BackpackItem extends TrinketItem implements BackpackItemData {
+public class BackpackItem extends TrinketItem implements BackpackInventoryUtil {
 
     private final int rows;
 
@@ -46,18 +44,6 @@ public class BackpackItem extends TrinketItem implements BackpackItemData {
             SlotAttributes.addSlotModifier(modifiers, "chest/backpack", uuid, 1, EntityAttributeModifier.Operation.ADDITION);
         }
         return modifiers;
-    }
-
-    @Override
-    public void writeNbt(NbtCompound nbt, ItemStack stack) {
-        // You might not need to call super here, or you may need a different method
-        NbtCompound inventoryNbt = new NbtCompound();
-        nbt.put("Container", inventoryNbt);
-    }
-
-    @Override
-    public void readNbt(NbtCompound nbt, ItemStack stack) {
-        NbtCompound inventoryNbt = nbt.getCompound("Container");
     }
 
     @Override
