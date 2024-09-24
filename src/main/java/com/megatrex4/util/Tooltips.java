@@ -20,132 +20,122 @@ public class Tooltips {
         int pockets = InventoryWeightArmor.getPockets(stack);
 
         String itemId = ItemWeights.getItemId(stack);
-        if(BackpackWeightCalculator.isBackpack(itemId)){
+
+        // Handle tooltips for backpacks
+        if (BackpackWeightCalculator.isBackpack(itemId)) {
             BackpackWeightCalculator.BackpackWeightResult backpackWeight = BackpackWeightCalculator.calculateBackpackWeight(stack);
-            String formattedWeightWithModifier = formatWeight(backpackWeight.totalWeight);
-            String formattedWeightWithoutModifier = formatWeight(backpackWeight.baseWeight);
-            if (Screen.hasShiftDown()) {
-                tooltip.add(1, Text.translatable("inventoryweight.tooltip.weight", (int) backpackWeight.totalWeight)
-                        .formatted(Formatting.GRAY));
-                tooltip.add(2, Text.translatable("inventoryweight.tooltip.weightinside", (int) backpackWeight.baseWeight)
-                        .formatted(Formatting.GRAY));
-            } else {
-                tooltip.add(1, Text.translatable("inventoryweight.tooltip.weight", formattedWeightWithModifier)
-                        .formatted(Formatting.GRAY));
-                tooltip.add(2, Text.translatable("inventoryweight.tooltip.weightinside", formattedWeightWithoutModifier)
-                        .formatted(Formatting.GRAY));
-                if (backpackWeight.totalWeight > 1000 || backpackWeight.baseWeight > 1000) {
-                    Text tooltipHint = Text.translatable("inventoryweight.tooltip.hint");
-                    tooltip.add(3, tooltipHint);
-                }
-            }
+            handleWeightTooltip(
+                    tooltip,
+                    backpackWeight.totalWeight,
+                    backpackWeight.baseWeight,
+                    "inventoryweight.tooltip.weight",
+                    "inventoryweight.tooltip.weightinside",
+                    Formatting.GRAY,
+                    stack.getCount()
+            );
+            return;
         }
 
         // Handle tooltips for Shulker Boxes
         if (stack.getItem() instanceof BlockItem && ((BlockItem) stack.getItem()).getBlock() instanceof ShulkerBoxBlock) {
             BlockWeightCalculator.ShulkerBoxWeightResult shulkerWeight = BlockWeightCalculator.calculateShulkerBoxWeight(stack);
-            String formattedWeightWithModifier = formatWeight(shulkerWeight.totalWeight);
-            String formattedWeightWithoutModifier = formatWeight(shulkerWeight.baseWeight);
-
-            if (Screen.hasShiftDown()) {
-                tooltip.add(1, Text.translatable("inventoryweight.tooltip.weight", (int) shulkerWeight.totalWeight)
-                        .formatted(Formatting.GRAY));
-
-                tooltip.add(2, Text.translatable("inventoryweight.tooltip.weightinside", (int) shulkerWeight.baseWeight)
-                        .formatted(Formatting.GRAY));
-            } else {
-                tooltip.add(1, Text.translatable("inventoryweight.tooltip.weight", formattedWeightWithModifier)
-                        .formatted(Formatting.GRAY));
-
-                tooltip.add(2, Text.translatable("inventoryweight.tooltip.weightinside", formattedWeightWithoutModifier)
-                        .formatted(Formatting.GRAY));
-
-                if (shulkerWeight.totalWeight > 1000 || shulkerWeight.baseWeight > 1000) {
-                    Text tooltipHint = Text.translatable("inventoryweight.tooltip.hint");
-
-                    // Replace the placeholders with formatted text
-                    tooltip.add(3, Text.literal(tooltipHint.getString().replace("{0}", Formatting.YELLOW.toString())
-                                    .replace("{1}", Formatting.RESET.toString()))
-                            .formatted(Formatting.GRAY)); // Format the outer text as yellow
-                }
-            }
+            handleWeightTooltip(
+                    tooltip,
+                    shulkerWeight.totalWeight,
+                    shulkerWeight.baseWeight,
+                    "inventoryweight.tooltip.weight",
+                    "inventoryweight.tooltip.weightinside",
+                    Formatting.GRAY,
+                    stack.getCount()
+            );
             return;
         }
 
+        // Handle custom item weights
         Float customWeight = ItemWeights.getCustomItemWeight(itemId);
-
         if (customWeight != null) {
             WeightTooltip(tooltip, customWeight, stack.getCount());
         } else {
-            // Use getItemCategoryInfo to retrieve both category and item stack
+            // Handle standard item weights
             PlayerDataHandler.ItemCategoryInfo categoryInfo = PlayerDataHandler.getItemCategoryInfo(stack);
-            String itemCategory = categoryInfo.getCategory();
             float itemWeight = ItemWeights.getItemWeight(stack);
-
-            if (itemWeight == 0) {
-                itemWeight = 0f;
-            }
 
             WeightTooltip(tooltip, itemWeight, stack.getCount());
         }
 
         // Add custom text for Pockets in the armor section
         if (stack.getItem() instanceof ArmorItem || pockets > 0) {
-            tooltip.add(Text.translatable("inventoryweight.tooltip.pockets", pockets).formatted(Formatting.BLUE));
+            // Check if advanced tooltips are enabled
+            int pocketIndex;
+            if (context.isAdvanced()) {
+                // Position pockets before NBT/advanced tooltips
+                pocketIndex = tooltip.size() - 4;
+            } else {
+                // Position pockets with other armor attributes
+                pocketIndex = tooltip.size() - 2;
+            }
+            tooltip.add(pocketIndex, Text.translatable("inventoryweight.tooltip.pockets", pockets).formatted(Formatting.BLUE));
         }
+
     }
 
+    // Generalized function to handle weight tooltips for backpacks and shulker boxes
+    private static void handleWeightTooltip(List<Text> tooltip, float totalWeight, float baseWeight, String totalWeightKey, String baseWeightKey, Formatting formatting, int stackCount) {
+        String formattedWeightWithModifier = formatWeight(totalWeight);
+        String formattedWeightWithoutModifier = formatWeight(baseWeight);
 
-    private static void WeightTooltip(List<Text> tooltip, Float itemWeight, int stackCount) {
-        // Calculate total weight (item weight multiplied by the stack size)
-        float totalWeight = itemWeight * stackCount;
-
-        // Format both weights for display using 'k' notation if applicable
-        String formattedItemWeight = formatWeight(itemWeight);
-        String formattedTotalWeight = formatWeight(totalWeight);
+        // Start the index for inserting tooltips after any existing elements in the list
+        int index = 1;
 
         if (Screen.hasShiftDown()) {
-            tooltip.add(1, Text.translatable("inventoryweight.tooltip.weight", Math.round(itemWeight))
-                    .formatted(Formatting.GRAY));
-
-            tooltip.add(2, Text.translatable("inventoryweight.tooltip.totalweight", (int) totalWeight)
-                    .formatted(Formatting.GRAY));
+            // Add total weight only if there is more than 1 item in the stack
+            if (stackCount > 1) {
+                tooltip.add(index++, Text.translatable(totalWeightKey, (int) totalWeight).formatted(formatting));
+            }
+            tooltip.add(index++, Text.translatable(baseWeightKey, (int) baseWeight).formatted(formatting));
         } else {
-            tooltip.add(1, Text.translatable("inventoryweight.tooltip.weight", formattedItemWeight)
-                    .formatted(Formatting.GRAY));
+            // Add total weight only if there is more than 1 item in the stack
+            if (stackCount > 1) {
+                tooltip.add(index++, Text.translatable(totalWeightKey, formattedWeightWithModifier).formatted(formatting));
+            }
+            tooltip.add(index++, Text.translatable(baseWeightKey, formattedWeightWithoutModifier).formatted(formatting));
 
-            tooltip.add(2, Text.translatable("inventoryweight.tooltip.totalweight", formattedTotalWeight)
-                    .formatted(Formatting.GRAY));
-
-            // Retrieve the translated string with placeholders
-            if (itemWeight > 1000 || totalWeight > 1000) {
-                // Retrieve the translated string with placeholders
-                Text tooltipHint = Text.translatable("inventoryweight.tooltip.hint");
-
-                // Replace the placeholders with formatted text
-                tooltip.add(3, Text.literal(tooltipHint.getString().replace("{0}", Formatting.YELLOW.toString())
-                                .replace("{1}", Formatting.RESET.toString()))
-                        .formatted(Formatting.GRAY)); // Format the outer text as yellow
+            // Display hint only if there is more than 1 item in the stack or large weights
+            if (stackCount > 1 || (totalWeight > 1000 || baseWeight > 1000)) {
+                addTooltipHint(tooltip, index);
             }
         }
-
     }
 
-    // Utility method to format weights, adding 'k' for values over 1000
+    // Tooltip for standard item weights
+    private static void WeightTooltip(List<Text> tooltip, Float itemWeight, int stackCount) {
+        float totalWeight = itemWeight * stackCount;
+
+        // Display the total weight tooltip only if the stack count is greater than 1
+        handleWeightTooltip(tooltip, totalWeight, itemWeight, "inventoryweight.tooltip.weight", "inventoryweight.tooltip.totalweight", Formatting.GRAY, stackCount);
+    }
+
+    // Add tooltip hint for large weights
+    private static void addTooltipHint(List<Text> tooltip, int index) {
+        Text tooltipHint = Text.translatable("inventoryweight.tooltip.hint");
+        tooltip.add(index, Text.literal(tooltipHint.getString().replace("{0}", Formatting.YELLOW.toString())
+                .replace("{1}", Formatting.RESET.toString())).formatted(Formatting.GRAY));
+    }
+
+    // Utility method to format weights, adding 'k', 'M', or 'B' for large values
     private static String formatWeight(float weight) {
         String suffixK = Text.translatable("inventoryweight.tooltip.k").getString();
         String suffixM = Text.translatable("inventoryweight.tooltip.m").getString();
         String suffixB = Text.translatable("inventoryweight.tooltip.b").getString();
 
         if (weight >= 1_000_000_000) {
-            return String.format("%.1f" + suffixB, weight / 1_000_000_000); // e.g., 1,860,000,000 becomes 1.8B
+            return String.format("%.1f" + suffixB, weight / 1_000_000_000);
         } else if (weight >= 1_000_000) {
-            return String.format("%.1f" + suffixM, weight / 1_000_000); // e.g., 1,860,000 becomes 1.8M
+            return String.format("%.1f" + suffixM, weight / 1_000_000);
         } else if (weight >= 1_000) {
-            return String.format("%.1f" + suffixK, weight / 1_000); // e.g., 1,860 becomes 1.8K
+            return String.format("%.1f" + suffixK, weight / 1_000);
         } else {
-            return String.valueOf((int) weight); // Show as an integer if below 1000
+            return String.valueOf((int) weight);
         }
     }
-
 }
