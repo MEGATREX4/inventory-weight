@@ -13,6 +13,25 @@ import static com.megatrex4.util.ItemWeights.getItemWeight;
 
 public class BackpackWeightCalculator {
 
+    public static boolean isBackpack(String itemId) {
+        // Check if itemId matches any known backpack type
+        String[] knownBackpacks = {
+                "Backpack", "Large_Backpack", "Extreme_Backpack",
+                "Iron_Armorpack", "Golden_Armorpack", "Netherite_Armorpack",
+                "Blockpack", "Orepack", "Enderpack", "Cactuspack",
+                "Plantpack", "Magicpack", "Lunchpack", "Toolpack"
+        };
+
+        for (String backpackName : knownBackpacks) {
+            if (itemId.equalsIgnoreCase(backpackName) || itemId.contains(backpackName.toLowerCase())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
     public static BackpackWeightResult calculateBackpackWeight(ItemStack backpackStack) {
         NbtCompound backpackTag = backpackStack.getOrCreateNbt();
         String itemId = ItemWeights.getItemId(backpackStack);

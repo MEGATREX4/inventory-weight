@@ -14,7 +14,7 @@ public class ItemWeightCalculator {
         float weight = getCategoryBaseWeight(category);
 
         String itemId = ItemWeights.getItemId(stack);
-        if (itemId.contains("backpack")){
+        if (BackpackWeightCalculator.isBackpack(itemId)){
             return BackpackWeightCalculator.calculateBackpackWeight(stack).totalWeight;
         }
 

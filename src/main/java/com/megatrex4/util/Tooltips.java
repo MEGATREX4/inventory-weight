@@ -19,6 +19,28 @@ public class Tooltips {
         // Check if the armor has pockets
         int pockets = InventoryWeightArmor.getPockets(stack);
 
+        String itemId = ItemWeights.getItemId(stack);
+        if(BackpackWeightCalculator.isBackpack(itemId)){
+            BackpackWeightCalculator.BackpackWeightResult backpackWeight = BackpackWeightCalculator.calculateBackpackWeight(stack);
+            String formattedWeightWithModifier = formatWeight(backpackWeight.totalWeight);
+            String formattedWeightWithoutModifier = formatWeight(backpackWeight.baseWeight);
+            if (Screen.hasShiftDown()) {
+                tooltip.add(1, Text.translatable("inventoryweight.tooltip.weight", (int) backpackWeight.totalWeight)
+                        .formatted(Formatting.GRAY));
+                tooltip.add(2, Text.translatable("inventoryweight.tooltip.weightinside", (int) backpackWeight.baseWeight)
+                        .formatted(Formatting.GRAY));
+            } else {
+                tooltip.add(1, Text.translatable("inventoryweight.tooltip.weight", formattedWeightWithModifier)
+                        .formatted(Formatting.GRAY));
+                tooltip.add(2, Text.translatable("inventoryweight.tooltip.weightinside", formattedWeightWithoutModifier)
+                        .formatted(Formatting.GRAY));
+                if (backpackWeight.totalWeight > 1000 || backpackWeight.baseWeight > 1000) {
+                    Text tooltipHint = Text.translatable("inventoryweight.tooltip.hint");
+                    tooltip.add(3, tooltipHint);
+                }
+            }
+        }
+
         // Handle tooltips for Shulker Boxes
         if (stack.getItem() instanceof BlockItem && ((BlockItem) stack.getItem()).getBlock() instanceof ShulkerBoxBlock) {
             BlockWeightCalculator.ShulkerBoxWeightResult shulkerWeight = BlockWeightCalculator.calculateShulkerBoxWeight(stack);
@@ -50,8 +72,6 @@ public class Tooltips {
             return;
         }
 
-        // Add weight next to item name (first position in the tooltip)
-        String itemId = ItemWeights.getItemId(stack);
         Float customWeight = ItemWeights.getCustomItemWeight(itemId);
 
         if (customWeight != null) {

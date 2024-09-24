@@ -17,7 +17,7 @@ public class BlockWeightCalculator {
             Block block = ((BlockItem) stack.getItem()).getBlock();
 
             String itemId = ItemWeights.getItemId(stack);
-            if (isBackpack(itemId)){
+            if (BackpackWeightCalculator.isBackpack(itemId)){
                 return BackpackWeightCalculator.calculateBackpackWeight(stack).totalWeight;
             }
 
@@ -64,23 +64,7 @@ public class BlockWeightCalculator {
         return InventoryWeightUtil.ITEMS;
     }
 
-    private static boolean isBackpack(String itemId) {
-        // Check if itemId matches any known backpack type
-        String[] knownBackpacks = {
-                "Backpack", "Large_Backpack", "Extreme_Backpack",
-                "Iron_Armorpack", "Golden_Armorpack", "Netherite_Armorpack",
-                "Blockpack", "Orepack", "Enderpack", "Cactuspack",
-                "Plantpack", "Magicpack", "Lunchpack", "Toolpack"
-        };
 
-        for (String backpackName : knownBackpacks) {
-            if (itemId.equalsIgnoreCase(backpackName) || itemId.contains(backpackName.toLowerCase())) {
-                return true;
-            }
-        }
-
-        return false;
-    }
 
     // Updated method to return two values (with and without the modifier)
     public static ShulkerBoxWeightResult calculateShulkerBoxWeight(ItemStack shulkerBoxStack) {
