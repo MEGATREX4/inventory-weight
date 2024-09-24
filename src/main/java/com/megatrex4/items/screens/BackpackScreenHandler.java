@@ -79,14 +79,20 @@ public class BackpackScreenHandler extends ScreenHandler {
 
     // Calculate backpack slot position
     public Point getBackpackSlotPosition(Dimension dimension, int x, int y) {
-        return new Point((int) (dimension.getWidth() / 2 - 9 * 9 + x * 18), (int) (padding + titleSpace + y * 18));
+        int totalWidth = 9 * 18;
+        int startX = (dimension.width - totalWidth) / 2;
+        return new Point(startX + x * 18, (int) (padding + titleSpace + y * 18));
     }
 
     // Calculate player inventory slot position
     public Point getPlayerInvSlotPosition(Dimension dimension, int x, int y) {
-        return new Point((int) (dimension.getWidth() / 2 - 9 * 9 + x * 18),
-                (int) (dimension.getHeight() - padding - 4 * 18 - 3 + y * 18 + (y == 3 ? 4 : 0)));
+        int totalWidth = 9 * 18;
+        int startX = (dimension.width - totalWidth) / 2;
+        return new Point(startX + x * 18,
+                (int) (dimension.getHeight() - padding - 3 * 18 - titleSpace - padding + y * 18));
     }
+
+
 
     @Override
     public ItemStack quickMove(PlayerEntity player, int slot) {

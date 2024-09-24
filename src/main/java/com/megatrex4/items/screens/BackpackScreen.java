@@ -34,9 +34,13 @@ public class BackpackScreen extends HandledScreen<BackpackScreenHandler> {
     @Override
     protected void drawBackground(DrawContext context, float delta, int mouseX, int mouseY) {
         RenderSystem.clearColor(1.0F, 1.0F, 1.0F, 1.0F);
-        int x = (this.width - this.backgroundWidth) / 2;
-        int y = (this.height - this.backgroundHeight) / 2;
-        renderBackgroundTexture(context, new Rectangle(x, y, backgroundWidth, backgroundHeight), delta, 0xFFFFFFFF);
+
+        // Get the dimensions from the handler
+        Dimension dimension = getScreenHandler().getDimension();
+        int x = (this.width - dimension.width) / 2;
+        int y = (this.height - dimension.height) / 2;
+
+        renderBackgroundTexture(context, new Rectangle(x, y, dimension.width, dimension.height), delta, 0xFFFFFFFF);
         for (Slot slot : getScreenHandler().slots) {
             context.drawTexture(SLOT_TEXTURE, x + slot.x - 1, y + slot.y - 1, 0, 0, 18, 18, 18, 18);
         }

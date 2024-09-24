@@ -18,11 +18,11 @@ public class ItemsRegistry {
     }
     public static void registerModItems() {
         InventoryWeight.LOGGER.info("Registering Mod Items for " + InventoryWeight.MOD_ID);
-        LEATHER_BACKPACK = registerItem("leather_backpack", new BackpackItem(new FabricItemSettings(), 1));
-        IRON_BACKPACK = registerItem("iron_backpack", new BackpackItem(new FabricItemSettings(), 2));
-        GOLD_BACKPACK = registerItem("gold_backpack", new BackpackItem(new FabricItemSettings(), 3));
-        DIAMOND_BACKPACK = registerItem("diamond_backpack", new BackpackItem(new FabricItemSettings(), 4));
-        OBSIDIAN_BACKPACK = registerItem("obsidian_backpack", new BackpackItem(new FabricItemSettings(), 5));
-        NETHERITE_BACKPACK = registerItem("netherite_backpack", new BackpackItem(new FabricItemSettings(), 6));
+        LEATHER_BACKPACK = registerItem("leather_backpack", new BackpackItem(new FabricItemSettings().maxCount(1), 1));
+        IRON_BACKPACK = registerItem("iron_backpack", new BackpackItem(new FabricItemSettings().maxCount(1), 2));
+        GOLD_BACKPACK = registerItem("gold_backpack", new BackpackItem(new FabricItemSettings().maxCount(1), 3));
+        DIAMOND_BACKPACK = registerItem("diamond_backpack", new BackpackItem(new FabricItemSettings().maxCount(1), 4));
+        OBSIDIAN_BACKPACK = registerItem("obsidian_backpack", new BackpackItem(new FabricItemSettings().maxCount(1), 5));
+        NETHERITE_BACKPACK = registerItem("netherite_backpack", new BackpackItem(new FabricItemSettings().maxCount(1), 6));
     }
 }
