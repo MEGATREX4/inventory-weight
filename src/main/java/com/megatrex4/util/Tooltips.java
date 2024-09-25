@@ -90,6 +90,9 @@ public class Tooltips {
         String formattedWeightWithModifier = formatWeight(totalWeight);
         String formattedWeightWithoutModifier = formatWeight(baseWeight);
 
+        String formattedNumericWeightWithModifier = formatNumericWeight(totalWeight);
+        String formattedNumericWeightWithoutModifier = formatNumericWeight(baseWeight);
+
         // Start the index for inserting tooltips after any existing elements in the list
         int index = 1;
 
@@ -125,6 +128,10 @@ public class Tooltips {
         Text tooltipHint = Text.translatable("inventoryweight.tooltip.hint");
         tooltip.add(index, Text.literal(tooltipHint.getString().replace("{0}", Formatting.YELLOW.toString())
                 .replace("{1}", Formatting.RESET.toString())).formatted(Formatting.GRAY));
+    }
+
+    private static String formatNumericWeight(float weight) {
+        return String.format("%,d", (int) weight);
     }
 
     // Utility method to format weights, adding 'k', 'M', or 'B' for large values
