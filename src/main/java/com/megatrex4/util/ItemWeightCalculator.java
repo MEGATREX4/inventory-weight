@@ -14,6 +14,11 @@ public class ItemWeightCalculator {
         float weight = getCategoryBaseWeight(category);
 
         String itemId = ItemWeights.getItemId(stack);
+
+        if(itemId.contains("air")){
+            return 0;
+        }
+
         if (BackpackWeightCalculator.isBackpack(itemId)){
             return BackpackWeightCalculator.calculateBackpackWeight(stack).totalWeight;
         }

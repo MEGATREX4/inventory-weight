@@ -39,7 +39,7 @@ public class Tooltips {
 
         // Handle tooltips for Shulker Boxes
         if (isShulker(stack)) {
-            ShulkerWeightCalculator.ShulkerBoxWeightResult shulkerWeight = ShulkerWeightCalculator.calculateShulkerBoxWeight(stack);
+            BlockWeightCalculator.ShulkerBoxWeightResult shulkerWeight = BlockWeightCalculator.calculateShulkerBoxWeight(stack);
             handleWeightTooltip(
                     tooltip,
                     shulkerWeight.baseWeight,

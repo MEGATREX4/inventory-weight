@@ -84,12 +84,12 @@ public class BackpackWeightCalculator {
                 String category = categoryInfo.getCategory();
 
                 float itemWeight = getItemWeight(itemStack) * itemStack.getCount();
-                totalWeight += (float) Math.max(InventoryWeightUtil.ITEMS, itemWeight * 0.85);
+                totalWeight += Math.max(InventoryWeightUtil.ITEMS, itemWeight);
                 baseWeight += itemWeight;
             }
         }
 
-        return new BackpackWeightResult(totalWeight, baseWeight);
+        return new BackpackWeightResult(totalWeight, (baseWeight * 0.85f));
     }
 
     // Helper method to calculate weight from `pack_it_up` NBT list
@@ -132,17 +132,15 @@ public class BackpackWeightCalculator {
         for (int i = 0; i < itemList.size(); i++) {
             NbtCompound itemTag = itemList.getCompound(i);
 
-            // Extract the ItemStack properly from the NBT tag
-            ItemStack itemStack = ItemStack.fromNbt(itemTag);  // Proper way to create ItemStack from NbtCompound
+            ItemStack itemStack = ItemStack.fromNbt(itemTag);
 
             PlayerDataHandler.ItemCategoryInfo categoryInfo = PlayerDataHandler.getItemCategoryInfo(itemStack);
             String category = categoryInfo.getCategory();
 
             float itemWeight = getItemWeight(itemStack) * itemStack.getCount();
-            totalWeight += Math.max(InventoryWeightUtil.ITEMS, itemWeight / 400);
+            totalWeight += itemWeight / 400;
             baseWeight += itemWeight;
         }
-
         return new BackpackWeightResult(totalWeight, baseWeight);
     }
 
