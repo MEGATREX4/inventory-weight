@@ -51,5 +51,7 @@
   "option.inventoryweight.server.pocketWeight.tooltip": "Встановіть максимальну вагу, яку \nгравець може тримати в кожній кишені.\nКишені - це значення застосовується від броні\n, кількість кишень можна змінювати через датапак",
   "option.inventoryweight.server.realistic_mode": "Реалістичний режим",
 
-  "title.inventoryweight.config": "Конфігурація ваги інвентарю"
+  "title.inventoryweight.config": "Конфігурація ваги інвентарю",
+  "option.inventoryweight.server.overloadPenaltyMultiplier": "Сила штрафу за перевантаження",
+  "option.inventoryweight.server.overloadPenaltyMultiplier.tooltip": "Налаштуйте, наскільки сильним буде ефект перевантаження"
 }
