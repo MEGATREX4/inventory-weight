@@ -97,10 +97,10 @@ public class Tooltips {
         int index = 1;
 
         if (Screen.hasShiftDown()) {
-            tooltip.add(index++, Text.translatable(baseWeightKey, (int) baseWeight).formatted(formatting));
+            tooltip.add(index++, Text.translatable(baseWeightKey, formattedNumericWeightWithoutModifier).formatted(formatting));
             // Add total weight only if there is more than 1 item in the stack and it is not a backpack or shulker
             if (stackCount > 1 || (BackpackWeightCalculator.isBackpack(ItemWeights.getItemId(stack)) || isShulker(stack))) {
-                tooltip.add(index++, Text.translatable(totalWeightKey, (int) totalWeight).formatted(formatting));
+                tooltip.add(index++, Text.translatable(totalWeightKey, formattedNumericWeightWithModifier).formatted(formatting));
             }
 
         } else {
