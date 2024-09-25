@@ -38,7 +38,7 @@ public class ShulkerWeightCalculator {
 
             float itemWeight = getItemWeight(itemStack) * itemStack.getCount();
 
-            totalWeight += (float) Math.max(InventoryWeightUtil.ITEMS, itemWeight * 0.85); // With modifier
+            totalWeight += (float) Math.max(InventoryWeightUtil.ITEMS, itemWeight * 0.95); // With modifier
             baseWeight += itemWeight; // Without modifier
         }
 
