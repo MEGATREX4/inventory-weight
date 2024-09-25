@@ -84,7 +84,7 @@ public class BackpackWeightCalculator {
                 String category = categoryInfo.getCategory();
 
                 float itemWeight = getItemWeight(itemStack) * itemStack.getCount();
-                totalWeight += Math.max(InventoryWeightUtil.ITEMS, itemWeight / 400);
+                totalWeight += (float) Math.max(InventoryWeightUtil.ITEMS, itemWeight * 0.85);
                 baseWeight += itemWeight;
             }
         }
