@@ -22,7 +22,7 @@ public class Tooltips {
         String itemId = ItemWeights.getItemId(stack);
 
         // Handle tooltips for backpacks
-        if (BackpackWeightCalculator.isBackpack(itemId)) {
+        if (BackpackWeightCalculator.isBackpack(itemId, stack)) {
             BackpackWeightCalculator.BackpackWeightResult backpackWeight = BackpackWeightCalculator.calculateBackpackWeight(stack);
             handleWeightTooltip(
                     tooltip,
@@ -99,14 +99,14 @@ public class Tooltips {
         if (Screen.hasShiftDown()) {
             tooltip.add(index++, Text.translatable(baseWeightKey, formattedNumericWeightWithoutModifier).formatted(formatting));
             // Add total weight only if there is more than 1 item in the stack and it is not a backpack or shulker
-            if (stackCount > 1 || (BackpackWeightCalculator.isBackpack(ItemWeights.getItemId(stack)) || isShulker(stack))) {
+            if (stackCount > 1 || (BackpackWeightCalculator.isBackpack(ItemWeights.getItemId(stack),stack) || isShulker(stack))) {
                 tooltip.add(index++, Text.translatable(totalWeightKey, formattedNumericWeightWithModifier).formatted(formatting));
             }
 
         } else {
             tooltip.add(index++, Text.translatable(baseWeightKey, formattedWeightWithoutModifier).formatted(formatting));
             // Add total weight only if there is more than 1 item in the stack and it is not a backpack or shulker
-            if (stackCount > 1 || (BackpackWeightCalculator.isBackpack(ItemWeights.getItemId(stack)) || isShulker(stack))) {
+            if (stackCount > 1 || (BackpackWeightCalculator.isBackpack(ItemWeights.getItemId(stack),stack) || isShulker(stack))) {
                 tooltip.add(index++, Text.translatable(totalWeightKey, formattedWeightWithModifier).formatted(formatting));
             }
             // Display hint only if there is more than 1 item in the stack or large weights

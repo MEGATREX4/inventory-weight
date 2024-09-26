@@ -8,58 +8,61 @@ public class ItemWeightCalculator {
 
     public static float calculateItemWeight(ItemStack stack, String category) {
         Item item = stack.getItem();
-        int maxStackSize = item.getMaxCount();
-        int maxDurability = stack.getMaxDamage();
+        if (!(item instanceof BlockItem)) {
+            int maxStackSize = item.getMaxCount();
+            int maxDurability = stack.getMaxDamage();
 
-        float weight = getCategoryBaseWeight(category);
+            float weight = getCategoryBaseWeight(category);
 
-        String itemId = ItemWeights.getItemId(stack);
+            String itemId = ItemWeights.getItemId(stack);
 
-        if(itemId.contains("air")){
-            return 0;
-        }
+            if(itemId.contains("air")){
+                return 0;
+            }
 
-        if (BackpackWeightCalculator.isBackpack(itemId)){
-            return BackpackWeightCalculator.calculateBackpackWeight(stack).totalWeight;
-        }
+            if (BackpackWeightCalculator.isBackpack(itemId, stack)){
+                return BackpackWeightCalculator.calculateBackpackWeight(stack).totalWeight;
+            }
 
-        if (maxStackSize > 1) {
-            float stackMultiplier = 1 + (10f / maxStackSize);
-            weight *= stackMultiplier;
+            if (maxStackSize > 1) {
+                float stackMultiplier = 1 + (10f / maxStackSize);
+                weight *= stackMultiplier;
 
-            if (item.isFood()) {
-                FoodComponent foodComponent = item.getFoodComponent();
-                if (foodComponent != null) {
-                    weight += foodComponent.getHunger();
+                if (item.isFood()) {
+                    FoodComponent foodComponent = item.getFoodComponent();
+                    if (foodComponent != null) {
+                        weight += foodComponent.getHunger();
 
-                    // Reduce weight if the item is a snack
-                    if (foodComponent.isSnack()) {
-                        weight /= 2;
+                        // Reduce weight if the item is a snack
+                        if (foodComponent.isSnack()) {
+                            weight /= 2;
+                        }
+                        weight += foodComponent.getSaturationModifier() * 20;
                     }
-                    weight += foodComponent.getSaturationModifier() * 20;
+                }
+
+                if (item.isFireproof()){
+                    weight *= 1.25f;
+                }
+
+            }
+
+            else if (maxStackSize == 1 && maxDurability > 0) {
+                if (isArmor(item)) {
+                    weight += (float) (getArmorValue(item) * 10);
+                    weight += (InventoryWeightUtil.ITEMS + (((float) maxDurability / 300) * 300));
+                }
+                if (isTool(item)) {
+                    weight += (float) (InventoryWeightUtil.ITEMS + ((maxDurability / 1500.0) * 300));
                 }
             }
 
-            if (item.isFireproof()){
-                weight *= 1.25f;
-            }
 
+            weight *= (getRarityWeight(stack) * 1.3f);
+
+            return (int) Math.floor(Math.max(weight, 1.0f));
         }
-
-        else if (maxStackSize == 1 && maxDurability > 0) {
-            if (isArmor(item)) {
-                weight += (float) (getArmorValue(item) * 10);
-                weight += (InventoryWeightUtil.ITEMS + (((float) maxDurability / 300) * 300));
-            }
-            if (isTool(item)) {
-                weight += (float) (InventoryWeightUtil.ITEMS + ((maxDurability / 1500.0) * 300));
-            }
-        }
-
-
-        weight *= (getRarityWeight(stack) * 1.3f);
-
-        return (int) Math.floor(Math.max(weight, 1.0f));
+        return InventoryWeightUtil.ITEMS;
     }
 
     private static float getCategoryBaseWeight(String category) {

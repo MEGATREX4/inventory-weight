@@ -17,11 +17,11 @@ public class BlockWeightCalculator {
             Block block = ((BlockItem) stack.getItem()).getBlock();
 
             String itemId = ItemWeights.getItemId(stack);
-            if (BackpackWeightCalculator.isBackpack(itemId)){
+            if (BackpackWeightCalculator.isBackpack(itemId, stack)){
                 return BackpackWeightCalculator.calculateBackpackWeight(stack).totalWeight;
             }
 
-            if (block instanceof ShulkerBoxBlock) {
+            if (ItemWeights.getItemId(stack).contains("shulker_box")) {
                 return BlockWeightCalculator.calculateShulkerBoxWeight(stack).totalWeight;
             }
 
