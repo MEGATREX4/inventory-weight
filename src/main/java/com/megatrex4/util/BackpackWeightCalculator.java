@@ -24,6 +24,10 @@ public class BackpackWeightCalculator {
             return true;
         }
 
+        if (itemId.contains("chestplate")) {
+            return false;
+        }
+
         String[] knownBackpacks = {
                 "Backpack", "Large_Backpack", "Extreme_Backpack",
                 "Iron_Armorpack", "Golden_Armorpack", "Netherite_Armorpack",
