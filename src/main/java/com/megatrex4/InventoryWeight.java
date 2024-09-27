@@ -8,12 +8,14 @@ import com.megatrex4.config.ItemWeightsConfigServer;
 import com.megatrex4.effects.InventoryWeightEffectRegister;
 import com.megatrex4.network.ModMessages;
 import com.megatrex4.util.Tooltips;
+import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
@@ -34,10 +36,14 @@ public class InventoryWeight implements ModInitializer {
 	public void onInitialize() {
 		LOGGER.info(MOD_ID + " mod initialized!");
 
-		ModMessages.registerS2CPackets();
-		ClientPlayNetworking.registerGlobalReceiver(ModMessages.INVENTORY_WEIGHT_SYNC, (client, handler, buf, responseSender) -> {
-			InventoryWeightClientHandler.receivePacket(client, ModMessages.INVENTORY_WEIGHT_SYNC, buf);
-		});
+		if (isClient()) {
+			ModMessages.registerS2CPackets();
+		}
+		if (isClient()) {
+			ClientPlayNetworking.registerGlobalReceiver(ModMessages.INVENTORY_WEIGHT_SYNC, (client, handler, buf, responseSender) -> {
+				InventoryWeightClientHandler.receivePacket(client, ModMessages.INVENTORY_WEIGHT_SYNC, buf);
+			});
+		}
 
 		ItemWeightsConfigServer.loadConfig();
 		ItemWeightConfigItems.loadConfig();
@@ -45,7 +51,9 @@ public class InventoryWeight implements ModInitializer {
 
 		loadDatapack();
 
-		ItemTooltipCallback.EVENT.register(this::addCustomTooltip);
+		if (isClient()) {
+			ItemTooltipCallback.EVENT.register(this::addCustomTooltip);
+		}
 
 		InventoryWeightEffectRegister.registerEffects();
 
@@ -81,10 +89,13 @@ public class InventoryWeight implements ModInitializer {
 		});
 	}
 
+	private static boolean isClient() {
+		return FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT;
+	}
+
 	private void addCustomTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip) {
 		Tooltips.appendTooltip(stack, tooltip, context);
 	}
-
 
 	public static void loadDatapack () {
 		// Register server starting event
