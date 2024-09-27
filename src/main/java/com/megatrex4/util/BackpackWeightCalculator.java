@@ -14,10 +14,13 @@ import static com.megatrex4.util.ItemWeights.getItemWeight;
 public class BackpackWeightCalculator {
 
     public static boolean isBackpack(String itemId, ItemStack backpackStack) {
-        // Check if itemId matches any known backpack type or toolbox type
-        NbtCompound backpackTag = backpackStack.getOrCreateNbt();
+        if (!backpackStack.hasNbt()) { // Ensure the backpack has NBT before retrieving
+            return false;
+        }
 
-        if (backpackTag.contains("Inventory")) {
+        NbtCompound backpackTag = backpackStack.getNbt(); // Use getNbt instead of getOrCreateNbt
+
+        if (backpackTag != null && backpackTag.contains("Inventory")) {
             return true;
         }
 
@@ -42,6 +45,7 @@ public class BackpackWeightCalculator {
 
         return false;
     }
+
 
 
 

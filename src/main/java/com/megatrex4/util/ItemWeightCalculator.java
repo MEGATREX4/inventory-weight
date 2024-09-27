@@ -8,7 +8,6 @@ public class ItemWeightCalculator {
 
     public static float calculateItemWeight(ItemStack stack, String category) {
         Item item = stack.getItem();
-        if (!(item instanceof BlockItem)) {
             int maxStackSize = item.getMaxCount();
             int maxDurability = stack.getMaxDamage();
 
@@ -61,8 +60,6 @@ public class ItemWeightCalculator {
             weight *= (getRarityWeight(stack) * 1.3f);
 
             return (int) Math.floor(Math.max(weight, 1.0f));
-        }
-        return InventoryWeightUtil.ITEMS;
     }
 
     private static float getCategoryBaseWeight(String category) {
