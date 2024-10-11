@@ -17,7 +17,7 @@ public class BlockWeightCalculator {
             Block block = ((BlockItem) stack.getItem()).getBlock();
 
             String itemId = ItemWeights.getItemId(stack);
-            if (BackpackWeightCalculator.isBackpack(itemId, stack)){
+            if (BackpackWeightCalculator.isBackpack(itemId, stack) || BackpackWeightCalculator.isTravelerBackpack(stack)){
                 return BackpackWeightCalculator.calculateBackpackWeight(stack).totalWeight;
             }
 

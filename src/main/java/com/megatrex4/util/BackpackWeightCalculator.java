@@ -1,17 +1,29 @@
 package com.megatrex4.util;
 
 import com.megatrex4.data.PlayerDataHandler;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.tag.ItemTags;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
 
 import static com.megatrex4.util.ItemWeights.getItemWeight;
 
 public class BackpackWeightCalculator {
+
+    public static boolean isTravelerBackpack(ItemStack itemStack) {
+        // Define the custom tag as a TagKey<Item>
+        TagKey<Item> travelerBackpackTag = TagKey.of(Registries.ITEM.getKey(), new Identifier("travelersbackpack", "custom_travelers_backpack"));
+
+        // Check if the item has the tag
+        return itemStack.isIn(travelerBackpackTag);
+    }
 
     public static boolean isBackpack(String itemId, ItemStack backpackStack) {
         if (!backpackStack.hasNbt()) { // Ensure the backpack has NBT before retrieving
@@ -26,6 +38,10 @@ public class BackpackWeightCalculator {
 
         if (itemId.contains("chestplate")) {
             return false;
+        }
+
+        if (isTravelerBackpack(backpackStack)){
+            return true;
         }
 
         String[] knownBackpacks = {
@@ -58,6 +74,10 @@ public class BackpackWeightCalculator {
         String itemId = ItemWeights.getItemId(backpackStack);
 
         boolean isPounch = itemId.contains("pouch") || itemId.contains("satchel");
+
+        if (isTravelerBackpack(backpackStack)) {
+            return calculateTravelersBackpackWeight(backpackTag);
+        }
 
         if (isPounch) {
             NbtList itemList = backpackTag.getList("Items", NbtElement.COMPOUND_TYPE);
@@ -118,6 +138,49 @@ public class BackpackWeightCalculator {
 
         return new BackpackWeightResult(InventoryWeightUtil.ITEMS, InventoryWeightUtil.ITEMS);
     }
+
+
+    // New method to calculate weight for Traveler's Backpack mod
+    private static BackpackWeightResult calculateTravelersBackpackWeight(NbtCompound backpackTag) {
+        float totalWeight = InventoryWeightUtil.ITEMS;
+        float baseWeight = InventoryWeightUtil.ITEMS;
+
+        if (backpackTag.contains("Inventory")) {
+            NbtList inventoryItems = backpackTag.getCompound("Inventory").getList("Items", NbtElement.COMPOUND_TYPE);
+
+            for (int i = 0; i < inventoryItems.size(); i++) {
+                NbtCompound itemTag = inventoryItems.getCompound(i);
+                String itemId = itemTag.getString("id");
+                int count = itemTag.getInt("Count");
+
+                // Create an ItemStack from the extracted data
+                ItemConvertible item = Registries.ITEM.get(new Identifier(itemId));
+                ItemStack itemStack = new ItemStack(item, count);
+
+                if (itemTag.contains("tag", NbtElement.COMPOUND_TYPE)) {
+                    NbtCompound itemNbt = itemTag.getCompound("tag");
+                    itemStack.setNbt(itemNbt);
+                }
+
+                PlayerDataHandler.ItemCategoryInfo categoryInfo = PlayerDataHandler.getItemCategoryInfo(itemStack);
+                String category = categoryInfo.getCategory();
+
+                float itemWeight = getItemWeight(itemStack) * itemStack.getCount();
+                totalWeight += Math.max(InventoryWeightUtil.ITEMS, itemWeight / 400);
+                baseWeight += itemWeight;
+            }
+        }
+
+        // Process other backpack specific data like fluid tanks, tools
+        if (backpackTag.contains("LeftTank") && backpackTag.contains("RightTank")) {
+            float leftTankWeight = backpackTag.getCompound("LeftTank").getInt("amount") / 1000f; // Adjust the scale
+            float rightTankWeight = backpackTag.getCompound("RightTank").getInt("amount") / 1000f;
+            totalWeight += leftTankWeight + rightTankWeight;
+        }
+
+        return new BackpackWeightResult(totalWeight, baseWeight);
+    }
+
 
     private static BackpackWeightResult calculateScoutWeightFromNbtList(NbtList itemList) {
         float totalWeight = InventoryWeightUtil.ITEMS;
@@ -289,7 +352,6 @@ public class BackpackWeightCalculator {
         return new BackpackWeightResult(totalWeight, baseWeight);
     }
 
-    // Helper method to calculate weight from `travelersbackpack` NBT list
     private static BackpackWeightResult calculateWeightFromNbtList(NbtList itemList) {
         float totalWeight = InventoryWeightUtil.ITEMS;
         float baseWeight = InventoryWeightUtil.ITEMS;

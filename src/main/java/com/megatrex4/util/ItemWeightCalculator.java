@@ -19,7 +19,7 @@ public class ItemWeightCalculator {
                 return 0;
             }
 
-            if (BackpackWeightCalculator.isBackpack(itemId, stack)){
+            if (BackpackWeightCalculator.isBackpack(itemId, stack) || BackpackWeightCalculator.isTravelerBackpack(stack)){
                 return BackpackWeightCalculator.calculateBackpackWeight(stack).totalWeight;
             }
 
