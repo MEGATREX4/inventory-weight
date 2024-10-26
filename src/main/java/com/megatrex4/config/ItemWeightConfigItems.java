@@ -1,10 +1,8 @@
 package com.megatrex4.config;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import com.megatrex4.util.ItemWeights;
+import com.megatrex4.util.NbtWeightHandler;
 
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -23,7 +21,11 @@ public class ItemWeightConfigItems {
             if (Files.exists(CONFIG_PATH)) {
                 try (FileReader fileReader = new FileReader(CONFIG_PATH.toFile())) {
                     JsonObject jsonObject = JsonParser.parseReader(fileReader).getAsJsonObject();
-                    // Load only custom item weights
+                    for (Map.Entry<String, JsonElement> entry : jsonObject.entrySet()) {
+                        if (entry.getValue().isJsonObject()) {
+                            NbtWeightHandler.parse(entry.getKey(), entry.getValue().getAsJsonObject());
+                        }
+                    }
                     ItemWeights.loadCustomWeightsFromConfig(jsonObject);
                 }
             } else {
