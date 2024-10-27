@@ -32,9 +32,13 @@ public class ItemWeights {
 
         for (Map.Entry<String, JsonElement> entry : jsonObject.entrySet()) {
             String key = entry.getKey();
-            // Only load dynamic items
-            if (ItemWeightConfigItems.isDynamicItem(key)) {
-                customItemWeights.put(key, entry.getValue().getAsFloat());
+            JsonElement value = entry.getValue();
+
+            if (value.isJsonObject() && value.getAsJsonObject().has("weightWhenNbt")) {
+                NbtWeightHandler handler = NbtWeightHandler.parse(key, value.getAsJsonObject());
+                NbtWeightHandler.registerHandler(handler);
+            } else if (value.isJsonPrimitive()) {
+                customItemWeights.put(key, value.getAsFloat());
             }
         }
     }
@@ -48,7 +52,13 @@ public class ItemWeights {
         String category = categoryInfo.getCategory();
         String itemId = Registries.ITEM.getId(stack.getItem()).toString();
 
-        // First check custom weights
+        // Check for NBT-specific weight
+        Float nbtWeight = NbtWeightHandler.getWeightFromNbt(stack);
+        if (nbtWeight != null) {
+            return nbtWeight; // Return the NBT-specific weight if found
+        }
+
+        // Existing custom weight check
         if (customItemWeights.containsKey(itemId)) {
             return customItemWeights.get(itemId);
         }
@@ -69,6 +79,7 @@ public class ItemWeights {
         }
         return ITEMS;
     }
+
 
 
 
