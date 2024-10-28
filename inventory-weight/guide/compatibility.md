@@ -17,6 +17,10 @@ The MT Inventory Weight mod is designed to be compatible with a wide variety of 
 
 The MT Inventory Weight mod provides compatibility with popular backpack and container mods, ensuring that weight calculations are applied to storage items added by these mods. Specifically, MT Inventory Weight supports the following:
 
+::: warning
+These are only proven mods, others can also work if they have a specific NBT structure (e.g. shulker-like item storage)
+:::
+
 - **Vanilla Shulker Boxes**: Shulker containers are fully supported, with weight adjustments applied to stored items.
 - **Scout Mod**: Applies weight correctly for any backpacks or containers.
 - **Create Mod**: Integrates weight mechanics with Create’s custom storage solutions, such as toolboxes.
