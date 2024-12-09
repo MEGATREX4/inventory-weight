@@ -1,5 +1,3 @@
-### ****Attention: We need volunteers!** Due to redesigned Networking, **MT Inventory Weight** currently does not work on Minecraft versions 1.20.5-1.20.6 and 1.21-1.21.1. We're seeking help to port the mod for these versions. If you're interested in assisting, please reach out in our [GitHub](https://github.com/MEGATREX4/inventory-weight) or [Discord](https://discord.gg/hc4XPRBEsq)!**
-
 ![Flogo](https://cdn.modrinth.com/data/cached_images/c4708259022689f9bc4e8a31208312ea667988bc_0.webp)
 
 **MT Inventory Weight** introduces a realistic weight system to Minecraft, enhancing your gameplay by simulating the impact of carried items on movement. The mod dynamically adjusts based on your inventory's weight, meaning heavier loads affect your movement and actions.
