@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "com.megatrex4.mixin",
+  "package": "com.megatrex4.inventoryweight.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "PlayerEntityMixin"

@@ -16,16 +16,13 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"com.megatrex4.InventoryWeight"
+			"com.megatrex4.inventoryweight.InventoryWeight"
 		],
 		"client": [
-			"com.megatrex4.InventoryWeightClient"
+			"com.megatrex4.inventoryweight.InventoryWeightClient"
 		],
-		"server": [
-			"com.megatrex4.InventoryWeightServer"
-		],
-		"modmenu": [
-			"com.megatrex4.compat.InventoryWeightModMenuIntegration"
+		"cardinal-components-entity": [
+			"com.megatrex4.inventoryweight.components.InventoryWeightComponents"
 		]
 	},
 	"mixins": [
@@ -46,6 +43,9 @@
 				"modmenu.website": "https://megatrex4.netlify.app/"
 			},
 			"update_checker": true
-		}
+		},
+		"cardinal-components": [
+			"inventoryweight:weight"
+		]
 	}
 }

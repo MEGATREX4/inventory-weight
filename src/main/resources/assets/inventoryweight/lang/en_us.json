@@ -1,29 +1,4 @@
 {
-  "category.inventoryweight.client": "Client Settings",
-  "category.inventoryweight.server": "Server Settings",
-  "category.inventoryweight.items": "Item Settings",
-
-  "option.inventoryweight.client.hudPosition": "HUD Position",
-  "option.inventoryweight.client.hudPosition.tooltip": "Options include:§r\n- §6TOP_LEFT§r\n- §6TOP_RIGHT§r\n- §6CENTER_LEFT§r\n- §6CENTER_RIGHT§r\n- §6BOTTOM_LEFT§r\n- §6BOTTOM_RIGHT§r\n- §6HOTBAR_LEFT§r\n- §6HOTBAR_RIGHT§r\n- §6CENTER_HOTBAR§r\n- §6CUSTOM",
-  "option.inventoryweight.client.xOffset": "X Offset",
-  "option.inventoryweight.client.yOffset": "Y Offset",
-  "option.inventoryweight.client.Offset.tooltip": "Works with CUSTOM option in HUD position",
-
-  "option.inventoryweight.server.realistic_mode": "Realistic Mode",
-  "option.inventoryweight.server.overloadPenaltyMultiplier": "Overload Penalty Strength",
-  "option.inventoryweight.server.overloadPenaltyMultiplier.tooltip": "Configure how strong the overload effect is",
-  "option.inventoryweight.server.maxWeight": "Maximum Inventory Weight",
-  "option.inventoryweight.server.maxWeight.tooltip": "Set the maximum weight that\n player can hold in the inventory.",
-  "option.inventoryweight.server.pocketWeight": "Pocket Capacity",
-  "option.inventoryweight.server.pocketWeight.tooltip": "Set the maximum weight that \nthe player can hold in each pocket.\nPockets - this value applied from the armor\n, amount of pockets can be changed via datapacks",
-  "option.inventoryweight.server.buckets": "Weight of Buckets",
-  "option.inventoryweight.server.blocks": "Weight of Blocks",
-  "option.inventoryweight.server.bottles": "Weight of Bottles",
-  "option.inventoryweight.server.creative": "Weight of Creative Items",
-  "option.inventoryweight.server.ingots": "Weight of Ingots",
-  "option.inventoryweight.server.items": "Weight of Items",
-  "option.inventoryweight.server.nuggets": "Weight of Nuggets",
-
   "command.inventoryweight.get.base": "Max base weight: %s",
   "command.inventoryweight.get.base.other": "Max base weight for %s: %s",
   "command.inventoryweight.get.combined": "Combined base weight and multiplier: %s",
@@ -43,7 +18,6 @@
   "command.debugweight.fallback": "Weight of item in hand (%s): %s",
   "command.error.not_player": "You must be a player to run this command.",
 
-  "__comment__": "Effect",
   "effect.inventoryweight.overload": "Overload",
 
   "inventoryweight.tooltip.hint": "[Press {0}Shift{1} for more]",
@@ -53,7 +27,5 @@
   "inventoryweight.tooltip.pockets": "+%s Pockets",
   "inventoryweight.tooltip.totalweight": "Stack Weight: %s",
   "inventoryweight.tooltip.weight": "Weight: %s",
-  "inventoryweight.tooltip.weightinside": "Weight Inside: %s",
-
-  "title.inventoryweight.config": "Inventory Weight Configuration"
+  "inventoryweight.tooltip.weightinside": "Weight Inside: %s"
 }
