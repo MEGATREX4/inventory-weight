@@ -4,13 +4,10 @@ import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.megatrex4.inventoryweight.components.InventoryWeightComponents;
 import com.megatrex4.inventoryweight.config.InventoryWeightConfig;
 import com.megatrex4.inventoryweight.effect.InventoryWeightEffects;
-import com.megatrex4.inventoryweight.util.Util;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-
-import static com.megatrex4.inventoryweight.effect.OverloadEffect.BASE_PENALTY;
 
 @Mixin(LivingEntity.class)
 public abstract class PlayerEntityMixin {
@@ -22,18 +19,15 @@ public abstract class PlayerEntityMixin {
 			int maxWeight = InventoryWeightConfig.SERVER.maxWeight;
 
 			if (!self.isCreative() && !self.isSpectator()) {
-				if (weight > maxWeight) {
-					if (self.hasStatusEffect(InventoryWeightEffects.OVERLOAD)) {
-						return Math.max(
-								originalJumpVelocity * 0.6f / (self.getStatusEffect(InventoryWeightEffects.OVERLOAD).getAmplifier() + 1) / InventoryWeightConfig.SERVER.overloadStrength,
-								originalJumpVelocity * 0.2f
-						);
-					} else if (weight > 0.1 * maxWeight && InventoryWeightConfig.SERVER.realisticMode) {
-						return Math.max(
-								(float) (originalJumpVelocity * (1 - Util.getReductionFactor(weight, 0.1f, 0.1f) * BASE_PENALTY)) + 0.05f,
-								originalJumpVelocity * 0.3f
-						);
-					}
+				if (self.hasStatusEffect(InventoryWeightEffects.OVERLOAD)) {
+					int amplifier = self.getStatusEffect(InventoryWeightEffects.OVERLOAD).getAmplifier();
+					float overloadLimit = Math.max(0.3f, 0.65f - (amplifier * 0.05f));
+					return originalJumpVelocity * overloadLimit;
+
+				} else if (weight > 0 && InventoryWeightConfig.SERVER.realisticMode) {
+					float weightPercentage = (float) weight / maxWeight;
+					float reductionFactor = Math.max(0.75f, 1 - weightPercentage * 0.25f);
+					return originalJumpVelocity * reductionFactor;
 				}
 			}
 		}

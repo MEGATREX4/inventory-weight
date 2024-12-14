@@ -24,7 +24,7 @@ public class InventoryWeightConfig {
 			super(new Identifier(InventoryWeight.MOD_ID, "server-config"));
 		}
 
-		public boolean realisticMode = true;
+		public boolean realisticMode = false;
 
 		@Comment("Maximum weight before overload is applied")
 		public int maxWeight = 100_000;

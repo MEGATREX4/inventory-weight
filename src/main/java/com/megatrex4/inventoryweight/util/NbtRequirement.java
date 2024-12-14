@@ -37,4 +37,9 @@ public class NbtRequirement implements Requirement<Item, ItemStack> {
 		}
 		return false;
 	}
+
+	@Override
+	public String getId() {
+		return "nbt";
+	}
 }

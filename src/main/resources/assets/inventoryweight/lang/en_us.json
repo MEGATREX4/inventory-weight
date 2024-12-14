@@ -11,11 +11,6 @@
   "command.inventoryweight.set.multiplier": "Max weight multiplier set to: %s",
   "command.inventoryweight.set.multiplier.other": "Max weight multiplier for %s set to: %s",
 
-  "command.debugarmor.no_pockets": "No armor with pockets found.",
-  "command.debugarmor.pockets": "Armor pockets:\n%s",
-  "command.debugarmor.total_weight": "Total weight capacity from armor: %s",
-  "command.debugweight": "Weight of item in hand (%s): %s",
-  "command.debugweight.fallback": "Weight of item in hand (%s): %s",
   "command.error.not_player": "You must be a player to run this command.",
 
   "effect.inventoryweight.overload": "Overload",

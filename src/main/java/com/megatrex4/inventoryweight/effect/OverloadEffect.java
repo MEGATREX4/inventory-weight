@@ -27,11 +27,11 @@ public class OverloadEffect extends StatusEffect {
             float attackSpeedReduction = (float) (BASE_PENALTY + (0.05 * amplifier) * InventoryWeightConfig.SERVER.overloadStrength);
             float damageReduction = (float) (BASE_PENALTY / 1.5 + (0.05 * amplifier) * InventoryWeightConfig.SERVER.overloadStrength);
 
-            speedReduction = (float) Math.min(speedReduction, 0.9);
-            attackSpeedReduction = (float) Math.min(attackSpeedReduction, 0.9);
-            damageReduction = (float) Math.min(damageReduction, 0.8);
+            speedReduction = (float) Math.min(speedReduction, 0.7);
+            attackSpeedReduction = (float) Math.min(attackSpeedReduction, 0.6);
+            damageReduction = (float) Math.min(damageReduction, 0.5);
 
-            Util.applyWeight(player, speedReduction, attackSpeedReduction, damageReduction);
+            Util.applyWeightModifiers(player, speedReduction, attackSpeedReduction, damageReduction);
         }
     }
 }

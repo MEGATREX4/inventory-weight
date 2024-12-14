@@ -1,30 +1,4 @@
 {
-  "category.inventoryweight.client": "Client Sails",
-  "category.inventoryweight.server": "Ship's Orders",
-  "category.inventoryweight.items": "Loot Settings",
-
-  "option.inventoryweight.client.hudPosition": "Spyglass Position",
-  "option.inventoryweight.client.hudPosition.tooltip": "Choices be:\n- §6TOP_LEFT§r (Crow's Nest Left)\n- §6TOP_RIGHT§r (Crow's Nest Right)\n- §6CENTER_LEFT§r (Portside Center)\n- §6CENTER_RIGHT§r (Starboard Center)\n- §6BOTTOM_LEFT§r (Lower Deck Left)\n- §6BOTTOM_RIGHT§r (Lower Deck Right)\n- §6HOTBAR_LEFT§r (Cannon Row Left)\n- §6HOTBAR_RIGHT§r (Cannon Row Right)\n- §6CENTER_HOTBAR§r (Helm)\n- §6CUSTOM (Yer Own Choice)",
-  "option.inventoryweight.client.xOffset": "X Shift",
-  "option.inventoryweight.client.yOffset": "Y Shift",
-  "option.inventoryweight.client.Offset.tooltip": "Only fer when ye choose CUSTOM on the Spyglass Position",
-
-  "option.inventoryweight.server.realistic_mode": "True Pirate Mode",
-
-  "option.inventoryweight.server.maxWeight": "Max Cargo Weight",
-  "option.inventoryweight.server.overloadPenaltyMultiplier": "Overboard Penalty Multiplier",
-  "option.inventoryweight.server.overloadPenaltyMultiplier.tooltip": "Configure 'ow strong the overboard effect be",
-  "option.inventoryweight.server.maxWeight.tooltip": "Set the heaviest cargo\n a sailor can carry in his chest.",
-  "option.inventoryweight.server.pocketWeight": "Pocket Load",
-  "option.inventoryweight.server.pocketWeight.tooltip": "Set the max load a pirate can haul in his pouches.\nPockets - the value applied to armor,\nmore pouches can be added with treasure maps (datapacks)",
-  "option.inventoryweight.server.buckets": "Weight o' Buckets",
-  "option.inventoryweight.server.blocks": "Weight o' Planks",
-  "option.inventoryweight.server.bottles": "Weight o' Rum Bottles",
-  "option.inventoryweight.server.creative": "Weight o' Imagination Items",
-  "option.inventoryweight.server.ingots": "Weight o' Gold Ingots",
-  "option.inventoryweight.server.items": "Weight o' Loot",
-  "option.inventoryweight.server.nuggets": "Weight o' Gold Bits",
-
   "command.inventoryweight.get.base": "Max base load: %s",
   "command.inventoryweight.get.base.other": "Max base load for %s: %s",
   "command.inventoryweight.get.combined": "Base load plus boost: %s",
@@ -37,14 +11,8 @@
   "command.inventoryweight.set.multiplier": "Max load boost set t' %s",
   "command.inventoryweight.set.multiplier.other": "Max load boost for %s be set t' %s",
 
-  "command.debugarmor.no_pockets": "No armor wit' pouches found.",
-  "command.debugarmor.pockets": "Armor pouches:\n%s",
-  "command.debugarmor.total_weight": "Total load from armor pouches: %s",
-  "command.debugweight": "Load o' item in yer hand (%s): %s",
-  "command.debugweight.fallback": "Load o' item in yer hand (%s): %s",
   "command.error.not_player": "Only a sailor can run this command, landlubber!",
 
-  "__comment__": "Effect",
   "effect.inventoryweight.overload": "Overboard",
 
   "inventoryweight.tooltip.hint": "[Press {0}Shift{1} fer more]",
@@ -54,7 +22,5 @@
   "inventoryweight.tooltip.pockets": "+%s Pouches",
   "inventoryweight.tooltip.totalweight": "Stack Load: %s",
   "inventoryweight.tooltip.weight": "Load: %s",
-  "inventoryweight.tooltip.weightinside": "Load Inside: %s",
-
-  "title.inventoryweight.config": "Cargo Load Configuration"
+  "inventoryweight.tooltip.weightinside": "Load Inside: %s"
 }
