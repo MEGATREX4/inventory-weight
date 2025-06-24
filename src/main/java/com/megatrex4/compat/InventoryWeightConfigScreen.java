@@ -13,10 +13,7 @@ import com.megatrex4.config.ItemWeightsConfigClient;
 import com.megatrex4.config.ItemWeightConfigItems;
 import com.megatrex4.config.ItemWeightsConfigServer;
 import com.megatrex4.util.ItemWeights;
-<<<<<<< HEAD
-=======
 import com.megatrex4.util.ItemCategory;
->>>>>>> testrepo/main
 import com.megatrex4.InventoryWeightState;
 
 import java.util.Map;
@@ -114,41 +111,6 @@ public class InventoryWeightConfigScreen {
                 .build());
 
         // Add fields for item group settings
-<<<<<<< HEAD
-        serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.buckets"), ItemWeights.getItemWeight("buckets"))
-                .setDefaultValue(ItemWeights.BUCKETS)
-                .setSaveConsumer(newValue -> ItemWeights.setItemWeight("buckets", newValue))
-                .build());
-
-        serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.creative"), ItemWeights.getItemWeight("creative"))
-                .setDefaultValue(ItemWeights.CREATIVE)
-                .setSaveConsumer(newValue -> ItemWeights.setItemWeight("creative", newValue))
-                .build());
-
-        serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.bottles"), ItemWeights.getItemWeight("bottles"))
-                .setDefaultValue(ItemWeights.BOTTLES)
-                .setSaveConsumer(newValue -> ItemWeights.setItemWeight("bottles", newValue))
-                .build());
-
-        serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.blocks"), ItemWeights.getItemWeight("blocks"))
-                .setDefaultValue(ItemWeights.BLOCKS)
-                .setSaveConsumer(newValue -> ItemWeights.setItemWeight("blocks", newValue))
-                .build());
-
-        serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.ingots"), ItemWeights.getItemWeight("ingots"))
-                .setDefaultValue(ItemWeights.INGOTS)
-                .setSaveConsumer(newValue -> ItemWeights.setItemWeight("ingots", newValue))
-                .build());
-
-        serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.nuggets"), ItemWeights.getItemWeight("nuggets"))
-                .setDefaultValue(ItemWeights.NUGGETS)
-                .setSaveConsumer(newValue -> ItemWeights.setItemWeight("nuggets", newValue))
-                .build());
-
-        serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.items"), ItemWeights.getItemWeight("items"))
-                .setDefaultValue(ItemWeights.ITEMS)
-                .setSaveConsumer(newValue -> ItemWeights.setItemWeight("items", newValue))
-=======
         serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.buckets"), ItemWeights.getItemWeight(ItemCategory.BUCKETS))
                 .setDefaultValue(ItemWeights.BUCKETS)
                 .setSaveConsumer(newValue -> ItemWeights.setItemWeight(ItemCategory.BUCKETS, newValue))
@@ -182,7 +144,6 @@ public class InventoryWeightConfigScreen {
         serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.items"), ItemWeights.getItemWeight(ItemCategory.ITEMS))
                 .setDefaultValue(ItemWeights.ITEMS)
                 .setSaveConsumer(newValue -> ItemWeights.setItemWeight(ItemCategory.ITEMS, newValue))
->>>>>>> testrepo/main
                 .build());
 
         // Items Config Category

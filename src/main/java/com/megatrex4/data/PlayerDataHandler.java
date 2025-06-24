@@ -5,10 +5,7 @@ import com.megatrex4.InventoryWeightState;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
-<<<<<<< HEAD
-=======
 import com.megatrex4.util.ItemCategory;
->>>>>>> testrepo/main
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -76,24 +73,6 @@ public class PlayerDataHandler {
 
     public static ItemCategoryInfo getItemCategoryInfo(ItemStack stack) {
         String itemId = Registries.ITEM.getId(stack.getItem()).toString().toLowerCase();
-<<<<<<< HEAD
-        String category;
-
-        if (isCreative(itemId)) {
-            category = "creative";
-        } else if (itemId.contains("bucket")) {
-            category = "buckets";
-        } else if (itemId.contains("bottle") || itemId.contains("potion")) {
-            category = "bottles";
-        } else if (itemId.contains("ingot") || itemId.contains("alloy") || itemId.contains("gem") || itemId.contains("shard")) {
-            category = "ingots";
-        } else if (itemId.contains("nugget")) {
-            category = "nuggets";
-        } else if (isBlock(stack)) {
-            category = "blocks";
-        } else {
-            category = "items";
-=======
         ItemCategory category;
 
         if (isCreative(itemId)) {
@@ -110,7 +89,6 @@ public class PlayerDataHandler {
             category = ItemCategory.BLOCKS;
         } else {
             category = ItemCategory.ITEMS;
->>>>>>> testrepo/main
         }
 
         return new ItemCategoryInfo(stack, category);
@@ -137,15 +115,9 @@ public class PlayerDataHandler {
 
     public static class ItemCategoryInfo {
         private final ItemStack stack;
-<<<<<<< HEAD
-        private final String category;
-
-        public ItemCategoryInfo(ItemStack stack, String category) {
-=======
         private final ItemCategory category;
 
         public ItemCategoryInfo(ItemStack stack, ItemCategory category) {
->>>>>>> testrepo/main
             this.stack = stack;
             this.category = category;
         }
@@ -154,11 +126,7 @@ public class PlayerDataHandler {
             return stack;
         }
 
-<<<<<<< HEAD
-        public String getCategory() {
-=======
         public ItemCategory getCategory() {
->>>>>>> testrepo/main
             return category;
         }
     }

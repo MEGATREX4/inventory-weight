@@ -1,10 +1,7 @@
 package com.megatrex4.util;
 
 import com.megatrex4.data.PlayerDataHandler;
-<<<<<<< HEAD
-=======
 import com.megatrex4.util.ItemCategory;
->>>>>>> testrepo/main
 import net.minecraft.block.*;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
@@ -15,11 +12,7 @@ import static com.megatrex4.util.ItemWeights.getItemWeight;
 import static com.megatrex4.util.Rarity.getRarityWeight;
 
 public class BlockWeightCalculator {
-<<<<<<< HEAD
-    public static float calculateBlockWeight(ItemStack stack, String category) {
-=======
     public static float calculateBlockWeight(ItemStack stack, ItemCategory category) {
->>>>>>> testrepo/main
 
         if (stack.getItem() instanceof BlockItem) {
             Block block = ((BlockItem) stack.getItem()).getBlock();
@@ -36,18 +29,8 @@ public class BlockWeightCalculator {
             float hardness = block.getHardness();
             float blastResistance = block.getBlastResistance();
             boolean isTransparent = !block.getDefaultState().isOpaque();
-
-<<<<<<< HEAD
-            float weight;
-            if ("creative".equalsIgnoreCase(category)) {
-                weight = InventoryWeightUtil.CREATIVE;
-            } else {
-                weight = InventoryWeightUtil.BLOCKS;
-            }
-=======
             float weight = category == ItemCategory.CREATIVE ?
                     InventoryWeightUtil.CREATIVE : InventoryWeightUtil.BLOCKS;
->>>>>>> testrepo/main
 
             weight += (hardness * 10);
             weight += Math.min((blastResistance * 50), 10000);
@@ -97,10 +80,6 @@ public class BlockWeightCalculator {
             NbtCompound itemTag = itemList.getCompound(i);
             ItemStack itemStack = ItemStack.fromNbt(itemTag);
             PlayerDataHandler.ItemCategoryInfo categoryInfo = PlayerDataHandler.getItemCategoryInfo(itemStack);
-<<<<<<< HEAD
-            String category = categoryInfo.getCategory();
-=======
->>>>>>> testrepo/main
             float itemWeight = getItemWeight(itemStack) * itemStack.getCount();
 
             totalWeight += itemWeight / 1000; // With modifier
