@@ -6,6 +6,10 @@ import com.google.gson.JsonPrimitive;
 import com.megatrex4.InventoryWeight;
 import com.megatrex4.config.ItemWeightConfigItems;
 import com.megatrex4.data.PlayerDataHandler;
+<<<<<<< HEAD
+=======
+import com.megatrex4.util.ItemCategory;
+>>>>>>> testrepo/main
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 
@@ -49,7 +53,11 @@ public class ItemWeights {
 
     public static float getItemWeight(ItemStack stack) {
         PlayerDataHandler.ItemCategoryInfo categoryInfo = PlayerDataHandler.getItemCategoryInfo(stack);
+<<<<<<< HEAD
         String category = categoryInfo.getCategory();
+=======
+        ItemCategory category = categoryInfo.getCategory();
+>>>>>>> testrepo/main
         String itemId = Registries.ITEM.getId(stack.getItem()).toString();
 
         // Check for NBT-specific weight
@@ -65,6 +73,7 @@ public class ItemWeights {
 
         if (isStaticItem(category)) {
             switch (category) {
+<<<<<<< HEAD
                 case "buckets", "bottles", "ingots", "nuggets", "items":
                     return ItemWeightCalculator.calculateItemWeight(categoryInfo.getStack(), category);
                 case "blocks":
@@ -75,6 +84,23 @@ public class ItemWeights {
                     } else {
                         return ItemWeightCalculator.calculateItemWeight(stack, "creative");
                     }
+=======
+                case BUCKETS, BOTTLES, INGOTS, NUGGETS, ITEMS ->
+                        {
+                            return ItemWeightCalculator.calculateItemWeight(categoryInfo.getStack(), category);
+                        }
+                case BLOCKS ->
+                        {
+                            return BlockWeightCalculator.calculateBlockWeight(categoryInfo.getStack(), category);
+                        }
+                case CREATIVE -> {
+                    if (isBlock(stack)) {
+                        return BlockWeightCalculator.calculateBlockWeight(stack, ItemCategory.CREATIVE);
+                    } else {
+                        return ItemWeightCalculator.calculateItemWeight(stack, ItemCategory.CREATIVE);
+                    }
+                }
+>>>>>>> testrepo/main
             }
         }
         return ITEMS;
@@ -90,6 +116,7 @@ public class ItemWeights {
             return customItemWeights.get(item);
         }
 
+<<<<<<< HEAD
         if (isStaticItem(item)) {
             switch (item) {
                 case "buckets":
@@ -107,16 +134,35 @@ public class ItemWeights {
                 case "items":
                     return ITEMS;
             }
+=======
+        ItemCategory category = ItemCategory.fromName(item);
+        if (isStaticItem(category)) {
+            return category.getBaseWeight();
+>>>>>>> testrepo/main
         }
 
         // If the item is not recognized or does not match any category, return default for items
         return ITEMS;
     }
 
+<<<<<<< HEAD
+=======
+    public static float getItemWeight(ItemCategory category) {
+        return getItemWeight(category.getName());
+    }
+
+>>>>>>> testrepo/main
     public static void setItemWeight(String item, float weight) {
         customItemWeights.put(item, weight);
     }
 
+<<<<<<< HEAD
+=======
+    public static void setItemWeight(ItemCategory category, float weight) {
+        setItemWeight(category.getName(), weight);
+    }
+
+>>>>>>> testrepo/main
     public static void loadWeightsFromConfig(JsonObject jsonObject) {
         // Assuming the issue lies here
         for (Map.Entry<String, JsonElement> entry : jsonObject.entrySet()) {
@@ -145,10 +191,18 @@ public class ItemWeights {
     }
 
     // Helper method to check if an item is static
+<<<<<<< HEAD
     public static boolean isStaticItem(String item) {
 		return switch (item) {
 			case "buckets", "bottles", "blocks", "ingots", "nuggets", "items", "creative" -> true;
 			default -> false;
 		};
+=======
+    public static boolean isStaticItem(ItemCategory category) {
+        return switch (category) {
+            case BUCKETS, BOTTLES, BLOCKS, INGOTS, NUGGETS, ITEMS, CREATIVE -> true;
+            default -> false;
+        };
+>>>>>>> testrepo/main
     }
 }

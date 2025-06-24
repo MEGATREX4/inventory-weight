@@ -1,12 +1,20 @@
 package com.megatrex4.util;
 
 import net.minecraft.item.*;
+<<<<<<< HEAD
+=======
+import com.megatrex4.util.ItemCategory;
+>>>>>>> testrepo/main
 
 import static com.megatrex4.util.Rarity.getRarityWeight;
 
 public class ItemWeightCalculator {
 
+<<<<<<< HEAD
     public static float calculateItemWeight(ItemStack stack, String category) {
+=======
+    public static float calculateItemWeight(ItemStack stack, ItemCategory category) {
+>>>>>>> testrepo/main
         Item item = stack.getItem();
             int maxStackSize = item.getMaxCount();
             int maxDurability = stack.getMaxDamage();
@@ -62,6 +70,7 @@ public class ItemWeightCalculator {
             return (int) Math.floor(Math.max(weight, 1.0f));
     }
 
+<<<<<<< HEAD
     private static float getCategoryBaseWeight(String category) {
         return switch (category) {
             case "ingots" -> InventoryWeightUtil.INGOTS;
@@ -70,6 +79,16 @@ public class ItemWeightCalculator {
             case "bottles" -> InventoryWeightUtil.BOTTLES;
             case "blocks" -> InventoryWeightUtil.BLOCKS;
             case "creative" -> InventoryWeightUtil.CREATIVE;
+=======
+    private static float getCategoryBaseWeight(ItemCategory category) {
+        return switch (category) {
+            case INGOTS -> InventoryWeightUtil.INGOTS;
+            case NUGGETS -> InventoryWeightUtil.NUGGETS;
+            case BUCKETS -> InventoryWeightUtil.BUCKETS;
+            case BOTTLES -> InventoryWeightUtil.BOTTLES;
+            case BLOCKS -> InventoryWeightUtil.BLOCKS;
+            case CREATIVE -> InventoryWeightUtil.CREATIVE;
+>>>>>>> testrepo/main
             default -> InventoryWeightUtil.ITEMS;
         };
     }

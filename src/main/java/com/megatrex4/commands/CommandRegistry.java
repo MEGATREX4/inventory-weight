@@ -4,6 +4,10 @@ import com.megatrex4.InventoryWeightArmor;
 import com.megatrex4.InventoryWeightHandler;
 import com.megatrex4.config.ItemWeightsConfigServer;
 import com.megatrex4.util.ItemWeights;
+<<<<<<< HEAD
+=======
+import com.megatrex4.util.ItemCategory;
+>>>>>>> testrepo/main
 import com.megatrex4.data.PlayerDataHandler;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.FloatArgumentType;
@@ -154,10 +158,17 @@ public class CommandRegistry {
                         source.sendFeedback(() -> Text.translatable("command.debugweight", itemIdString, weight), false);
                     } else {
                         PlayerDataHandler.ItemCategoryInfo categoryInfo = PlayerDataHandler.getItemCategoryInfo(itemStack);
+<<<<<<< HEAD
                         String itemCategory = categoryInfo.getCategory();
                         float fallbackWeight = ItemWeights.getItemWeight(categoryInfo.getStack());
 
                         source.sendFeedback(() -> Text.translatable("command.debugweight.fallback", itemCategory, fallbackWeight), false);
+=======
+                        ItemCategory itemCategory = categoryInfo.getCategory();
+                        float fallbackWeight = ItemWeights.getItemWeight(categoryInfo.getStack());
+
+                        source.sendFeedback(() -> Text.translatable("command.debugweight.fallback", itemCategory.getName(), fallbackWeight), false);
+>>>>>>> testrepo/main
                     }
 
                     return 1;

@@ -163,7 +163,10 @@ public class BackpackWeightCalculator {
                 }
 
                 PlayerDataHandler.ItemCategoryInfo categoryInfo = PlayerDataHandler.getItemCategoryInfo(itemStack);
+<<<<<<< HEAD
                 String category = categoryInfo.getCategory();
+=======
+>>>>>>> testrepo/main
 
                 float itemWeight = getItemWeight(itemStack) * itemStack.getCount();
                 totalWeight += Math.max(InventoryWeightUtil.ITEMS, itemWeight / 400);
@@ -204,7 +207,10 @@ public class BackpackWeightCalculator {
                 }
 
                 PlayerDataHandler.ItemCategoryInfo categoryInfo = PlayerDataHandler.getItemCategoryInfo(itemStack);
+<<<<<<< HEAD
                 String category = categoryInfo.getCategory();
+=======
+>>>>>>> testrepo/main
 
                 float itemWeight = getItemWeight(itemStack) * itemStack.getCount();
                 totalWeight += Math.max(InventoryWeightUtil.ITEMS, itemWeight / 400);
@@ -240,7 +246,10 @@ public class BackpackWeightCalculator {
                 }
 
                 PlayerDataHandler.ItemCategoryInfo categoryInfo = PlayerDataHandler.getItemCategoryInfo(itemStack);
+<<<<<<< HEAD
                 String category = categoryInfo.getCategory();
+=======
+>>>>>>> testrepo/main
 
                 float itemWeight = getItemWeight(itemStack) * itemStack.getCount();
                 totalWeight += Math.max(InventoryWeightUtil.ITEMS, itemWeight / 400);
@@ -275,7 +284,10 @@ public class BackpackWeightCalculator {
             }
 
             PlayerDataHandler.ItemCategoryInfo categoryInfo = PlayerDataHandler.getItemCategoryInfo(itemStack);
+<<<<<<< HEAD
             String category = categoryInfo.getCategory();
+=======
+>>>>>>> testrepo/main
 
             float itemWeight = getItemWeight(itemStack) * itemStack.getCount();
             totalWeight += Math.max(InventoryWeightUtil.ITEMS, itemWeight / 400);
@@ -309,7 +321,10 @@ public class BackpackWeightCalculator {
                 }
 
                 PlayerDataHandler.ItemCategoryInfo categoryInfo = PlayerDataHandler.getItemCategoryInfo(itemStack);
+<<<<<<< HEAD
                 String category = categoryInfo.getCategory();
+=======
+>>>>>>> testrepo/main
 
                 float itemWeight = getItemWeight(itemStack) * itemStack.getCount();
                 totalWeight += Math.max(InventoryWeightUtil.ITEMS, itemWeight / 400);
@@ -342,7 +357,10 @@ public class BackpackWeightCalculator {
             }
 
             PlayerDataHandler.ItemCategoryInfo categoryInfo = PlayerDataHandler.getItemCategoryInfo(itemStack);
+<<<<<<< HEAD
             String category = categoryInfo.getCategory();
+=======
+>>>>>>> testrepo/main
 
             float itemWeight = getItemWeight(itemStack) * itemStack.getCount();
             totalWeight += Math.max(InventoryWeightUtil.ITEMS, itemWeight / 400);
@@ -361,7 +379,10 @@ public class BackpackWeightCalculator {
             ItemStack itemStack = ItemStack.fromNbt(itemTag);
 
             PlayerDataHandler.ItemCategoryInfo categoryInfo = PlayerDataHandler.getItemCategoryInfo(itemStack);
+<<<<<<< HEAD
             String category = categoryInfo.getCategory();
+=======
+>>>>>>> testrepo/main
 
             float itemWeight = getItemWeight(itemStack) * itemStack.getCount();
             totalWeight += Math.max(InventoryWeightUtil.ITEMS, itemWeight / 400);
