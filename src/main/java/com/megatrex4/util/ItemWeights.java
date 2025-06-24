@@ -6,6 +6,7 @@ import com.google.gson.JsonPrimitive;
 import com.megatrex4.InventoryWeight;
 import com.megatrex4.config.ItemWeightConfigItems;
 import com.megatrex4.data.PlayerDataHandler;
+import com.megatrex4.util.ItemCategory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 
@@ -49,7 +50,7 @@ public class ItemWeights {
 
     public static float getItemWeight(ItemStack stack) {
         PlayerDataHandler.ItemCategoryInfo categoryInfo = PlayerDataHandler.getItemCategoryInfo(stack);
-        String category = categoryInfo.getCategory();
+        ItemCategory category = categoryInfo.getCategory();
         String itemId = Registries.ITEM.getId(stack.getItem()).toString();
 
         // Check for NBT-specific weight
@@ -65,16 +66,21 @@ public class ItemWeights {
 
         if (isStaticItem(category)) {
             switch (category) {
-                case "buckets", "bottles", "ingots", "nuggets", "items":
-                    return ItemWeightCalculator.calculateItemWeight(categoryInfo.getStack(), category);
-                case "blocks":
-                    return BlockWeightCalculator.calculateBlockWeight(categoryInfo.getStack(), category);
-                case "creative":
+                case BUCKETS, BOTTLES, INGOTS, NUGGETS, ITEMS ->
+                        {
+                            return ItemWeightCalculator.calculateItemWeight(categoryInfo.getStack(), category);
+                        }
+                case BLOCKS ->
+                        {
+                            return BlockWeightCalculator.calculateBlockWeight(categoryInfo.getStack(), category);
+                        }
+                case CREATIVE -> {
                     if (isBlock(stack)) {
-                        return BlockWeightCalculator.calculateBlockWeight(stack, "creative");
+                        return BlockWeightCalculator.calculateBlockWeight(stack, ItemCategory.CREATIVE);
                     } else {
-                        return ItemWeightCalculator.calculateItemWeight(stack, "creative");
+                        return ItemWeightCalculator.calculateItemWeight(stack, ItemCategory.CREATIVE);
                     }
+                }
             }
         }
         return ITEMS;
@@ -89,32 +95,26 @@ public class ItemWeights {
         if (customItemWeights.containsKey(item)) {
             return customItemWeights.get(item);
         }
-
-        if (isStaticItem(item)) {
-            switch (item) {
-                case "buckets":
-                    return BUCKETS;
-                case "bottles":
-                    return BOTTLES;
-                case "blocks":
-                    return BLOCKS;
-                case "ingots":
-                    return INGOTS;
-                case "nuggets":
-                    return NUGGETS;
-                case "creative":
-                    return CREATIVE;
-                case "items":
-                    return ITEMS;
-            }
+        ItemCategory category = ItemCategory.fromName(item);
+        if (isStaticItem(category)) {
+            return category.getBaseWeight();
         }
 
         // If the item is not recognized or does not match any category, return default for items
         return ITEMS;
     }
 
+
+    public static float getItemWeight(ItemCategory category) {
+        return getItemWeight(category.getName());
+    }
+
     public static void setItemWeight(String item, float weight) {
         customItemWeights.put(item, weight);
+    }
+
+    public static void setItemWeight(ItemCategory category, float weight) {
+        setItemWeight(category.getName(), weight);
     }
 
     public static void loadWeightsFromConfig(JsonObject jsonObject) {
@@ -145,10 +145,10 @@ public class ItemWeights {
     }
 
     // Helper method to check if an item is static
-    public static boolean isStaticItem(String item) {
-		return switch (item) {
-			case "buckets", "bottles", "blocks", "ingots", "nuggets", "items", "creative" -> true;
-			default -> false;
-		};
+    public static boolean isStaticItem(ItemCategory category) {
+        return switch (category) {
+            case BUCKETS, BOTTLES, BLOCKS, INGOTS, NUGGETS, ITEMS, CREATIVE -> true;
+            default -> false;
+        };
     }
 }

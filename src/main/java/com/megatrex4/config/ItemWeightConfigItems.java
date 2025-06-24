@@ -4,6 +4,8 @@ import com.google.gson.*;
 import com.megatrex4.util.ItemWeights;
 import com.megatrex4.util.NbtWeightHandler;
 
+import com.megatrex4.util.ItemCategory;
+
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -58,7 +60,7 @@ public class ItemWeightConfigItems {
 
     // Change visibility of this method from private to protected
     public static boolean isDynamicItem(String itemName) {
-        return !ItemWeights.isStaticItem(itemName);
+        return !ItemWeights.isStaticItem(ItemCategory.fromName(itemName));
     }
 
     private static JsonObject createDefaultConfig() {

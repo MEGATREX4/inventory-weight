@@ -5,6 +5,7 @@ import com.megatrex4.InventoryWeightState;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
+import com.megatrex4.util.ItemCategory;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -72,22 +73,22 @@ public class PlayerDataHandler {
 
     public static ItemCategoryInfo getItemCategoryInfo(ItemStack stack) {
         String itemId = Registries.ITEM.getId(stack.getItem()).toString().toLowerCase();
-        String category;
+        ItemCategory category;
 
         if (isCreative(itemId)) {
-            category = "creative";
+            category = ItemCategory.CREATIVE;
         } else if (itemId.contains("bucket")) {
-            category = "buckets";
+            category = ItemCategory.BUCKETS;
         } else if (itemId.contains("bottle") || itemId.contains("potion")) {
-            category = "bottles";
+            category = ItemCategory.BOTTLES;
         } else if (itemId.contains("ingot") || itemId.contains("alloy") || itemId.contains("gem") || itemId.contains("shard")) {
-            category = "ingots";
+            category = ItemCategory.INGOTS;
         } else if (itemId.contains("nugget")) {
-            category = "nuggets";
+            category = ItemCategory.NUGGETS;
         } else if (isBlock(stack)) {
-            category = "blocks";
+            category = ItemCategory.BLOCKS;
         } else {
-            category = "items";
+            category = ItemCategory.ITEMS;
         }
 
         return new ItemCategoryInfo(stack, category);
@@ -114,9 +115,9 @@ public class PlayerDataHandler {
 
     public static class ItemCategoryInfo {
         private final ItemStack stack;
-        private final String category;
+        private final ItemCategory category;
 
-        public ItemCategoryInfo(ItemStack stack, String category) {
+        public ItemCategoryInfo(ItemStack stack, ItemCategory category) {
             this.stack = stack;
             this.category = category;
         }
@@ -125,7 +126,7 @@ public class PlayerDataHandler {
             return stack;
         }
 
-        public String getCategory() {
+        public ItemCategory getCategory() {
             return category;
         }
     }

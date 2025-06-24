@@ -84,7 +84,7 @@ public class InventoryWeightHandler {
                 .removeModifier(SPEED_MODIFIER_UUID);
         player.getAttributes().getCustomInstance(EntityAttributes.GENERIC_ATTACK_SPEED)
                 .removeModifier(ATTACK_SPEED_MODIFIER_UUID);
-        player.getAttributes().getCustomInstance(EntityAttributes.GENERIC_ARMOR)
+        player.getAttributes().getCustomInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE)
                 .removeModifier(DAMAGE_REDUCTION_MODIFIER_UUID);
     }
 
@@ -188,7 +188,7 @@ public class InventoryWeightHandler {
                     .removeModifier(OverloadEffect.SPEED_MODIFIER_UUID);
             player.getAttributes().getCustomInstance(EntityAttributes.GENERIC_ATTACK_SPEED)
                     .removeModifier(OverloadEffect.ATTACK_SPEED_MODIFIER_UUID);
-            player.getAttributes().getCustomInstance(EntityAttributes.GENERIC_ARMOR)
+            player.getAttributes().getCustomInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE)
                     .removeModifier(OverloadEffect.DAMAGE_REDUCTION_MODIFIER_UUID);
 
             player.removeStatusEffect(OVERLOAD_EFFECT);
