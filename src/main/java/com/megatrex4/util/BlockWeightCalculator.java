@@ -1,6 +1,7 @@
 package com.megatrex4.util;
 
 import com.megatrex4.data.PlayerDataHandler;
+import com.megatrex4.util.ItemCategory;
 import net.minecraft.block.*;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
@@ -11,7 +12,7 @@ import static com.megatrex4.util.ItemWeights.getItemWeight;
 import static com.megatrex4.util.Rarity.getRarityWeight;
 
 public class BlockWeightCalculator {
-    public static float calculateBlockWeight(ItemStack stack, String category) {
+    public static float calculateBlockWeight(ItemStack stack, ItemCategory category) {
 
         if (stack.getItem() instanceof BlockItem) {
             Block block = ((BlockItem) stack.getItem()).getBlock();
@@ -29,12 +30,8 @@ public class BlockWeightCalculator {
             float blastResistance = block.getBlastResistance();
             boolean isTransparent = !block.getDefaultState().isOpaque();
 
-            float weight;
-            if ("creative".equalsIgnoreCase(category)) {
-                weight = InventoryWeightUtil.CREATIVE;
-            } else {
-                weight = InventoryWeightUtil.BLOCKS;
-            }
+            float weight = category == ItemCategory.CREATIVE ?
+                    InventoryWeightUtil.CREATIVE : InventoryWeightUtil.BLOCKS;
 
             weight += (hardness * 10);
             weight += Math.min((blastResistance * 50), 10000);
@@ -84,7 +81,6 @@ public class BlockWeightCalculator {
             NbtCompound itemTag = itemList.getCompound(i);
             ItemStack itemStack = ItemStack.fromNbt(itemTag);
             PlayerDataHandler.ItemCategoryInfo categoryInfo = PlayerDataHandler.getItemCategoryInfo(itemStack);
-            String category = categoryInfo.getCategory();
             float itemWeight = getItemWeight(itemStack) * itemStack.getCount();
 
             totalWeight += itemWeight / 1000; // With modifier

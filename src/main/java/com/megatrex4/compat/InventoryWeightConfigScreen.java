@@ -13,6 +13,7 @@ import com.megatrex4.config.ItemWeightsConfigClient;
 import com.megatrex4.config.ItemWeightConfigItems;
 import com.megatrex4.config.ItemWeightsConfigServer;
 import com.megatrex4.util.ItemWeights;
+import com.megatrex4.util.ItemCategory;
 import com.megatrex4.InventoryWeightState;
 
 import java.util.Map;
@@ -110,39 +111,39 @@ public class InventoryWeightConfigScreen {
                 .build());
 
         // Add fields for item group settings
-        serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.buckets"), ItemWeights.getItemWeight("buckets"))
+        serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.buckets"), ItemWeights.getItemWeight(ItemCategory.BUCKETS))
                 .setDefaultValue(ItemWeights.BUCKETS)
-                .setSaveConsumer(newValue -> ItemWeights.setItemWeight("buckets", newValue))
+                .setSaveConsumer(newValue -> ItemWeights.setItemWeight(ItemCategory.BUCKETS, newValue))
                 .build());
 
-        serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.creative"), ItemWeights.getItemWeight("creative"))
+        serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.creative"), ItemWeights.getItemWeight(ItemCategory.CREATIVE))
                 .setDefaultValue(ItemWeights.CREATIVE)
-                .setSaveConsumer(newValue -> ItemWeights.setItemWeight("creative", newValue))
+                .setSaveConsumer(newValue -> ItemWeights.setItemWeight(ItemCategory.CREATIVE, newValue))
                 .build());
 
-        serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.bottles"), ItemWeights.getItemWeight("bottles"))
+        serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.bottles"), ItemWeights.getItemWeight(ItemCategory.BOTTLES))
                 .setDefaultValue(ItemWeights.BOTTLES)
-                .setSaveConsumer(newValue -> ItemWeights.setItemWeight("bottles", newValue))
+                .setSaveConsumer(newValue -> ItemWeights.setItemWeight(ItemCategory.BOTTLES, newValue))
                 .build());
 
-        serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.blocks"), ItemWeights.getItemWeight("blocks"))
+        serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.blocks"), ItemWeights.getItemWeight(ItemCategory.BLOCKS))
                 .setDefaultValue(ItemWeights.BLOCKS)
-                .setSaveConsumer(newValue -> ItemWeights.setItemWeight("blocks", newValue))
+                .setSaveConsumer(newValue -> ItemWeights.setItemWeight(ItemCategory.BLOCKS, newValue))
                 .build());
 
-        serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.ingots"), ItemWeights.getItemWeight("ingots"))
+        serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.ingots"), ItemWeights.getItemWeight(ItemCategory.INGOTS))
                 .setDefaultValue(ItemWeights.INGOTS)
-                .setSaveConsumer(newValue -> ItemWeights.setItemWeight("ingots", newValue))
+                .setSaveConsumer(newValue -> ItemWeights.setItemWeight(ItemCategory.INGOTS, newValue))
                 .build());
 
-        serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.nuggets"), ItemWeights.getItemWeight("nuggets"))
+        serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.nuggets"), ItemWeights.getItemWeight(ItemCategory.NUGGETS))
                 .setDefaultValue(ItemWeights.NUGGETS)
-                .setSaveConsumer(newValue -> ItemWeights.setItemWeight("nuggets", newValue))
+                .setSaveConsumer(newValue -> ItemWeights.setItemWeight(ItemCategory.NUGGETS, newValue))
                 .build());
 
-        serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.items"), ItemWeights.getItemWeight("items"))
+        serverCategory.addEntry(entryBuilder.startFloatField(Text.translatable("option.inventoryweight.server.items"), ItemWeights.getItemWeight(ItemCategory.ITEMS))
                 .setDefaultValue(ItemWeights.ITEMS)
-                .setSaveConsumer(newValue -> ItemWeights.setItemWeight("items", newValue))
+                .setSaveConsumer(newValue -> ItemWeights.setItemWeight(ItemCategory.ITEMS, newValue))
                 .build());
 
         // Items Config Category
