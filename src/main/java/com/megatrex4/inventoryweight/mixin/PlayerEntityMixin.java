@@ -3,6 +3,7 @@ package com.megatrex4.inventoryweight.mixin;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.megatrex4.inventoryweight.components.InventoryWeightComponents;
 import com.megatrex4.inventoryweight.config.InventoryWeightConfig;
+import com.megatrex4.inventoryweight.util.ArmorPockets;
 import com.megatrex4.inventoryweight.effect.InventoryWeightEffects;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -16,7 +17,7 @@ public abstract class PlayerEntityMixin {
 	private float modifyJumpVelocity(float originalJumpVelocity) {
 		if ((LivingEntity) (Object) this instanceof PlayerEntity self) {
 			int weight = self.getComponent(InventoryWeightComponents.WEIGHT).getWeight();
-			int maxWeight = InventoryWeightConfig.SERVER.maxWeight;
+                        int maxWeight = InventoryWeightConfig.SERVER.maxWeight + ArmorPockets.calculateArmorCapacity(self);
 
 			if (!self.isCreative() && !self.isSpectator()) {
 				if (self.hasStatusEffect(InventoryWeightEffects.OVERLOAD)) {

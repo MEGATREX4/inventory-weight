@@ -31,39 +31,45 @@ public class DatapackLoader {
 	public void loadDatapacks() {
 		System.out.println("Loading datapacks...");
 		customItemWeights.clear();
-		try {
-			loadWeightConfigurations();
-			loadGlobalConfigurations();
-		} catch (IOException | JsonIOException | JsonSyntaxException e) {
-			InventoryWeight.LOGGER.error("Failed to load weight configurations", e);
-		}
-	}
+                try {
+                        loadWeightConfigurations();
+                        ArmorPockets.load(resourceManager);
+                        loadGlobalConfigurations();
+                } catch (IOException | JsonIOException | JsonSyntaxException e) {
+                        InventoryWeight.LOGGER.error("Failed to load weight configurations", e);
+                }
+        }
 
-	private void loadWeightConfigurations() throws IOException {
-		System.out.println("Loading weight configurations...");
-		for (Map.Entry<Identifier, List<Resource>> entry : resourceManager.findAllResources("item_weights", id -> id.getPath().endsWith(".json")).entrySet()) {
-			Identifier identifier = entry.getKey();
+        private void loadWeightConfigurations() throws IOException {
+                System.out.println("Loading weight configurations...");
+                loadWeightResources("item_weights");
+                loadWeightResources("inventoryweight/items");
+        }
 
-			if (identifier.getNamespace().equals(InventoryWeight.MOD_ID)) {
-				for (Resource resource : entry.getValue()) {
-					try (InputStreamReader reader = new InputStreamReader(resource.getInputStream())) {
-						JsonObject jsonObject = JsonParser.parseReader(reader).getAsJsonObject();
-						for (Map.Entry<String, JsonElement> itemEntry : jsonObject.entrySet()) {
-							if (itemEntry.getKey().equals("requires")) {
-								if (itemEntry.getValue() instanceof JsonPrimitive mod) {
-									if (!FabricLoader.getInstance().isModLoaded(mod.getAsString())) return;
-								}
-							}
-							Optional<Identifier> itemId = Optional.ofNullable(Identifier.tryParse(itemEntry.getKey()));
-							itemId.ifPresent(id -> processWeight(id, itemEntry.getValue()));
-						}
-					} catch (Exception e) {
-						InventoryWeight.LOGGER.error("Failed to process resource: {} - {}", resource, e.getMessage());
-					}
-				}
-			}
-		}
-	}
+        private void loadWeightResources(String path) throws IOException {
+                for (Map.Entry<Identifier, List<Resource>> entry : resourceManager.findAllResources(path, id -> id.getPath().endsWith(".json")).entrySet()) {
+                        Identifier identifier = entry.getKey();
+
+                        if (identifier.getNamespace().equals(InventoryWeight.MOD_ID)) {
+                                for (Resource resource : entry.getValue()) {
+                                        try (InputStreamReader reader = new InputStreamReader(resource.getInputStream())) {
+                                                JsonObject jsonObject = JsonParser.parseReader(reader).getAsJsonObject();
+                                                for (Map.Entry<String, JsonElement> itemEntry : jsonObject.entrySet()) {
+                                                        if (itemEntry.getKey().equals("requires")) {
+                                                                if (itemEntry.getValue() instanceof JsonPrimitive mod) {
+                                                                        if (!FabricLoader.getInstance().isModLoaded(mod.getAsString())) return;
+                                                                }
+                                                        }
+                                                        Optional<Identifier> itemId = Optional.ofNullable(Identifier.tryParse(itemEntry.getKey()));
+                                                        itemId.ifPresent(id -> processWeight(id, itemEntry.getValue()));
+                                                }
+                                        } catch (Exception e) {
+                                                InventoryWeight.LOGGER.error("Failed to process resource: {} - {}", resource, e.getMessage());
+                                        }
+                                }
+                        }
+                }
+        }
 
 	private void processWeight(Identifier id, JsonElement jsonElement) {
 		if (!Registries.ITEM.contains(RegistryKey.of(Registries.ITEM.getKey(), id))) {
@@ -139,7 +145,7 @@ public class DatapackLoader {
 		}
 	}
 
-	private static NbtElement parseNbtElement(JsonElement element) {
+        static NbtElement parseNbtElement(JsonElement element) {
 		if (element instanceof JsonPrimitive primitive) {
 			if (primitive.isString()) {
 				return NbtString.of(primitive.getAsString());

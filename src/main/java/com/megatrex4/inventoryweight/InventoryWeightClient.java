@@ -2,6 +2,7 @@ package com.megatrex4.inventoryweight;
 
 import com.megatrex4.inventoryweight.hud.InventoryWeightHUD;
 import com.megatrex4.inventoryweight.util.Util;
+import com.megatrex4.inventoryweight.util.ArmorPockets;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
@@ -21,22 +22,29 @@ public class InventoryWeightClient implements ClientModInitializer {
 	}
 
 	private void addWeightTooltip(ItemStack itemStack, TooltipContext tooltipContext, List<Text> tooltip) {
-		int weight = Util.getWeight(itemStack);
+                int weight = Util.getWeight(itemStack);
+                int pockets = ArmorPockets.getPockets(itemStack);
 
 		int index = 1;
 
 		String weightWithModifier = formatWeight(weight);
 
-		if (Screen.hasShiftDown()) {
-			tooltip.add(index++, Text.translatable("inventoryweight.tooltip.weight", weight).formatted(Formatting.GRAY));
-			if (itemStack.getCount() > 1 || Util.isShulker(itemStack)) {
-				tooltip.add(index++, Text.translatable("inventoryweight.tooltip.totalweight", weight).formatted(Formatting.GRAY));
-			}
-		} else {
-			tooltip.add(index++, Text.translatable("inventoryweight.tooltip.weight", weightWithModifier).formatted(Formatting.GRAY));
-			if (itemStack.getCount() > 1 || Util.isShulker(itemStack)) {
-				tooltip.add(index++, Text.translatable("inventoryweight.tooltip.totalweight", weightWithModifier).formatted(Formatting.GRAY));
-			}
+                if (Screen.hasShiftDown()) {
+                        tooltip.add(index++, Text.translatable("inventoryweight.tooltip.weight", weight).formatted(Formatting.GRAY));
+                        if (itemStack.getCount() > 1 || Util.isShulker(itemStack)) {
+                                tooltip.add(index++, Text.translatable("inventoryweight.tooltip.totalweight", weight).formatted(Formatting.GRAY));
+                        }
+                        if (pockets > 0) {
+                                tooltip.add(index++, Text.translatable("inventoryweight.tooltip.pockets", pockets).formatted(Formatting.GRAY));
+                        }
+                } else {
+                        tooltip.add(index++, Text.translatable("inventoryweight.tooltip.weight", weightWithModifier).formatted(Formatting.GRAY));
+                        if (itemStack.getCount() > 1 || Util.isShulker(itemStack)) {
+                                tooltip.add(index++, Text.translatable("inventoryweight.tooltip.totalweight", weightWithModifier).formatted(Formatting.GRAY));
+                        }
+                        if (pockets > 0) {
+                                tooltip.add(index++, Text.translatable("inventoryweight.tooltip.pockets", pockets).formatted(Formatting.GRAY));
+                        }
 
 			if (itemStack.getCount() > 1 || weight > 100) {
 				Text tooltipHint = Text.translatable("inventoryweight.tooltip.hint");

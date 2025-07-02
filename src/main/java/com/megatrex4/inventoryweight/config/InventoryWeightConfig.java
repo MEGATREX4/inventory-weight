@@ -32,6 +32,9 @@ public class InventoryWeightConfig {
 		@Comment("The strength of the overload effect")
 		@ValidatedFloat.Restrict(min = 0.1F, max = 10)
 		public float overloadStrength = 1.0f;
+
+		@Comment("The weight of each armor pocket")
+		public int pocketWeight = 15000;
 	}
 
 	@Version(version = 1)

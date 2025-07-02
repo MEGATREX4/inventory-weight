@@ -87,11 +87,12 @@ public final class Util {
 		return weight + getWeight(shulker);
 	}
 
-	public static float getReductionFactor(int weight, float step, float stepValue) {
-		return weight > InventoryWeightConfig.SERVER.maxWeight
-				? (((weight - InventoryWeightConfig.SERVER.maxWeight) / (step * InventoryWeightConfig.SERVER.maxWeight)) * stepValue)
-				: 0;
-	}
+        public static float getReductionFactor(PlayerEntity player, int weight, float step, float stepValue) {
+                int maxWeight = InventoryWeightConfig.SERVER.maxWeight + ArmorPockets.calculateArmorCapacity(player);
+                return weight > maxWeight
+                                ? (((weight - maxWeight) / (step * maxWeight)) * stepValue)
+                                : 0;
+        }
 
 	public static void applyWeightModifiers(PlayerEntity player, float speedReduction, float attackSpeedReduction, float damageReduction) {
 		// speed
@@ -134,12 +135,12 @@ public final class Util {
 						EntityAttributeModifier.Operation.MULTIPLY_TOTAL));
 	}
 
-	public static void applyWeight(PlayerEntity player, int weight) {
-		int maxWeight = InventoryWeightConfig.SERVER.maxWeight;
-		if (weight >= maxWeight) {
-			player.addStatusEffect(new StatusEffectInstance(InventoryWeightEffects.OVERLOAD, 20, (int) Util.getReductionFactor(weight, 0.1f, 1), true, false, false));
-		} else if (InventoryWeightConfig.SERVER.realisticMode) {
-			float excessWeightRatio = (weight - (0.1f * maxWeight)) / (maxWeight - (0.1f * maxWeight));
+        public static void applyWeight(PlayerEntity player, int weight) {
+                int maxWeight = InventoryWeightConfig.SERVER.maxWeight + ArmorPockets.calculateArmorCapacity(player);
+                if (weight >= maxWeight) {
+                        player.addStatusEffect(new StatusEffectInstance(InventoryWeightEffects.OVERLOAD, 20, (int) Util.getReductionFactor(player, weight, 0.1f, 1), true, false, false));
+                } else if (InventoryWeightConfig.SERVER.realisticMode) {
+                        float excessWeightRatio = (weight - (0.1f * maxWeight)) / (maxWeight - (0.1f * maxWeight));
 			excessWeightRatio = MathHelper.clamp(excessWeightRatio, 0.01f, 1.0f);
 
 			float speedReduction = 0.3f * excessWeightRatio;
