@@ -10,13 +10,11 @@ item weights and define how many pockets each armour piece has.
 └─ data
    └─ inventoryweight
       ├─ armor/               # armour pocket files
-      ├─ item_weights/        # legacy weight files
+      ├─ items/               # item weight files
       └─ config.json          # optional global options
-   └─ inventory
-      └─ items/               # alternative folder for item weight files
 ```
 
-Files inside `armor/` or `inventory/items/` can have any name but must end with
+Files inside `armor/` or `items/` can have any name but must end with
 `.json`. You may keep everything in a single file or split it across multiple
 files and folders.
 

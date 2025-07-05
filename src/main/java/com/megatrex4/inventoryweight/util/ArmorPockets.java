@@ -23,6 +23,7 @@ import com.megatrex4.inventoryweight.config.InventoryWeightConfig;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ArmorPockets {
@@ -32,25 +33,27 @@ public class ArmorPockets {
 
     public static void load(ResourceManager manager) {
         ITEM_POCKETS.clear();
-        for (Map.Entry<Identifier, Resource> entry : manager.findResources("inventoryweight/armor", id -> id.getPath().endsWith(".json")).entrySet()) {
-            try (InputStreamReader reader = new InputStreamReader(entry.getValue().getInputStream())) {
-                JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
-                if (json.has("requires") && json.get("requires") instanceof JsonPrimitive mod &&
-                        !FabricLoader.getInstance().isModLoaded(mod.getAsString())) {
-                    continue;
-                }
-                for (Map.Entry<String, JsonElement> e : json.entrySet()) {
-                    if (e.getKey().equals("requires")) continue;
-                    Identifier id = Identifier.tryParse(e.getKey());
-                    if (id == null || !Registries.ITEM.containsId(id)) {
-                        InventoryWeight.LOGGER.warn("Could not find item {} from armor pocket configuration", e.getKey());
+        for (Map.Entry<Identifier, List<Resource>> entry : manager.findAllResources("inventoryweight/armor", id -> id.getPath().endsWith(".json")).entrySet()) {
+            for (Resource resource : entry.getValue()) {
+                try (InputStreamReader reader = new InputStreamReader(resource.getInputStream())) {
+                    JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
+                    if (json.has("requires") && json.get("requires") instanceof JsonPrimitive mod &&
+                            !FabricLoader.getInstance().isModLoaded(mod.getAsString())) {
                         continue;
                     }
-                    Item item = Registries.ITEM.get(id);
-                    processEntry(item, e.getValue());
+                    for (Map.Entry<String, JsonElement> e : json.entrySet()) {
+                        if (e.getKey().equals("requires")) continue;
+                        Identifier id = Identifier.tryParse(e.getKey());
+                        if (id == null || !Registries.ITEM.containsId(id)) {
+                            InventoryWeight.LOGGER.warn("Could not find item {} from armor pocket configuration", e.getKey());
+                            continue;
+                        }
+                        Item item = Registries.ITEM.get(id);
+                        processEntry(item, e.getValue());
+                    }
+                } catch (Exception e) {
+                    InventoryWeight.LOGGER.error("Failed to load armor pockets {}", entry.getKey(), e);
                 }
-            } catch (Exception e) {
-                InventoryWeight.LOGGER.error("Failed to load armor pockets {}", entry.getKey(), e);
             }
         }
     }
@@ -60,16 +63,34 @@ public class ArmorPockets {
             ITEM_POCKETS.put(new SimpleItemRequirement(item), value.getAsInt());
         } else if (value.isJsonObject()) {
             JsonObject obj = value.getAsJsonObject();
-            int pockets = obj.get("pockets").getAsInt();
-            if (obj.has("requirements") && obj.get("requirements").isJsonObject()) {
-                JsonObject reqObj = obj.getAsJsonObject("requirements");
-                if (reqObj.has("nbt")) {
-                    JsonObject nbt = reqObj.getAsJsonObject("nbt");
-                    String tag = nbt.get("tag").getAsString();
-                    NbtElement tagVal = nbt.has("value") ? DatapackLoader.parseNbtElement(nbt.get("value")) : null;
-                    ITEM_POCKETS.put(new NbtRequirement(item, tag, tagVal), pockets);
-                    return;
+            int pockets = 0;
+            JsonObject reqObj = null;
+
+            if (obj.has("pockets")) {
+                JsonElement pocketEl = obj.get("pockets");
+                if (pocketEl.isJsonPrimitive()) {
+                    pockets = pocketEl.getAsInt();
+                } else if (pocketEl.isJsonObject()) {
+                    JsonObject pocketObj = pocketEl.getAsJsonObject();
+                    pockets = pocketObj.get("value").getAsInt();
+                    if (pocketObj.has("requirements")) {
+                        reqObj = pocketObj.getAsJsonObject("requirements");
+                    }
                 }
+            }
+            if (pockets == 0 && obj.has("value")) {
+                pockets = obj.get("value").getAsInt();
+            }
+            if (reqObj == null && obj.has("requirements")) {
+                reqObj = obj.getAsJsonObject("requirements");
+            }
+
+            if (reqObj != null && reqObj.has("nbt")) {
+                JsonObject nbt = reqObj.getAsJsonObject("nbt");
+                String tag = nbt.get("tag").getAsString();
+                NbtElement tagVal = nbt.has("value") ? DatapackLoader.parseNbtElement(nbt.get("value")) : null;
+                ITEM_POCKETS.put(new NbtRequirement(item, tag, tagVal), pockets);
+                return;
             }
             ITEM_POCKETS.put(new SimpleItemRequirement(item), pockets);
         }

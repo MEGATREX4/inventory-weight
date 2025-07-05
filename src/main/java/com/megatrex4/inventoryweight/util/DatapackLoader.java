@@ -42,7 +42,6 @@ public class DatapackLoader {
 
         private void loadWeightConfigurations() throws IOException {
                 System.out.println("Loading weight configurations...");
-                loadWeightResources("item_weights");
                 loadWeightResources("inventoryweight/items");
         }
 
@@ -79,23 +78,44 @@ public class DatapackLoader {
 
 		Item item = Registries.ITEM.get(id);
 
-		if (jsonElement instanceof JsonObject jsonObject) {
-			int weight = jsonObject.get("weight").getAsInt();
+                if (jsonElement instanceof JsonObject jsonObject) {
+                        int weight = 0;
+                        JsonObject requirements = null;
 
-			if (jsonObject.has("requirements")) {
-				for (Map.Entry<String, JsonElement> requirementEntry :jsonObject.getAsJsonObject("requirements").entrySet()) {
-					RequirementRegistry.REGISTRY.get(requirementEntry.getKey()).ifPresent(requirement -> {
-						switch (requirement.getId()) {
-							case "nbt" -> processNbtRequirement(item, weight, requirementEntry.getValue().getAsJsonObject());
-							case "enchantment" -> processEnchantmentRequirement(item, weight, requirementEntry.getValue().getAsJsonObject());
-							case "durability" -> processDurabilityRequirement(item, weight, requirementEntry.getValue().getAsJsonObject());
-							default -> InventoryWeight.LOGGER.error("Unknown requirement: {}", requirement.getId());
-						}
-					});
-				}
-			} else {
-				customItemWeights.put(new SimpleItemRequirement(item), weight);
-			}
+                        if (jsonObject.has("weight")) {
+                                JsonElement weightEl = jsonObject.get("weight");
+                                if (weightEl.isJsonPrimitive()) {
+                                        weight = weightEl.getAsInt();
+                                } else if (weightEl.isJsonObject()) {
+                                        JsonObject weightObj = weightEl.getAsJsonObject();
+                                        weight = weightObj.get("value").getAsInt();
+                                        if (weightObj.has("requirements")) {
+                                                requirements = weightObj.getAsJsonObject("requirements");
+                                        }
+                                }
+                        }
+                        if (weight == 0 && jsonObject.has("value")) {
+                                weight = jsonObject.get("value").getAsInt();
+                        }
+                        if (requirements == null && jsonObject.has("requirements")) {
+                                requirements = jsonObject.getAsJsonObject("requirements");
+                        }
+
+                        int finalWeight = weight;
+                        if (requirements != null) {
+                                for (Map.Entry<String, JsonElement> requirementEntry : requirements.entrySet()) {
+                                        RequirementRegistry.REGISTRY.get(requirementEntry.getKey()).ifPresent(requirement -> {
+                                                switch (requirement.getId()) {
+                                                        case "nbt" -> processNbtRequirement(item, finalWeight, requirementEntry.getValue().getAsJsonObject());
+                                                        case "enchantment" -> processEnchantmentRequirement(item, finalWeight, requirementEntry.getValue().getAsJsonObject());
+                                                        case "durability" -> processDurabilityRequirement(item, finalWeight, requirementEntry.getValue().getAsJsonObject());
+                                                        default -> InventoryWeight.LOGGER.error("Unknown requirement: {}", requirement.getId());
+                                                }
+                                        });
+                                }
+                        } else {
+                                customItemWeights.put(new SimpleItemRequirement(item), finalWeight);
+                        }
 		} else if (jsonElement instanceof JsonPrimitive primitive) {
 			customItemWeights.put(new SimpleItemRequirement(item), primitive.getAsInt());
 		} else {
