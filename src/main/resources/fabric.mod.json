@@ -23,9 +23,6 @@
 		],
 		"server": [
 			"com.megatrex4.InventoryWeightServer"
-		],
-		"modmenu": [
-			"com.megatrex4.compat.InventoryWeightModMenuIntegration"
 		]
 	},
 	"mixins": [

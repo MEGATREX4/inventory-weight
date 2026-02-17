@@ -7,63 +7,50 @@ import static com.megatrex4.util.Rarity.getRarityWeight;
 
 public class ItemWeightCalculator {
 
-
     public static float calculateItemWeight(ItemStack stack, ItemCategory category) {
         Item item = stack.getItem();
-            int maxStackSize = item.getMaxCount();
-            int maxDurability = stack.getMaxDamage();
+        int maxStackSize = ItemTypeChecker.getMaxStackSize(item);
+        int maxDurability = ItemTypeChecker.getMaxDurability(stack);
 
-            float weight = getCategoryBaseWeight(category);
+        float weight = getCategoryBaseWeight(category);
 
-            String itemId = ItemWeights.getItemId(stack);
+        String itemId = ItemWeights.getItemId(stack);
 
-            if(itemId.contains("air")){
-                return 0;
+        if (itemId.contains("air")) {
+            return 0;
+        }
+
+        if (BackpackWeightCalculator.isBackpack(itemId, stack) || BackpackWeightCalculator.isTravelerBackpack(stack)) {
+            return BackpackWeightCalculator.calculateBackpackWeight(stack).totalWeight;
+        }
+
+        if (maxStackSize > 1) {
+            float stackMultiplier = WeightModifierCalculator.calculateStackMultiplier(maxStackSize);
+            weight *= stackMultiplier;
+
+            if (ItemTypeChecker.isFood(item)) {
+                FoodComponent foodComponent = item.getFoodComponent();
+                weight += WeightModifierCalculator.calculateFoodComponentWeight(foodComponent);
             }
 
-            if (BackpackWeightCalculator.isBackpack(itemId, stack) || BackpackWeightCalculator.isTravelerBackpack(stack)){
-                return BackpackWeightCalculator.calculateBackpackWeight(stack).totalWeight;
+            if (ItemTypeChecker.isFireproof(item)) {
+                weight *= WeightModifierCalculator.calculateFireproofMultiplier();
             }
 
-            if (maxStackSize > 1) {
-                float stackMultiplier = 1 + (10f / maxStackSize);
-                weight *= stackMultiplier;
-
-                if (item.isFood()) {
-                    FoodComponent foodComponent = item.getFoodComponent();
-                    if (foodComponent != null) {
-                        weight += foodComponent.getHunger();
-
-                        // Reduce weight if the item is a snack
-                        if (foodComponent.isSnack()) {
-                            weight /= 2;
-                        }
-                        weight += foodComponent.getSaturationModifier() * 20;
-                    }
-                }
-
-                if (item.isFireproof()){
-                    weight *= 1.25f;
-                }
-
+        } else if (maxStackSize == 1 && maxDurability > 0) {
+            if (ItemTypeChecker.isArmor(item)) {
+                weight += WeightModifierCalculator.calculateArmorProtectionWeight(ItemTypeChecker.getArmorProtection(item));
+                weight += (InventoryWeightUtil.ITEMS + (((float) maxDurability / 300) * 300));
             }
-
-            else if (maxStackSize == 1 && maxDurability > 0) {
-                if (isArmor(item)) {
-                    weight += (float) (getArmorValue(item) * 10);
-                    weight += (InventoryWeightUtil.ITEMS + (((float) maxDurability / 300) * 300));
-                }
-                if (isTool(item)) {
-                    weight += (float) (InventoryWeightUtil.ITEMS + ((maxDurability / 1500.0) * 300));
-                }
+            if (ItemTypeChecker.isTool(item)) {
+                weight += (InventoryWeightUtil.ITEMS + WeightModifierCalculator.calculateToolDurabilityWeight(maxDurability));
             }
+        }
 
+        weight *= (getRarityWeight(stack) * 1.3f);
 
-            weight *= (getRarityWeight(stack) * 1.3f);
-
-            return (int) Math.floor(Math.max(weight, 1.0f));
+        return (int) Math.floor(Math.max(weight, 1.0f));
     }
-
 
     private static float getCategoryBaseWeight(ItemCategory category) {
         return switch (category) {
@@ -76,21 +63,4 @@ public class ItemWeightCalculator {
             default -> InventoryWeightUtil.ITEMS;
         };
     }
-
-    private static boolean isTool(Item item) {
-        return item instanceof ToolItem;
-    }
-
-    private static boolean isArmor(Item item) {
-        return item instanceof ArmorItem;
-    }
-
-    private static int getArmorValue(Item item) {
-        if (item instanceof ArmorItem) {
-            return ((ArmorItem) item).getProtection();
-        }
-        return 0;
-    }
-
-
 }

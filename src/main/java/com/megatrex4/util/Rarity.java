@@ -4,7 +4,7 @@ import net.minecraft.item.ItemStack;
 
 public class Rarity {
 
-    static float getRarityWeight(ItemStack stack) {
+    public static float getRarityWeight(ItemStack stack) {
         net.minecraft.util.Rarity rarity = stack.getRarity();
         return switch (rarity) {
             case UNCOMMON -> 1.5f;

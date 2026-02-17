@@ -28,9 +28,6 @@ public class ItemWeightsConfigServer {
             if (Files.exists(CONFIG_PATH)) {
                 JsonObject jsonObject = JsonParser.parseReader(new FileReader(CONFIG_PATH.toFile())).getAsJsonObject();
 
-                // Load item weights from the config
-                ItemWeights.loadWeightsFromConfig(jsonObject);
-
                 // Load maxWeight from the config
                 if (jsonObject.has("maxWeight")) {
                     maxWeight = jsonObject.get("maxWeight").getAsFloat();
@@ -64,7 +61,6 @@ public class ItemWeightsConfigServer {
                 jsonObject.addProperty("overloadPenaltyStrength", InventoryWeightUtil.OVERLOAD_PENALTY_STRENGTH);
 
                 Files.write(CONFIG_PATH, GSON.toJson(jsonObject).getBytes());
-                ItemWeights.loadWeightsFromConfig(jsonObject);
             }
         } catch (IOException e) {
             e.printStackTrace();

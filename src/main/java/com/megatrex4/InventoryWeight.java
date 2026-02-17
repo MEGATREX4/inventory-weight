@@ -5,6 +5,7 @@ import com.megatrex4.commands.CommandRegistry;
 import com.megatrex4.config.ItemWeightConfigItems;
 import com.megatrex4.config.ItemWeightsConfigClient;
 import com.megatrex4.config.ItemWeightsConfigServer;
+import com.megatrex4.datapack.DatapackItemWeightLoader;
 import com.megatrex4.effects.InventoryWeightEffectRegister;
 import com.megatrex4.network.ModMessages;
 import com.megatrex4.util.Tooltips;
@@ -102,11 +103,13 @@ public class InventoryWeight implements ModInitializer {
 		ServerLifecycleEvents.SERVER_STARTING.register(server -> {
 			// Load datapack data when the server starts
 			InventoryWeightArmor.loadDatapackData(server.getResourceManager());
+			DatapackItemWeightLoader.loadDatapackItemWeights(server.getResourceManager());
 		});
 
 		// Correctly register START_DATA_PACK_RELOAD
 		ServerLifecycleEvents.START_DATA_PACK_RELOAD.register((server, resourceManager) -> {
 			InventoryWeightArmor.loadDatapackData(resourceManager);
+			DatapackItemWeightLoader.loadDatapackItemWeights(resourceManager);
 		});
 	}
 

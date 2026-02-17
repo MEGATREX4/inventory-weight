@@ -1,9 +1,7 @@
 package com.megatrex4.util;
 
 import com.megatrex4.data.PlayerDataHandler;
-import com.megatrex4.util.ItemCategory;
 import net.minecraft.block.*;
-import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
@@ -18,7 +16,7 @@ public class BlockWeightCalculator {
             Block block = ((BlockItem) stack.getItem()).getBlock();
 
             String itemId = ItemWeights.getItemId(stack);
-            if (BackpackWeightCalculator.isBackpack(itemId, stack) || BackpackWeightCalculator.isTravelerBackpack(stack)){
+            if (BackpackWeightCalculator.isBackpack(itemId, stack) || BackpackWeightCalculator.isTravelerBackpack(stack)) {
                 return BackpackWeightCalculator.calculateBackpackWeight(stack).totalWeight;
             }
 
@@ -32,69 +30,54 @@ public class BlockWeightCalculator {
             float weight = category == ItemCategory.CREATIVE ?
                     InventoryWeightUtil.CREATIVE : InventoryWeightUtil.BLOCKS;
 
-            weight += (hardness * 10);
-            weight += Math.min((blastResistance * 50), 10000);
+            weight += WeightModifierCalculator.calculateHardnessWeight(hardness);
+            weight += WeightModifierCalculator.calculateBlastResistanceWeight(blastResistance);
 
-            if (isTransparent) {
-                weight /= 5;
-            }
+            weight *= WeightModifierCalculator.calculateTransparencyModifier(isTransparent);
 
             if (block instanceof BlockWithEntity) {
-                weight -= 200;
+                weight += 50;
             }
 
             weight *= (getRarityWeight(stack) * 1.3f);
 
             // Check if the block is a slab
             if (block instanceof SlabBlock) {
-                weight /= 2;
+                weight *= WeightModifierCalculator.calculateSlabModifier();
             }
             //if block is stairs
             if (block instanceof StairsBlock) {
-                weight *= 0.75f;
+                weight *= WeightModifierCalculator.calculateStairsModifier();
             }
 
-
-            return (int) Math.floor(Math.max(weight, InventoryWeightUtil.ITEMS));
+            return (int) Math.floor(Math.max(weight, 1.0f));
         }
         return InventoryWeightUtil.ITEMS;
     }
 
-
-
-    // Updated method to return two values (with and without the modifier)
-    public static ShulkerBoxWeightResult calculateShulkerBoxWeight(ItemStack shulkerBoxStack) {
-        if (!(shulkerBoxStack.getItem() instanceof BlockItem) ||
-                !(((BlockItem) shulkerBoxStack.getItem()).getBlock() instanceof ShulkerBoxBlock)) {
-            return new ShulkerBoxWeightResult(InventoryWeightUtil.ITEMS, InventoryWeightUtil.ITEMS);
+    /**
+     * Calculate shulker box weight with both total and base weight
+     */
+    public static WeightCalculationResult calculateShulkerBoxWeight(ItemStack shulkerBoxStack) {
+        if (!ItemTypeChecker.isValidBlockStack(shulkerBoxStack) ||
+                !(ItemTypeChecker.getBlockFromStack(shulkerBoxStack) instanceof ShulkerBoxBlock)) {
+            return WeightCalculationResult.ofBase(InventoryWeightUtil.ITEMS);
         }
         NbtCompound shulkerBoxTag = shulkerBoxStack.getOrCreateNbt();
         if (!shulkerBoxTag.contains("BlockEntityTag")) {
-            return new ShulkerBoxWeightResult(InventoryWeightUtil.ITEMS, InventoryWeightUtil.ITEMS);
+            return WeightCalculationResult.ofBase(InventoryWeightUtil.ITEMS);
         }
         NbtCompound blockEntityTag = shulkerBoxTag.getCompound("BlockEntityTag");
         NbtList itemList = blockEntityTag.getList("Items", 10);
-        float totalWeight = InventoryWeightUtil.ITEMS; // With modifier
-        float baseWeight = InventoryWeightUtil.ITEMS;  // Without modifier
+        float totalWeight = InventoryWeightUtil.ITEMS;
+        float baseWeight = InventoryWeightUtil.ITEMS;
         for (int i = 0; i < itemList.size(); i++) {
             NbtCompound itemTag = itemList.getCompound(i);
             ItemStack itemStack = ItemStack.fromNbt(itemTag);
-            PlayerDataHandler.ItemCategoryInfo categoryInfo = PlayerDataHandler.getItemCategoryInfo(itemStack);
             float itemWeight = getItemWeight(itemStack) * itemStack.getCount();
-
-            totalWeight += itemWeight / 1000; // With modifier
-            baseWeight += itemWeight; // Without modifier
+            totalWeight += itemWeight;
+            baseWeight += itemWeight;
         }
-        return new ShulkerBoxWeightResult(totalWeight, baseWeight);
+        return WeightCalculationResult.of(totalWeight, baseWeight);
     }
-    // Custom class to hold both total and base weight values
-    public static class ShulkerBoxWeightResult {
-        public final float totalWeight;
-        public final float baseWeight;
-        public ShulkerBoxWeightResult(float totalWeight, float baseWeight) {
-            this.totalWeight = totalWeight;
-            this.baseWeight = baseWeight;
-        }
-    }
-
 }
