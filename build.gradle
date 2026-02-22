@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '1.7-SNAPSHOT'
+	id 'net.fabricmc.fabric-loom-remap' version "${loom_version}"
 	id 'maven-publish'
 }
 
@@ -30,6 +30,10 @@ repositories {
 		name = "Ladysnake Libs"
 		url = 'https://maven.ladysnake.org/releases'
 	}
+	maven {
+		name = "Jitpack"
+		url = "https://jitpack.io"
+	}
 }
 
 dependencies {
@@ -39,17 +43,34 @@ dependencies {
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-	modImplementation ("maven.modrinth:fzzy-config:${project.fzzy_config_version}")
-	modImplementation("com.terraformersmc:modmenu:${project.modmenu_version}")
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+
+	// Kotlin and fzzy-config dependencies - bundled from local jars
+	modImplementation include("maven.modrinth:fabric-language-kotlin:${project.kotlin_language_version}")
+	modImplementation include("maven.modrinth:fzzy-config:${project.fzzy_config_version}")
+	// Jankson is already included in fiber-0.23.0-2.jar, so we don't need it separately
+	modImplementation include(files("jars/kotlin-stdlib-1.9.24.jar"))
+	modImplementation include(files("jars/kotlin-stdlib-jdk8-1.9.24.jar"))
+	modImplementation include(files("jars/kotlin-reflect-1.9.24.jar"))
+	modImplementation include(files("jars/kotlinx-coroutines-core-jvm-1.8.0.jar"))
+	modImplementation include(files("jars/kotlinx-coroutines-jdk8-1.8.0.jar"))
+	modImplementation include(files("jars/fiber-0.23.0-2.jar"))
+	modImplementation include(files("jars/atomicfu-jvm-0.24.0.jar"))
+	modImplementation include(files("jars/kotlinx-serialization-core-jvm-1.6.3.jar"))
+	modImplementation include(files("jars/kotlinx-serialization-json-jvm-1.6.3.jar"))
+	modImplementation include(files("jars/tomlkt-jvm-0.3.7.jar"))
+	
 	modImplementation "dev.emi:trinkets:${trinkets_version}"
+
+	modImplementation include("dev.onyxstudios.cardinal-components-api:cardinal-components-base:${project.cca_version}")
+	modImplementation include("dev.onyxstudios.cardinal-components-api:cardinal-components-entity:${project.cca_version}")
 }
 
 processResources {
 	inputs.property "version", project.version
 
 	filesMatching("fabric.mod.json") {
-		expand "version": project.version
+		expand "version": inputs.properties.version
 	}
 }
 
@@ -68,8 +89,10 @@ java {
 }
 
 jar {
+	inputs.property "archivesName", project.base.archivesName
+
 	from("LICENSE") {
-		rename { "${it}_${project.base.archivesName.get()}"}
+		rename { "${it}_${inputs.properties.archivesName}"}
 	}
 }
 

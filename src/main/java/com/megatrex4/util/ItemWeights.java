@@ -4,7 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.megatrex4.InventoryWeight;
-import com.megatrex4.config.ItemWeightConfigItems;
+import com.megatrex4.config.InventoryWeightConfig;
 import com.megatrex4.data.PlayerDataHandler;
 import com.megatrex4.util.ItemCategory;
 import net.minecraft.item.ItemStack;
@@ -16,14 +16,30 @@ import java.util.Map;
 import static com.megatrex4.data.PlayerDataHandler.isBlock;
 
 public class ItemWeights {
-    // Static weights for different categories
+    // Access weights from the fzzy_config configuration
+    public static float getBuckets() { return InventoryWeightConfig.getServer().bucketWeight; }
+    public static float getBottles() { return InventoryWeightConfig.getServer().bottleWeight; }
+    public static float getBlocks() { return InventoryWeightConfig.getServer().blockWeight; }
+    public static float getIngots() { return InventoryWeightConfig.getServer().ingotWeight; }
+    public static float getNuggets() { return InventoryWeightConfig.getServer().nuggetWeight; }
+    public static float getItems() { return InventoryWeightConfig.getServer().itemWeight; }
+    public static float getCreative() { return InventoryWeightConfig.getServer().creativeWeight; }
+
+    // Keep static references for backward compatibility (but they're deprecated)
+    @Deprecated
     public static float BUCKETS = InventoryWeightUtil.BUCKETS;
+    @Deprecated
     public static float BOTTLES = InventoryWeightUtil.BOTTLES;
+    @Deprecated
     public static float BLOCKS = InventoryWeightUtil.BLOCKS;
+    @Deprecated
     public static float INGOTS = InventoryWeightUtil.INGOTS;
+    @Deprecated
     public static float NUGGETS = InventoryWeightUtil.NUGGETS;
+    @Deprecated
     public static float ITEMS = InventoryWeightUtil.ITEMS;
 
+    @Deprecated
     public static float CREATIVE = InventoryWeightUtil.CREATIVE;
 
     private static final Map<String, Float> customItemWeights = new HashMap<>();

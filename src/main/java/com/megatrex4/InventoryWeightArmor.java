@@ -1,7 +1,7 @@
 package com.megatrex4;
 
 import com.google.gson.Gson;
-import com.megatrex4.config.ItemWeightsConfigServer;
+import com.megatrex4.config.InventoryWeightConfig;
 import com.megatrex4.datapack.DatapackPocketWeightLoader;
 import com.megatrex4.util.InventoryWeightUtil;
 import com.megatrex4.util.NbtPocketHandler;
@@ -35,13 +35,12 @@ public class InventoryWeightArmor {
 
 
     public static float getPocketWeight() {
-        return ItemWeightsConfigServer.pocketWeight;
+        return InventoryWeightConfig.getServer().pocketWeight;
     }
 
     public static void setPocketWeight(String pocketWeight, Float newValue) {
-        ItemWeightsConfigServer.pocketWeight = newValue;
-        InventoryWeightArmor.POCKET_WEIGHT = newValue;
-        ItemWeightsConfigServer.saveConfig();
+        InventoryWeightConfig.getServer().pocketWeight = newValue;
+        // fzzy_config automatically saves changes
     }
 
     // Load datapack data using Minecraft's resource system

@@ -1,9 +1,9 @@
 package com.megatrex4;
 
+import com.megatrex4.component.PlayerWeightComponentRegistry;
 import com.megatrex4.data.PlayerDataHandler;
 import com.megatrex4.effects.InventoryWeightEffectRegister;
 import com.megatrex4.effects.OverloadEffect;
-import com.megatrex4.network.InventoryWeightPacket;
 import com.megatrex4.util.InventoryWeightUtil;
 import dev.emi.trinkets.api.SlotReference;
 import dev.emi.trinkets.api.TrinketComponent;
@@ -91,21 +91,29 @@ public class InventoryWeightHandler {
     public static void checkWeight(ServerPlayerEntity player) {
         float maxWeight = PlayerDataHandler.getPlayerMaxWeightWithMultiplier(player);
         float inventoryWeight = calculateInventoryWeight(player);
+        
+        // Store current weight in component
+        PlayerWeightComponentRegistry.PLAYER_WEIGHT.maybeGet(player).ifPresent(component -> {
+            component.setCurrentInventoryWeight(inventoryWeight);
 
-        // Skip Creative or Spectator mode players
-        if (player.isCreative() || player.isSpectator()) {
-            removeOverloadEffect(player);
-            removeAttributes(player);
-            return;
-        }
+            // Skip Creative or Spectator mode players
+            if (player.isCreative() || player.isSpectator()) {
+                component.setOverloaded(false);
+                removeOverloadEffect(player);
+                removeAttributes(player);
+                return;
+            }
 
-        // Apply or remove overload based on weight
-        if (inventoryWeight >= maxWeight) {
-            applyOverloadEffect(player, maxWeight, inventoryWeight);
-        } else {
-            removeOverloadEffect(player);
-            applyWeightPenalties(player);
-        }
+            // Apply or remove overload based on weight
+            if (inventoryWeight >= maxWeight) {
+                component.setOverloaded(true);
+                applyOverloadEffect(player, maxWeight, inventoryWeight);
+            } else {
+                component.setOverloaded(false);
+                removeOverloadEffect(player);
+                applyWeightPenalties(player);
+            }
+        });
     }
 
     private static void applyWeightPenalties(ServerPlayerEntity player) {
@@ -200,8 +208,10 @@ public class InventoryWeightHandler {
         float maxWeight = PlayerDataHandler.getPlayerMaxWeightWithMultiplier(player);
         float pocketWeight = InventoryWeightArmor.getPocketWeight();
 
-        InventoryWeightPacket packet = new InventoryWeightPacket(inventoryWeight, maxWeight, pocketWeight);
-        InventoryWeightPacket.send(player, packet);
+        // Store pocket weight in CCA component (auto-syncs to client)
+        PlayerWeightComponentRegistry.PLAYER_WEIGHT.maybeGet(player).ifPresent(component -> {
+            component.setPocketWeight(pocketWeight);
+        });
 
         checkWeight(player);
     }

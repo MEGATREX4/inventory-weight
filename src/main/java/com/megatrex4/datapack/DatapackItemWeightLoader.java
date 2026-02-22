@@ -53,8 +53,8 @@ public class DatapackItemWeightLoader {
                     );
                 }
             }
-        } catch (IOException e) {
-            InventoryWeight.LOGGER.error("Error scanning inventory_weight/items from datapack: {}", e.getMessage());
+        } catch (Exception e) {
+            InventoryWeight.LOGGER.error("Error loading item weights from datapack: {}", e.getMessage());
         }
     }
 

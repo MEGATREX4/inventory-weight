@@ -2,6 +2,8 @@ package com.megatrex4.data;
 
 import com.megatrex4.InventoryWeightArmor;
 import com.megatrex4.InventoryWeightState;
+import com.megatrex4.component.PlayerWeightComponentRegistry;
+import com.megatrex4.config.InventoryWeightConfig;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
@@ -14,51 +16,24 @@ public class PlayerDataHandler {
     public static final String MAX_WEIGHT_KEY = "inventoryweight:max";
     public static final String ARMOR_MAX_KEY = "inventoryweight:armor_max";
 
-    public static void setPlayerMaxWeight(ServerPlayerEntity player, float value) {
-        MinecraftServer server = player.getServer();
-        InventoryWeightState state = server.getOverworld().getPersistentStateManager().getOrCreate(
-                InventoryWeightState::fromNbt,
-                InventoryWeightState::new,
-                "inventoryweight_data"
-        );
-        state.setMaxWeight(server, value);
-        server.getOverworld().getPersistentStateManager().set("inventoryweight_data", state);
-    }
+    // Global max weight is now managed by fzzy_config, no per-player override needed
+    // All players use InventoryWeightConfig.getServer().maxWeight
 
 
     // Set player's specific weight multiplier
     public static void setPlayerMultiplier(ServerPlayerEntity player, float multiplier) {
-        MinecraftServer server = player.getServer();
-        InventoryWeightState state = server.getOverworld().getPersistentStateManager().getOrCreate(
-                InventoryWeightState::fromNbt,
-                InventoryWeightState::new,
-                "inventoryweight_data"
-        );
-        state.setPlayerMultiplier(server, player.getUuidAsString(), multiplier);
-        server.getOverworld().getPersistentStateManager().set("inventoryweight_data", state);
+        PlayerWeightComponentRegistry.PLAYER_WEIGHT.maybeGet(player).ifPresent(component -> component.setWeightMultiplier(multiplier));
     }
 
 
-    // Get player's specific max weight (base weight)
+    // Get the global max weight from fzzy_config (updates automatically when config changes)
     public static float getPlayerMaxWeight(ServerPlayerEntity player) {
-        ServerWorld world = player.getServerWorld();
-        InventoryWeightState state = world.getPersistentStateManager().getOrCreate(
-                (nbt) -> InventoryWeightState.fromNbt(nbt),
-                () -> new InventoryWeightState(),
-                "inventoryweight_data"
-        );
-        return state.getMaxWeight();
+        return InventoryWeightConfig.getServer().maxWeight;
     }
 
     // Get player's specific weight multiplier
     public static float getPlayerMultiplier(ServerPlayerEntity player) {
-        ServerWorld world = player.getServerWorld();
-        InventoryWeightState state = world.getPersistentStateManager().getOrCreate(
-                InventoryWeightState::fromNbt,
-                InventoryWeightState::new,
-                "inventoryweight_data"
-        );
-        return state.getPlayerMultiplier(player.getUuidAsString());
+        return PlayerWeightComponentRegistry.PLAYER_WEIGHT.maybeGet(player).map(component -> component.getWeightMultiplier()).orElse(0f);
     }
 
     // Get the player's maximum armor weight
@@ -67,8 +42,12 @@ public class PlayerDataHandler {
     }
 
     // Get player’s max weight with multiplier and armor weight
+    // The base max weight comes from fzzy_config and is always synchronized
     public static float getPlayerMaxWeightWithMultiplier(ServerPlayerEntity player) {
-        return getPlayerMaxWeight(player) + getPlayerMultiplier(player) + getPlayerMaxArmorWeight(player);
+        float baseMaxWeight = InventoryWeightConfig.getServer().maxWeight;
+        float multiplier = getPlayerMultiplier(player);
+        float armorWeight = getPlayerMaxArmorWeight(player);
+        return baseMaxWeight + multiplier + armorWeight;
     }
 
     public static ItemCategoryInfo getItemCategoryInfo(ItemStack stack) {

@@ -2,6 +2,7 @@ package com.megatrex4.util;
 
 import com.megatrex4.data.PlayerDataHandler;
 import net.minecraft.block.*;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
@@ -21,7 +22,7 @@ public class BlockWeightCalculator {
             }
 
             if (ItemWeights.getItemId(stack).contains("shulker_box")) {
-                return BlockWeightCalculator.calculateShulkerBoxWeight(stack).totalWeight;
+                return BlockWeightCalculator.calculateShulkerBoxWeight(stack).totalWeight();
             }
 
             float hardness = block.getHardness();

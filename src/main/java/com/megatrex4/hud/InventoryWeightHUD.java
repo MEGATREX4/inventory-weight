@@ -1,7 +1,7 @@
 package com.megatrex4.hud;
 
 import com.megatrex4.client.InventoryWeightClientHandler;
-import com.megatrex4.config.ItemWeightsConfigClient;
+import com.megatrex4.config.InventoryWeightConfig;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
@@ -38,7 +38,7 @@ public class InventoryWeightHUD implements ClientModInitializer {
         int x, y;
 
         // Ensure you have defined these constants or use the String values directly
-        switch (ItemWeightsConfigClient.hudPosition) {
+        switch (InventoryWeightConfig.getClient().hudPosition) {
 			case "TOP_RIGHT":
                 x = screenWidth - ICON_SIZE - 10;
                 y = 10;
@@ -72,8 +72,8 @@ public class InventoryWeightHUD implements ClientModInitializer {
                 y = screenHeight - ICON_SIZE - 35;
                 break;
             case "CUSTOM":
-                x = (int) (screenWidth * ItemWeightsConfigClient.xOffset) - ICON_SIZE / 2;
-                y = (int) (screenHeight * ItemWeightsConfigClient.yOffset) - ICON_SIZE / 2;
+                x = (int) (screenWidth * InventoryWeightConfig.getClient().xOffset) - ICON_SIZE / 2;
+                y = (int) (screenHeight * InventoryWeightConfig.getClient().yOffset) - ICON_SIZE / 2;
                 break;
             default:
                 x = 10;

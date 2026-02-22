@@ -23,6 +23,9 @@
 		],
 		"server": [
 			"com.megatrex4.InventoryWeightServer"
+		],
+		"cardinal-components-entity": [
+			"com.megatrex4.component.PlayerWeightComponentRegistry"
 		]
 	},
 	"mixins": [
@@ -32,9 +35,17 @@
 		"fabricloader": ">=0.15.5",
 		"minecraft": "~1.20",
 		"java": ">=17",
-		"fabric-api": "*"
+		"fabric-api": "*",
+		"fzzy_config": "*",
+		"fabric-language-kotlin": "*"
+	},
+	"suggests": {
+		"cardinal-components-api": "*"
 	},
 	"custom": {
+		"cardinal-components": [
+			"inventoryweight:player_weight"
+		],
 		"modmenu": {
 			"links": {
 				"modmenu.modrinth": "https://modrinth.com/mod/inventory-weight",

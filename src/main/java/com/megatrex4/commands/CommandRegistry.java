@@ -2,7 +2,7 @@ package com.megatrex4.commands;
 
 import com.megatrex4.InventoryWeightArmor;
 import com.megatrex4.InventoryWeightHandler;
-import com.megatrex4.config.ItemWeightsConfigServer;
+import com.megatrex4.config.InventoryWeightConfig;
 import com.megatrex4.util.ItemWeights;
 import com.megatrex4.util.ItemCategory;
 import com.megatrex4.data.PlayerDataHandler;
@@ -28,7 +28,7 @@ public class CommandRegistry {
                                         .executes(context -> {
                                             ServerCommandSource source = context.getSource();
                                             float value = FloatArgumentType.getFloat(context, "value");
-                                            ItemWeightsConfigServer.setMaxWeight(value);
+                                            InventoryWeightConfig.getServer().maxWeight = value;
                                             source.sendFeedback(() -> Text.translatable("command.inventoryweight.set.base", value), true);
                                             return 1;
                                         })
@@ -202,5 +202,8 @@ public class CommandRegistry {
                     return 1;
                 })
         );
+        
+        // Test command for CCA component
+        ComponentTestCommand.register(dispatcher, null, null);
     }
 }

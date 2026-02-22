@@ -55,7 +55,7 @@ public class DatapackPocketWeightLoader {
                     );
                 }
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             InventoryWeight.LOGGER.error("Error scanning inventory_weight/pockets from datapack: {}", e.getMessage());
         }
     }

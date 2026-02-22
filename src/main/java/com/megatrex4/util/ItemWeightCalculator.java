@@ -2,6 +2,7 @@ package com.megatrex4.util;
 
 import net.minecraft.item.*;
 import com.megatrex4.util.ItemCategory;
+import com.megatrex4.config.InventoryWeightConfig;
 
 import static com.megatrex4.util.Rarity.getRarityWeight;
 
@@ -40,10 +41,10 @@ public class ItemWeightCalculator {
         } else if (maxStackSize == 1 && maxDurability > 0) {
             if (ItemTypeChecker.isArmor(item)) {
                 weight += WeightModifierCalculator.calculateArmorProtectionWeight(ItemTypeChecker.getArmorProtection(item));
-                weight += (InventoryWeightUtil.ITEMS + (((float) maxDurability / 300) * 300));
+                weight += (InventoryWeightConfig.getServer().itemWeight + (((float) maxDurability / 300) * 300));
             }
             if (ItemTypeChecker.isTool(item)) {
-                weight += (InventoryWeightUtil.ITEMS + WeightModifierCalculator.calculateToolDurabilityWeight(maxDurability));
+                weight += (InventoryWeightConfig.getServer().itemWeight + WeightModifierCalculator.calculateToolDurabilityWeight(maxDurability));
             }
         }
 
@@ -54,13 +55,13 @@ public class ItemWeightCalculator {
 
     private static float getCategoryBaseWeight(ItemCategory category) {
         return switch (category) {
-            case INGOTS -> InventoryWeightUtil.INGOTS;
-            case NUGGETS -> InventoryWeightUtil.NUGGETS;
-            case BUCKETS -> InventoryWeightUtil.BUCKETS;
-            case BOTTLES -> InventoryWeightUtil.BOTTLES;
-            case BLOCKS -> InventoryWeightUtil.BLOCKS;
-            case CREATIVE -> InventoryWeightUtil.CREATIVE;
-            default -> InventoryWeightUtil.ITEMS;
+            case INGOTS -> InventoryWeightConfig.getServer().ingotWeight;
+            case NUGGETS -> InventoryWeightConfig.getServer().nuggetWeight;
+            case BUCKETS -> InventoryWeightConfig.getServer().bucketWeight;
+            case BOTTLES -> InventoryWeightConfig.getServer().bottleWeight;
+            case BLOCKS -> InventoryWeightConfig.getServer().blockWeight;
+            case CREATIVE -> InventoryWeightConfig.getServer().creativeWeight;
+            default -> InventoryWeightConfig.getServer().itemWeight;
         };
     }
 }

@@ -2,9 +2,7 @@ package com.megatrex4;
 
 import com.megatrex4.client.InventoryWeightClientHandler;
 import com.megatrex4.commands.CommandRegistry;
-import com.megatrex4.config.ItemWeightConfigItems;
-import com.megatrex4.config.ItemWeightsConfigClient;
-import com.megatrex4.config.ItemWeightsConfigServer;
+import com.megatrex4.config.InventoryWeightConfig;
 import com.megatrex4.datapack.DatapackItemWeightLoader;
 import com.megatrex4.effects.InventoryWeightEffectRegister;
 import com.megatrex4.network.ModMessages;
@@ -46,9 +44,8 @@ public class InventoryWeight implements ModInitializer {
 			});
 		}
 
-		ItemWeightsConfigServer.loadConfig();
-		ItemWeightConfigItems.loadConfig();
-		ItemWeightsConfigClient.loadConfig();
+		// Configuration is lazy-loaded via fzzy_config when first accessed
+		// Access via InventoryWeightConfig.getServer() and InventoryWeightConfig.getClient()
 
 		loadDatapack();
 
@@ -68,7 +65,7 @@ public class InventoryWeight implements ModInitializer {
 				// Check if the world is not client-side
 				if (!world.isClient) {
 					// Retrieve the max weight from the server configuration
-					float maxWeight = ItemWeightsConfigServer.loadMaxWeight();
+					float maxWeight = InventoryWeightConfig.getServer().maxWeight;
 					// Set the max weight in the InventoryWeightState for each player
 					world.getPlayers().forEach(player -> {
 						InventoryWeightState.setMaxWeight(server, maxWeight);
@@ -86,7 +83,7 @@ public class InventoryWeight implements ModInitializer {
 		});
 
 		ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
-			ItemWeightsConfigServer.saveConfig();
+			// Config is automatically saved by fzzy_config
 		});
 	}
 
