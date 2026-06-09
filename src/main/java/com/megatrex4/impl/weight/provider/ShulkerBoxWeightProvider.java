@@ -5,6 +5,7 @@ import com.megatrex4.api.v1.WeightContext;
 import com.megatrex4.api.v1.WeightLookup;
 import com.megatrex4.api.v1.WeightResult;
 import com.megatrex4.impl.config.WeightSettings;
+import com.megatrex4.impl.weight.NbtItemStackReader;
 import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
@@ -48,7 +49,7 @@ public final class ShulkerBoxWeightProvider implements ItemWeightProvider {
         float insideWeight = 0.0f;
 
         for (int i = 0; i < itemList.size(); i++) {
-            ItemStack contained = ItemStack.fromNbt(itemList.getCompound(i));
+            ItemStack contained = NbtItemStackReader.fromNbtSafely(itemList.getCompound(i));
             if (!contained.isEmpty()) {
                 insideWeight += lookup.getWeight(contained, context.nested())
                         .multiply(contained.getCount())

@@ -5,8 +5,8 @@ import com.megatrex4.api.v1.WeightContext;
 import com.megatrex4.api.v1.WeightLookup;
 import com.megatrex4.api.v1.WeightResult;
 import com.megatrex4.impl.config.WeightSettings;
+import com.megatrex4.impl.weight.NbtItemStackReader;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
@@ -174,12 +174,11 @@ public final class BackpackWeightProvider implements ItemWeightProvider {
             NbtCompound drawerTag = itemList.getCompound(i);
             int amount = drawerTag.getInt("amount");
             NbtCompound itemTag = drawerTag.getCompound("item");
-            String itemId = itemTag.getString("item");
-            ItemConvertible item = Registries.ITEM.get(new Identifier(itemId));
-            ItemStack stack = new ItemStack(item, amount);
-            if (itemTag.contains("tag", NbtElement.COMPOUND_TYPE)) {
-                stack.setNbt(itemTag.getCompound("tag"));
-            }
+            ItemStack stack = NbtItemStackReader.fromIdCountSafely(
+                    itemTag.getString("item"),
+                    amount,
+                    itemTag.contains("tag", NbtElement.COMPOUND_TYPE) ? itemTag.getCompound("tag") : null
+            );
             accumulator.addInsideStack(stack, context, lookup);
         }
         return accumulator.result();
@@ -202,11 +201,11 @@ public final class BackpackWeightProvider implements ItemWeightProvider {
             NbtCompound itemTag = itemList.getCompound(i);
             String itemId = itemTag.getString("id");
             int count = itemTag.contains("count") ? itemTag.getShort("count") : itemTag.getInt("Count");
-            ItemConvertible item = Registries.ITEM.get(new Identifier(itemId));
-            ItemStack stack = new ItemStack(item, count);
-            if (itemTag.contains("tag", NbtElement.COMPOUND_TYPE)) {
-                stack.setNbt(itemTag.getCompound("tag"));
-            }
+            ItemStack stack = NbtItemStackReader.fromIdCountSafely(
+                    itemId,
+                    count,
+                    itemTag.contains("tag", NbtElement.COMPOUND_TYPE) ? itemTag.getCompound("tag") : null
+            );
             accumulator.addInsideStack(stack, context, lookup);
         }
         return accumulator.result();
@@ -215,27 +214,13 @@ public final class BackpackWeightProvider implements ItemWeightProvider {
     private static WeightResult calculateStandardWeightFromNbtList(NbtList itemList, WeightContext context, WeightLookup lookup) {
         BackpackAccumulator accumulator = BackpackAccumulator.create();
         for (int i = 0; i < itemList.size(); i++) {
-            accumulator.addInsideStack(ItemStack.fromNbt(itemList.getCompound(i)), context, lookup);
+            accumulator.addInsideStack(NbtItemStackReader.fromNbtSafely(itemList.getCompound(i)), context, lookup);
         }
         return accumulator.result();
     }
 
     private static ItemStack stackFromStandardNbt(NbtCompound tag) {
-        if (tag.contains("id")) {
-            return ItemStack.fromNbt(tag);
-        }
-
-        String itemId = tag.getString("id");
-        int count = tag.contains("Count") ? tag.getInt("Count") : 1;
-        if (itemId.isEmpty()) {
-            return ItemStack.EMPTY;
-        }
-        ItemConvertible item = Registries.ITEM.get(new Identifier(itemId));
-        ItemStack stack = new ItemStack(item, count);
-        if (tag.contains("tag", NbtElement.COMPOUND_TYPE)) {
-            stack.setNbt(tag.getCompound("tag"));
-        }
-        return stack;
+        return NbtItemStackReader.fromNbtSafely(tag);
     }
 
     private static final class BackpackAccumulator {
@@ -265,6 +250,7 @@ public final class BackpackWeightProvider implements ItemWeightProvider {
 
         WeightResult result() {
             float effectiveWeight = emptyContainerWeight + (insideWeight / CONTENT_WEIGHT_DIVISOR);
+
             return WeightResult.of(effectiveWeight, insideWeight);
         }
     }

@@ -11,9 +11,16 @@ base {
 }
 
 repositories {
-	maven {
-		name = "Modrinth"
-		url = "https://api.modrinth.com/maven"
+	exclusiveContent {
+		forRepository {
+			maven {
+				name = "Modrinth"
+				url = "https://api.modrinth.com/maven"
+			}
+		}
+		filter {
+			includeGroup "maven.modrinth"
+		}
 	}
 	maven {
 		name = "FzzyMaven"
@@ -46,7 +53,7 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
 	// Kotlin and fzzy-config dependencies - bundled from local jars
-	modImplementation include("maven.modrinth:fabric-language-kotlin:${project.kotlin_language_version}")
+	modImplementation "maven.modrinth:fabric-language-kotlin:${project.kotlin_language_version}"
 	modImplementation include("maven.modrinth:fzzy-config:${project.fzzy_config_version}")
 	// Jankson is already included in fiber-0.23.0-2.jar, so we don't need it separately
 	modImplementation include(files("jars/kotlin-stdlib-1.9.24.jar"))
