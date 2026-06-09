@@ -5,6 +5,8 @@ import com.megatrex4.api.v1.WeightResult;
 import com.megatrex4.config.InventoryWeightConfig;
 import com.megatrex4.impl.InventoryWeightServices;
 import com.megatrex4.impl.weight.WeightMath;
+import com.megatrex4.impl.weight.provider.BackpackWeightProvider;
+import com.megatrex4.impl.weight.provider.ShulkerBoxWeightProvider;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.item.TooltipContext;
@@ -28,11 +30,51 @@ public final class WeightTooltipHandler {
         WeightResult total = unit.multiply(stack.getCount());
 
         boolean exact = Screen.hasShiftDown();
-        String unitText = exact ? WeightMath.exact(unit.weight()) : WeightMath.compact(unit.weight());
-        String totalText = exact ? WeightMath.exact(total.weight()) : WeightMath.compact(total.weight());
-        String baseText = exact ? WeightMath.exact(unit.baseWeight()) : WeightMath.compact(unit.baseWeight());
+        boolean container = isWeightContainer(stack);
 
         int index = Math.min(1, tooltip.size());
+
+        if (container) {
+            index = appendContainerTooltip(stack, tooltip, index, exact, unit, total);
+        } else {
+            index = appendRegularTooltip(stack, tooltip, index, exact, unit, total);
+        }
+
+        int pockets = InventoryWeightServices.pocketService().getPockets(stack, client.player).orElse(0);
+        if (pockets > 0) {
+            tooltip.add(index++, Text.translatable("inventoryweight.tooltip.pockets", pockets).formatted(Formatting.BLUE));
+        }
+
+        if (!exact && shouldShowHint(stack, unit, total, container)) {
+            tooltip.add(index, Text.translatable("inventoryweight.tooltip.shift_hint").formatted(Formatting.DARK_GRAY));
+        }
+    }
+
+    private static int appendContainerTooltip(ItemStack stack, List<Text> tooltip, int index, boolean exact, WeightResult unit, WeightResult total) {
+        float insideWeight = unit.baseWeight();
+        float totalInsideWeight = insideWeight * stack.getCount();
+
+        String insideText = format(insideWeight, exact);
+        String unitText = format(unit.weight(), exact);
+        String totalText = format(total.weight(), exact);
+        String totalInsideText = format(totalInsideWeight, exact);
+
+        tooltip.add(index++, Text.translatable("inventoryweight.tooltip.weight_inside", insideText).formatted(Formatting.DARK_GRAY));
+        tooltip.add(index++, Text.translatable("inventoryweight.tooltip.weight", unitText).formatted(Formatting.GRAY));
+
+        if (stack.getCount() > 1) {
+            tooltip.add(index++, Text.translatable("inventoryweight.tooltip.total_weight_inside", totalInsideText).formatted(Formatting.DARK_GRAY));
+            tooltip.add(index++, Text.translatable("inventoryweight.tooltip.total_weight", totalText).formatted(Formatting.GRAY));
+        }
+
+        return index;
+    }
+
+    private static int appendRegularTooltip(ItemStack stack, List<Text> tooltip, int index, boolean exact, WeightResult unit, WeightResult total) {
+        String unitText = format(unit.weight(), exact);
+        String totalText = format(total.weight(), exact);
+        String baseText = format(unit.baseWeight(), exact);
+
         tooltip.add(index++, Text.translatable("inventoryweight.tooltip.weight", unitText).formatted(Formatting.GRAY));
 
         if (unit.hasModifier()) {
@@ -43,13 +85,21 @@ public final class WeightTooltipHandler {
             tooltip.add(index++, Text.translatable("inventoryweight.tooltip.total_weight", totalText).formatted(Formatting.GRAY));
         }
 
-        int pockets = InventoryWeightServices.pocketService().getPockets(stack, client.player).orElse(0);
-        if (pockets > 0) {
-            tooltip.add(index++, Text.translatable("inventoryweight.tooltip.pockets", pockets).formatted(Formatting.BLUE));
-        }
+        return index;
+    }
 
-        if (!exact && (stack.getCount() > 1 || total.weight() >= 1000.0f || unit.hasModifier())) {
-            tooltip.add(index, Text.translatable("inventoryweight.tooltip.shift_hint").formatted(Formatting.DARK_GRAY));
-        }
+    private static boolean isWeightContainer(ItemStack stack) {
+        return ShulkerBoxWeightProvider.isShulkerBox(stack) || BackpackWeightProvider.isBackpackStack(stack);
+    }
+
+    private static boolean shouldShowHint(ItemStack stack, WeightResult unit, WeightResult total, boolean container) {
+        return stack.getCount() > 1
+                || total.weight() >= 1000.0f
+                || unit.hasModifier()
+                || (container && unit.baseWeight() >= 1000.0f);
+    }
+
+    private static String format(float weight, boolean exact) {
+        return exact ? WeightMath.exact(weight) : WeightMath.compact(weight);
     }
 }

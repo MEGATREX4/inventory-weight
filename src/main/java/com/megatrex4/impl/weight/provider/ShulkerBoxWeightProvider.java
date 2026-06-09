@@ -14,30 +14,48 @@ import net.minecraft.nbt.NbtList;
 import java.util.Optional;
 
 public final class ShulkerBoxWeightProvider implements ItemWeightProvider {
+    private static final float CONTENT_WEIGHT_DIVISOR = 2.0f;
+
     @Override
     public Optional<WeightResult> getWeight(ItemStack stack, WeightContext context, WeightLookup lookup) {
-        if (!(stack.getItem() instanceof BlockItem blockItem) || !(blockItem.getBlock() instanceof ShulkerBoxBlock)) {
+        if (!isShulkerBox(stack)) {
             return Optional.empty();
         }
 
-        float base = WeightSettings.get().itemWeight();
-        WeightResult result = WeightResult.of(base);
+        float emptyContainerWeight = WeightSettings.get().itemWeight();
+        float insideWeight = calculateInsideWeight(stack, context, lookup);
+        float effectiveWeight = emptyContainerWeight + (insideWeight / CONTENT_WEIGHT_DIVISOR);
 
-        NbtCompound nbt = stack.getNbt();
+        return Optional.of(WeightResult.of(effectiveWeight, insideWeight).sanitized());
+    }
+
+    public static boolean isShulkerBox(ItemStack stack) {
+        return stack != null
+                && !stack.isEmpty()
+                && stack.getItem() instanceof BlockItem blockItem
+                && blockItem.getBlock() instanceof ShulkerBoxBlock;
+    }
+
+    private static float calculateInsideWeight(ItemStack shulkerBoxStack, WeightContext context, WeightLookup lookup) {
+        NbtCompound nbt = shulkerBoxStack.getNbt();
         if (nbt == null || !nbt.contains("BlockEntityTag")) {
-            return Optional.of(result);
+            return 0.0f;
         }
 
         NbtCompound blockEntityTag = nbt.getCompound("BlockEntityTag");
         NbtList itemList = blockEntityTag.getList("Items", 10);
 
+        float insideWeight = 0.0f;
+
         for (int i = 0; i < itemList.size(); i++) {
             ItemStack contained = ItemStack.fromNbt(itemList.getCompound(i));
             if (!contained.isEmpty()) {
-                result = result.add(lookup.getWeight(contained, context.nested()).multiply(contained.getCount()));
+                insideWeight += lookup.getWeight(contained, context.nested())
+                        .multiply(contained.getCount())
+                        .weight();
             }
         }
 
-        return Optional.of(result.sanitized());
+        return insideWeight;
     }
 }

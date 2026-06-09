@@ -19,6 +19,8 @@ import java.util.Locale;
 import java.util.Optional;
 
 public final class BackpackWeightProvider implements ItemWeightProvider {
+    private static final float CONTENT_WEIGHT_DIVISOR = 2.0f;
+
     private static final String[] KNOWN_BACKPACK_NAMES = {
             "backpack", "large_backpack", "extreme_backpack",
             "iron_armorpack", "golden_armorpack", "netherite_armorpack",
@@ -29,17 +31,26 @@ public final class BackpackWeightProvider implements ItemWeightProvider {
 
     @Override
     public Optional<WeightResult> getWeight(ItemStack stack, WeightContext context, WeightLookup lookup) {
-        String itemId = Registries.ITEM.getId(stack.getItem()).toString().toLowerCase(Locale.ROOT);
-        if (!isBackpack(itemId, stack)) {
+        if (!isBackpackStack(stack)) {
             return Optional.empty();
         }
 
         NbtCompound tag = stack.getNbt();
         if (tag == null) {
-            return Optional.of(WeightResult.of(WeightSettings.get().itemWeight()));
+            return Optional.of(WeightResult.of(WeightSettings.get().itemWeight(), 0.0f));
         }
 
+        String itemId = Registries.ITEM.getId(stack.getItem()).toString().toLowerCase(Locale.ROOT);
         return Optional.of(calculateBackpackWeight(itemId, tag, context, lookup).sanitized());
+    }
+
+    public static boolean isBackpackStack(ItemStack stack) {
+        if (stack == null || stack.isEmpty()) {
+            return false;
+        }
+
+        String itemId = Registries.ITEM.getId(stack.getItem()).toString().toLowerCase(Locale.ROOT);
+        return isBackpack(itemId, stack);
     }
 
     public static boolean isTravelerBackpack(ItemStack stack) {
@@ -107,7 +118,7 @@ public final class BackpackWeightProvider implements ItemWeightProvider {
         if (tag.contains("BlockEntityTag")) {
             return calculateStandardWeightFromNbtList(tag.getCompound("BlockEntityTag").getList("Items", NbtElement.COMPOUND_TYPE), context, lookup);
         }
-        return WeightResult.of(WeightSettings.get().itemWeight());
+        return WeightResult.of(WeightSettings.get().itemWeight(), 0.0f);
     }
 
     private static boolean isTravelersBackpackId(String itemId) {
@@ -120,15 +131,15 @@ public final class BackpackWeightProvider implements ItemWeightProvider {
         if (tag.contains("Inventory")) {
             NbtList inventoryItems = tag.getCompound("Inventory").getList("Items", NbtElement.COMPOUND_TYPE);
             for (int i = 0; i < inventoryItems.size(); i++) {
-                accumulator.addCompressed(stackFromStandardNbt(inventoryItems.getCompound(i)), context, lookup);
+                accumulator.addInsideStack(stackFromStandardNbt(inventoryItems.getCompound(i)), context, lookup);
             }
         }
 
         if (tag.contains("LeftTank")) {
-            accumulator.addEffective(tag.getCompound("LeftTank").getInt("amount") / 1000.0f);
+            accumulator.addInsideWeight(tag.getCompound("LeftTank").getInt("amount") / 1000.0f);
         }
         if (tag.contains("RightTank")) {
-            accumulator.addEffective(tag.getCompound("RightTank").getInt("amount") / 1000.0f);
+            accumulator.addInsideWeight(tag.getCompound("RightTank").getInt("amount") / 1000.0f);
         }
 
         return accumulator.result();
@@ -139,7 +150,7 @@ public final class BackpackWeightProvider implements ItemWeightProvider {
         for (int i = 0; i < itemList.size(); i++) {
             NbtCompound itemTag = itemList.getCompound(i);
             if (itemTag.contains("Stack", NbtElement.COMPOUND_TYPE)) {
-                accumulator.addCompressed(stackFromStandardNbt(itemTag.getCompound("Stack")), context, lookup);
+                accumulator.addInsideStack(stackFromStandardNbt(itemTag.getCompound("Stack")), context, lookup);
             }
         }
         return accumulator.result();
@@ -151,7 +162,7 @@ public final class BackpackWeightProvider implements ItemWeightProvider {
             NbtCompound inventoryTag = tag.getCompound("Inventory");
             NbtList itemList = inventoryTag.getList("Items", NbtElement.COMPOUND_TYPE);
             for (int i = 0; i < itemList.size(); i++) {
-                accumulator.addCompressed(stackFromStandardNbt(itemList.getCompound(i)), context, lookup);
+                accumulator.addInsideStack(stackFromStandardNbt(itemList.getCompound(i)), context, lookup);
             }
         }
         return accumulator.result();
@@ -169,7 +180,7 @@ public final class BackpackWeightProvider implements ItemWeightProvider {
             if (itemTag.contains("tag", NbtElement.COMPOUND_TYPE)) {
                 stack.setNbt(itemTag.getCompound("tag"));
             }
-            accumulator.addCompressed(stack, context, lookup);
+            accumulator.addInsideStack(stack, context, lookup);
         }
         return accumulator.result();
     }
@@ -179,7 +190,7 @@ public final class BackpackWeightProvider implements ItemWeightProvider {
         for (int i = 0; i < itemList.size(); i++) {
             NbtCompound itemTag = itemList.getCompound(i);
             if (itemTag.contains("Stack", NbtElement.COMPOUND_TYPE)) {
-                accumulator.addCompressed(stackFromStandardNbt(itemTag.getCompound("Stack")), context, lookup);
+                accumulator.addInsideStack(stackFromStandardNbt(itemTag.getCompound("Stack")), context, lookup);
             }
         }
         return accumulator.result();
@@ -196,7 +207,7 @@ public final class BackpackWeightProvider implements ItemWeightProvider {
             if (itemTag.contains("tag", NbtElement.COMPOUND_TYPE)) {
                 stack.setNbt(itemTag.getCompound("tag"));
             }
-            accumulator.addCompressed(stack, context, lookup);
+            accumulator.addInsideStack(stack, context, lookup);
         }
         return accumulator.result();
     }
@@ -204,7 +215,7 @@ public final class BackpackWeightProvider implements ItemWeightProvider {
     private static WeightResult calculateStandardWeightFromNbtList(NbtList itemList, WeightContext context, WeightLookup lookup) {
         BackpackAccumulator accumulator = BackpackAccumulator.create();
         for (int i = 0; i < itemList.size(); i++) {
-            accumulator.addCompressed(ItemStack.fromNbt(itemList.getCompound(i)), context, lookup);
+            accumulator.addInsideStack(ItemStack.fromNbt(itemList.getCompound(i)), context, lookup);
         }
         return accumulator.result();
     }
@@ -228,34 +239,33 @@ public final class BackpackWeightProvider implements ItemWeightProvider {
     }
 
     private static final class BackpackAccumulator {
-        private float effective;
-        private float base;
+        private final float emptyContainerWeight;
+        private float insideWeight;
 
-        private BackpackAccumulator(float baseWeight) {
-            this.effective = baseWeight;
-            this.base = baseWeight;
+        private BackpackAccumulator(float emptyContainerWeight) {
+            this.emptyContainerWeight = emptyContainerWeight;
         }
 
         static BackpackAccumulator create() {
             return new BackpackAccumulator(WeightSettings.get().itemWeight());
         }
 
-        void addEffective(float value) {
-            effective += Math.max(0.0f, value);
+        void addInsideWeight(float value) {
+            insideWeight += Math.max(0.0f, value);
         }
 
-        void addCompressed(ItemStack stack, WeightContext context, WeightLookup lookup) {
+        void addInsideStack(ItemStack stack, WeightContext context, WeightLookup lookup) {
             if (stack == null || stack.isEmpty()) {
                 return;
             }
+
             WeightResult itemWeight = lookup.getWeight(stack, context.nested()).multiply(stack.getCount());
-            float minimum = WeightSettings.get().itemWeight();
-            effective += Math.max(minimum, itemWeight.weight() / 400.0f);
-            base += itemWeight.weight();
+            insideWeight += itemWeight.weight();
         }
 
         WeightResult result() {
-            return WeightResult.of(effective, base);
+            float effectiveWeight = emptyContainerWeight + (insideWeight / CONTENT_WEIGHT_DIVISOR);
+            return WeightResult.of(effectiveWeight, insideWeight);
         }
     }
 }

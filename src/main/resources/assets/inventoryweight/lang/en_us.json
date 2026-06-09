@@ -1,5 +1,7 @@
 {
   "effect.inventoryweight.overload": "Overload",
+  "inventoryweight.tooltip.weight_inside": "Weight inside: %s",
+  "inventoryweight.tooltip.total_weight_inside": "Total weight inside: %s",
   "inventoryweight.tooltip.weight": "Weight: %s",
   "inventoryweight.tooltip.base_weight": "Base Weight: %s",
   "inventoryweight.tooltip.total_weight": "Total Weight: %s",
