@@ -1,114 +1,77 @@
 package com.megatrex4;
 
-import com.megatrex4.client.InventoryWeightClientHandler;
-import com.megatrex4.commands.CommandRegistry;
-import com.megatrex4.config.InventoryWeightConfig;
-import com.megatrex4.datapack.DatapackItemWeightLoader;
-import com.megatrex4.effects.InventoryWeightEffectRegister;
-import com.megatrex4.network.ModMessages;
-import com.megatrex4.util.Tooltips;
-import net.fabricmc.api.EnvType;
+import com.megatrex4.commands.InventoryWeightCommands;
+import com.megatrex4.effects.InventoryWeightEffects;
+import com.megatrex4.impl.InventoryWeightServices;
+import com.megatrex4.impl.data.WeightDataReloadListener;
+import com.megatrex4.impl.player.PlayerWeightController;
+import com.megatrex4.network.InventoryWeightNetworking;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.text.Text;
-import net.minecraft.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
+public final class InventoryWeight implements ModInitializer {
+    public static final String MOD_ID = "inventoryweight";
+    public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-public class InventoryWeight implements ModInitializer {
+    @Override
+    public void onInitialize() {
+        String version = FabricLoader.getInstance()
+                .getModContainer(MOD_ID)
+                .map(container -> container.getMetadata().getVersion().getFriendlyString())
+                .orElse("unknown");
 
+        LOGGER.info("==================================================");
+        LOGGER.info("Starting Inventory Weight v{}", version);
+        LOGGER.info("Environment: {}", FabricLoader.getInstance().getEnvironmentType());
+        LOGGER.info("Minecraft weight systems are being registered now.");
+        LOGGER.info("==================================================");
 
-	public static final String MOD_ID = "inventoryweight";
-	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+        LOGGER.info("[1/7] Registering default weight, capacity, pocket, and inventory providers...");
+        InventoryWeightServices.registerDefaults();
 
-	@Override
-	public void onInitialize() {
-		LOGGER.info(MOD_ID + " mod initialized!");
+        LOGGER.info("[2/7] Loading Inventory Weight add-on entrypoints...");
+        InventoryWeightServices.loadAddonEntrypoints();
 
-		if (isClient()) {
-			ModMessages.registerS2CPackets();
-		}
-		if (isClient()) {
-			ClientPlayNetworking.registerGlobalReceiver(ModMessages.INVENTORY_WEIGHT_SYNC, (client, handler, buf, responseSender) -> {
-				InventoryWeightClientHandler.receivePacket(client, ModMessages.INVENTORY_WEIGHT_SYNC, buf);
-			});
-		}
+        LOGGER.info("[3/7] Registering status effects...");
+        InventoryWeightEffects.register();
+        LOGGER.info("Registered status effect: {}:overload", MOD_ID);
 
-		// Configuration is lazy-loaded via fzzy_config when first accessed
-		// Access via InventoryWeightConfig.getServer() and InventoryWeightConfig.getClient()
+        LOGGER.info("[4/7] Registering datapack reload listeners...");
+        WeightDataReloadListener.register();
 
-		loadDatapack();
+        LOGGER.info("[5/7] Registering server networking...");
+        InventoryWeightNetworking.registerServer();
 
-		if (isClient()) {
-			ItemTooltipCallback.EVENT.register(this::addCustomTooltip);
-		}
+        LOGGER.info("[6/7] Registering commands...");
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
+            InventoryWeightCommands.register(dispatcher);
+            LOGGER.info("Inventory Weight commands registered for environment: {}", environment);
+        });
 
-		InventoryWeightEffectRegister.registerEffects();
+        LOGGER.info("[7/7] Registering server tick handler...");
+        ServerTickEvents.END_SERVER_TICK.register(PlayerWeightController::tickServer);
 
-		// Register commands using CommandRegistrationCallback
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
-			CommandRegistry.registerCommands(dispatcher);
-		});
+        registerLifecycleDebugLogging();
 
-		ServerTickEvents.START_SERVER_TICK.register(server -> {
-			for (World world : server.getWorlds()) {
-				// Check if the world is not client-side
-				if (!world.isClient) {
-					// Retrieve the max weight from the server configuration
-					float maxWeight = InventoryWeightConfig.getServer().maxWeight;
-					// Set the max weight in the InventoryWeightState for each player
-					world.getPlayers().forEach(player -> {
-						InventoryWeightState.setMaxWeight(server, maxWeight);
-					});
-				}
-			}
-		});
+        LOGGER.info("Inventory Weight initialized successfully. Active hooks: {}", InventoryWeightServices.describeRegisteredHooks());
+        LOGGER.info("Datapack folders: data/<namespace>/inventory_weight/items/*.json and data/<namespace>/inventory_weight/pockets/*.json");
+    }
 
+    private static void registerLifecycleDebugLogging() {
+        ServerLifecycleEvents.SERVER_STARTING.register(server ->
+                LOGGER.info("Inventory Weight: server is starting; datapack weight data will be loaded by the reload listener."));
 
-		// Register tick event for updating player weights
-		ServerTickEvents.END_WORLD_TICK.register(world -> {
-			if (world != null && !world.isClient) {
-				InventoryWeightHandler.tick(world);
-			}
-		});
+        ServerLifecycleEvents.SERVER_STARTED.register(server -> LOGGER.info(
+                "Inventory Weight: server started. Online players: {}. Runtime is ready.",
+                server.getPlayerManager().getPlayerList().size()
+        ));
 
-		ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
-			// Config is automatically saved by fzzy_config
-		});
-	}
-
-	private static boolean isClient() {
-		return FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT;
-	}
-
-	private void addCustomTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip) {
-		Tooltips.appendTooltip(stack, tooltip, context);
-	}
-
-	public static void loadDatapack () {
-		// Register server starting event
-		ServerLifecycleEvents.SERVER_STARTING.register(server -> {
-			// Load datapack data when the server starts
-			InventoryWeightArmor.loadDatapackData(server.getResourceManager());
-			DatapackItemWeightLoader.loadDatapackItemWeights(server.getResourceManager());
-		});
-
-		// Correctly register START_DATA_PACK_RELOAD
-		ServerLifecycleEvents.START_DATA_PACK_RELOAD.register((server, resourceManager) -> {
-			InventoryWeightArmor.loadDatapackData(resourceManager);
-			DatapackItemWeightLoader.loadDatapackItemWeights(resourceManager);
-		});
-	}
-
-
+        ServerLifecycleEvents.SERVER_STOPPING.register(server ->
+                LOGGER.info("Inventory Weight: server is stopping; clearing runtime state on normal Minecraft shutdown."));
+    }
 }
