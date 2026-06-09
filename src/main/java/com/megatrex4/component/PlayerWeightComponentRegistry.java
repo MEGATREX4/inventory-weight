@@ -9,16 +9,17 @@ import net.minecraft.util.Identifier;
 
 import static com.megatrex4.InventoryWeight.MOD_ID;
 
-public class PlayerWeightComponentRegistry implements EntityComponentInitializer {
-    public static final ComponentKey<PlayerWeightComponent> PLAYER_WEIGHT =
-            ComponentRegistry.getOrCreate(new Identifier(MOD_ID, "player_weight"), PlayerWeightComponent.class);
+public final class PlayerWeightComponentRegistry implements EntityComponentInitializer {
+    public static final ComponentKey<PlayerWeightComponent> PLAYER_WEIGHT = ComponentRegistry.getOrCreate(
+            new Identifier(MOD_ID, "player_weight"),
+            PlayerWeightComponent.class
+    );
 
     @Override
     public void registerEntityComponentFactories(EntityComponentFactoryRegistry registry) {
-        // Register the component for players
         registry.registerForPlayers(
                 PLAYER_WEIGHT,
-                player -> new PlayerWeightComponentImpl(player),
+                PlayerWeightComponentImpl::new,
                 RespawnCopyStrategy.LOSSLESS_ONLY
         );
     }
