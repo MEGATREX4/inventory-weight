@@ -1,17 +1,23 @@
 package com.megatrex4.config;
 
 import com.megatrex4.impl.InventoryWeightDefaults;
+import com.megatrex4.impl.config.InventoryWeightConfigEvents;
+import com.megatrex4.impl.config.WeightSettings;
 import me.fzzyhmstrs.fzzy_config.annotations.Comment;
 import me.fzzyhmstrs.fzzy_config.annotations.Version;
 import me.fzzyhmstrs.fzzy_config.api.ConfigApiJava;
 import me.fzzyhmstrs.fzzy_config.api.RegisterType;
 import me.fzzyhmstrs.fzzy_config.config.Config;
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedFloat;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
 import static com.megatrex4.InventoryWeight.MOD_ID;
 
 public final class InventoryWeightConfig {
+    public static final Identifier SERVER_CONFIG_ID = new Identifier(MOD_ID, "server-config");
+    public static final Identifier CLIENT_CONFIG_ID = new Identifier(MOD_ID, "client-config");
+
     private static Server SERVER_INSTANCE;
     private static Client CLIENT_INSTANCE;
 
@@ -34,7 +40,7 @@ public final class InventoryWeightConfig {
     @Version(version = 1)
     public static class Server extends Config {
         public Server() {
-            super(new Identifier(MOD_ID, "server-config"));
+            super(SERVER_CONFIG_ID);
         }
 
         @Comment("Maximum inventory weight capacity in grams")
@@ -79,12 +85,30 @@ public final class InventoryWeightConfig {
         @Comment("Weight for creative/technical items")
         @ValidatedFloat.Restrict(min = 1f, max = Float.MAX_VALUE)
         public float creativeWeight = InventoryWeightDefaults.CREATIVE_WEIGHT;
+
+        @Override
+        public void onUpdateServer(ServerPlayerEntity playerEntity) {
+            if (playerEntity == null) {
+                return;
+            }
+
+            InventoryWeightConfigEvents.applyServerConfigChange(
+                    playerEntity.getServer(),
+                    "fzzy_config direct Config.onUpdateServer"
+            );
+        }
+
+        @Override
+        public void onUpdateClient() {
+            // Keep local tooltip calculations current after the client receives or edits the synced config.
+            WeightSettings.refreshFromConfig();
+        }
     }
 
     @Version(version = 2)
     public static class Client extends Config {
         public Client() {
-            super(new Identifier(MOD_ID, "client-config"));
+            super(CLIENT_CONFIG_ID);
         }
 
         @Comment("HUD display style. SPRITE uses the old bundle icon display. BAR uses a simple rectangular bar.")

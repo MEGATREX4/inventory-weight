@@ -1,5 +1,6 @@
 package com.megatrex4;
 
+import com.megatrex4.client.ClientInventoryWeightConfigEvents;
 import com.megatrex4.client.ClientInventoryWeightNetworking;
 import com.megatrex4.client.InventoryWeightHud;
 import com.megatrex4.client.WeightTooltipHandler;
@@ -14,6 +15,9 @@ public final class InventoryWeightClient implements ClientModInitializer {
         InventoryWeight.LOGGER.info("Initializing Inventory Weight client features...");
 
         InventoryWeightServices.registerDefaults();
+
+        InventoryWeight.LOGGER.info("Registering client fzzy_config live update listener...");
+        ClientInventoryWeightConfigEvents.register();
 
         InventoryWeight.LOGGER.info("Registering client datapack/config sync receiver...");
         ClientInventoryWeightNetworking.register();

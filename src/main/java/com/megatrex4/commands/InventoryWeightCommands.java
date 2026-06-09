@@ -5,6 +5,7 @@ import com.megatrex4.api.v1.WeightResult;
 import com.megatrex4.component.PlayerWeightComponentRegistry;
 import com.megatrex4.config.InventoryWeightConfig;
 import com.megatrex4.impl.InventoryWeightServices;
+import com.megatrex4.impl.config.InventoryWeightConfigEvents;
 import com.megatrex4.impl.player.PlayerWeightController;
 import com.megatrex4.impl.weight.WeightMath;
 import com.mojang.brigadier.CommandDispatcher;
@@ -31,6 +32,7 @@ public final class InventoryWeightCommands {
                                         .executes(context -> {
                                             float value = FloatArgumentType.getFloat(context, "value");
                                             InventoryWeightConfig.getServer().maxWeight = value;
+                                            InventoryWeightConfigEvents.applyServerConfigChange(context.getSource().getServer(), "command /inventoryweight set base");
                                             context.getSource().sendFeedback(() -> Text.translatable("command.inventoryweight.set.base", value), true);
                                             return 1;
                                         })))
@@ -125,7 +127,6 @@ public final class InventoryWeightCommands {
                                     );
                                     return 1;
                                 }))));
-
 
         dispatcher.register(CommandManager.literal("debugweight")
                 .requires(source -> source.hasPermissionLevel(4))
