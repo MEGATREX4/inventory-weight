@@ -222,5 +222,5 @@ config/inventoryweight/
 ## Related Pages
 
 - [Inventory Weights Items Configuration](../options/inventory_weights_items.md)
-- [Datapack Customization](./datapacks.md)
+- [Datapack Customization](../datapacks.md)
 - [Default Item Values](./item_default_values.md)

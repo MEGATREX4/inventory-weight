@@ -233,7 +233,7 @@ Add-ons can register:
 - pocket providers
 - events/listeners
 
-See the [Add-on API](./addon-api.md) page.
+See the [Add-on API](./features/addon-api.md) page.
 
 ## Are there known conflicts with other mods?
 
