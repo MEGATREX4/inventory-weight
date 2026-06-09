@@ -1,49 +1,222 @@
 ---
-title: "Pockets"
-description: "Learn how the pockets system works in the MT Inventory Weight mod and how to configure pockets for armor using datapacks."
+title: "Custom Tooltips"
+description: "Overview of the custom tooltips added by MT Inventory Weight, including item weight, container weight, exact values, and armor pocket information."
 ---
 
-# Pockets
+# Custom Tooltips
 
-In the **MT Inventory Weight** mod, the **pocket system** adds extra storage functionality to certain armor pieces. Pockets allow players to carry additional weight, enhancing inventory management while balancing the use of armor for both protection and utility.
+MT Inventory Weight adds client-side item tooltips that help players understand how each item affects their carried weight.
 
-## How Pockets Work
+Tooltips are calculated using the same weight system as the HUD and overload logic. On multiplayer servers, the client receives synced server/datapack data so tooltip values match the server.
 
-1. **Armor-Based Storage**:
-   - Armor items in the game can be equipped with **pockets**. These pockets contribute to the total weight capacity of a player’s inventory.
-   - The more pockets an armor piece has, the more weight it can carry.
+## Enabling or Disabling Tooltips
 
-2. **Pocket Assignment**:
-   - Pockets can be assigned to armor either through default calculations or **customized using datapacks**.
+Tooltips can be enabled or disabled in the client config:
 
-3. **Default Pocket Calculation**:
-   - If no specific number of pockets is defined for an armor item via a datapack, the mod uses a formula based on the **protection value** and **toughness** of the armor:
-     ```java
-     Math.max(1, 7 - (int)(protectionValue / 1.2) - toughnessValue);
-     ```
-   - Armor with higher protection and toughness values will generally have fewer pockets by default.
-
-4. **Custom Pocket Configuration**:
-   - You can **override the default pocket assignment** by defining custom values using datapacks.
-   - For details on configuring pockets through datapacks, refer to the [Datapacks Guide](../datapacks.md).
-
-## Customizing Pocket Weight
-
-The weight each pocket can hold is determined by the **pocket weight** value in the mod’s configuration. 
-* This allows you to set how much additional weight each pocket can carry, fine-tuning the balance between protection and storage.
-
-## Pocket Calculation Example
-
-The total weight a player can carry through armor pockets is calculated by multiplying the number of pockets each armor piece has by the pocket weight value. For example:
-
-```java
-totalArmorWeight += pockets * POCKET_WEIGHT;
+```toml
+showTooltips = true
 ```
 
-If a player is wearing armor with 3 pockets and the pocket weight is set to 2.0, the total additional weight capacity from that armor would be:
+The client config is usually located at:
 
-```java
-3 pockets * 2.0 = 6.0 additional weight capacity
+```text
+config/inventoryweight/client-config.toml
 ```
 
-This gives players an opportunity to balance their protection and storage needs by choosing different armor configurations.
+If [Mod Menu](https://modrinth.com/mod/modmenu) is installed, this can usually be changed from the in-game config screen.
+
+## Regular Item Tooltips
+
+For most items, the tooltip shows:
+
+```text
+Weight: %s
+```
+
+Example:
+
+```text
+Weight: 120
+```
+
+If the item stack has more than one item, the tooltip can also show the stack's total weight:
+
+```text
+Total Weight: %s
+```
+
+Example:
+
+```text
+Weight: 120
+Total Weight: 7.7k
+```
+
+## Modified/Base Weight Tooltips
+
+Some items have a calculated weight that differs from their base weight because of modifiers such as:
+
+- rarity
+- durability
+- food value
+- block hardness
+- blast resistance
+- fireproof status
+- container compression
+- other provider/add-on logic
+
+When a weight has modifiers, the tooltip can show:
+
+```text
+Base Weight: %s
+```
+
+Example:
+
+```text
+Weight: 450
+Base Weight: 240
+```
+
+## Shulker and Backpack Tooltips
+
+Supported shulkers and backpacks have special container tooltips.
+
+They show both the full weight of the contents and the effective compressed weight used by the mod.
+
+Example:
+
+```text
+Weight inside: 10.0k
+Weight: 5.1k
+```
+
+The current container rule is:
+
+```text
+final container weight = empty container weight + weight inside / 2
+```
+
+Where:
+
+- **Weight inside** is the full uncompressed weight of stored items.
+- **Weight** is the effective weight used by the inventory weight system.
+
+For stacked containers, the tooltip can also show:
+
+```text
+Total weight inside: %s
+Total Weight: %s
+```
+
+::: info
+Containers are not weightless. They reduce the effective weight of stored items, but the stored items still count.
+:::
+
+## Armor Pocket Tooltips
+
+Armor and items with pocket data can show pocket information:
+
+```text
+Pockets: %s
+```
+
+Example:
+
+```text
+Pockets: 3
+```
+
+Pockets add extra maximum carry capacity when the armor is worn.
+
+The capacity added is:
+
+```text
+pockets * pocketWeight
+```
+
+The `pocketWeight` value is configured on the server.
+
+See the [Pockets](./pockets.md) page for more information.
+
+## Compact and Exact Values
+
+By default, large values are displayed in compact form.
+
+Examples:
+
+```text
+1.5k
+2.0M
+3.4B
+```
+
+Hold **Shift** to show exact numeric values.
+
+Example without Shift:
+
+```text
+Weight: 1.5k
+```
+
+Example with Shift:
+
+```text
+Weight: 1,500
+```
+
+When exact values are available, the tooltip can show a hint:
+
+```text
+Hold Shift for exact values
+```
+
+## Where Tooltip Values Come From
+
+Tooltip values can come from several sources:
+
+1. Datapack item weight definitions
+2. NBT-specific datapack rules
+3. Add-on API providers
+4. Built-in shulker/backpack providers
+5. Built-in vanilla block/item fallback calculation
+6. Server category weights from fzzy_config
+
+## Datapack Sync
+
+On multiplayer servers, item weights and pocket definitions are controlled by the server.
+
+The server syncs resolved datapack/config data to clients so tooltip values are accurate.
+
+If tooltips look wrong, try:
+
+- reconnecting to the server
+- using `/reload`
+- checking for datapack conflicts
+- checking server logs for sync messages
+
+## Customizing Tooltip Behavior
+
+Tooltip visibility is controlled by client config:
+
+```toml
+showTooltips = true
+```
+
+Specific item weights should be customized with datapacks:
+
+```text
+data/<namespace>/inventory_weight/items/*.json
+```
+
+Pocket values should be customized with datapacks:
+
+```text
+data/<namespace>/inventory_weight/pockets/*.json
+```
+
+For more details, see:
+
+- [Inventory Weights Items Configuration](../options/inventory_weights_items.md)
+- [Pockets](./pockets.md)
+- [Datapack Customization](./datapacks.md)

@@ -1,72 +1,248 @@
 ---
 title: "Inventory Weights Items Configuration"
-description: "Learn how to configure custom item weights for the MT Inventory Weight mod."
+description: "Learn how to customize item weights for MT Inventory Weight using datapacks, category config values, NBT rules, and add-ons."
 ---
 
-# **Inventory Weights Items Configuration**
+# Inventory Weights Items Configuration
 
-The `ItemWeightConfigItems` class is designed to manage and store custom item weight configurations for the **MT Inventory Weight** mod. It works by reading from and writing to the `inventory_weights_items.json` file, which contains item-specific weight data.
+::: warning
+MT Inventory Weight no longer uses the old `ItemWeightConfigItems` class, the old `inventory_weights_items.json` file, or any item-specific `inventory_weights_items.toml` config file.
 
-### **Configuration Options**
+Item-specific weights are now handled by a **data-driven datapack system**.
 
-The `inventory_weights_items.json` file holds the custom item weights specified by players or mod authors. This allows for precise control over the weights assigned to specific items, providing flexibility in how the weight system affects gameplay.
+If you had custom item weights in an old JSON/TOML config, you must migrate them into datapack JSON files.
+:::
 
-### **Key Methods**
+Specific item weight overrides are now handled with **datapacks**.
 
-- **`loadConfig()`**:
-    - This method checks for the existence of the `inventory_weights_items.json` file.
-    - If the file exists, it reads the file and loads custom item weights using `ItemWeights.loadCustomWeightsFromConfig()`.
-    - If the file does not exist, it creates a default configuration and saves it, then loads the default values into the mod.
+General item category weights are handled by the **server config** through fzzy_config.
 
-- **`saveConfig()`**:
-    - This method writes the custom item weights to the `inventory_weights_items.json` file.
-    - It filters out static or default item weights, saving only dynamically configured weights from the player's modifications.
-    - The `ItemWeights.getCustomItemWeights()` method is used to retrieve the custom weights before saving.
+## Ways to Customize Item Weights
 
-### **File Structure**
+There are four main ways to customize weights:
 
-The `inventory_weights_items.json` file contains custom weights in the following format:
+1. Server config category weights
+2. Datapack item overrides
+3. Datapack NBT-specific rules
+4. Add-ons using the public API
+
+## Server Category Weights
+
+Broad item categories are configured in:
+
+```text
+config/inventoryweight/server-config.toml
+```
+
+These values control default/fallback weights for categories such as:
+
+- buckets
+- bottles and potions
+- blocks
+- ingots, gems, alloys, and shards
+- nuggets
+- generic items
+- creative/technical items
+
+For full details, see the [Server Configuration](./inventory_weights_server.md) page.
+
+## Datapack Item Weights
+
+Specific item weights should be configured through datapacks.
+
+Item weight files go here:
+
+```text
+data/<namespace>/inventory_weight/items/*.json
+```
+
+Example file:
+
+```text
+data/my_pack/inventory_weight/items/vanilla_overrides.json
+```
+
+Example content:
 
 ```json
 {
-    "minecraft:stone": 810.0
+  "minecraft:stone": 260.0,
+  "minecraft:diamond": {
+    "weight": 120.0
+  }
 }
 ```
 
-In this example, minecraft:stone is assigned a weight of 810.0f. You can add or modify items and their respective weights in this file.
+In this example:
 
-### **Custom Weight Management**
+- `minecraft:stone` has a weight of `260.0`
+- `minecraft:diamond` has a weight of `120.0`
 
-*   **`createDefaultConfig()`**:
-    
-    *   This method creates a default configuration with preset weights for known items. It currently assigns a weight of `810.0f` to `minecraft:stone`.
-    *   You can modify or expand this default list to include more items as needed.
-*   **`isDynamicItem(String itemName)`**:
-    
-    *   This method checks whether a given item is dynamic (i.e., customizable by the player) and returns `true` if it can be modified.
-    *   Static items that are predefined cannot be modified and are filtered out when saving the configuration.
+## Array Format
 
-### **Error Handling**
-
-In case of an error while reading or writing to the `inventory_weights_items.json` file, exceptions are caught and printed to the console for debugging purposes. This ensures that the mod does not crash if something goes wrong during file handling.
-
-### **Usage Example**
-
-To add a custom weight to an item, simply open the `inventory_weights_items.json` file in the `config/inventoryweight` directory and add the item ID along with its desired weight. For example:
+Datapacks can also use an array format:
 
 ```json
-{     
-    "minecraft:iron_ingot": 100.0,
-    "minecraft:diamond": 200.0 
+[
+  {
+    "item": "minecraft:stone",
+    "weight": 260.0
+  },
+  {
+    "item": "minecraft:diamond",
+    "weight": 120.0
+  }
+]
+```
+
+## NBT-Specific Item Weights
+
+NBT-specific rules allow different weights depending on item NBT.
+
+Example:
+
+```json
+{
+  "minecraft:bundle": {
+    "weightWhenNbt": {
+      "Items": {
+        "value": "minecraft:glass",
+        "weight": 100.0
+      }
+    }
+  }
 }
 ```
 
-After saving the file, the mod will load these weights the next time it runs.
+This means a bundle with matching NBT data can receive a special weight.
 
-### **Default Item Weights**
+Depending on the NBT structure, lists and string values can be checked.
 
-The `createDefaultConfig()` method can be modified to include default weights for additional items. By default, only `minecraft:stone` is assigned a weight, but you can extend this list based on the items in your modpack or world.
+## Loading and Reloading
 
-### **Extending the Configuration**
+Datapack item weights are loaded:
 
-The configuration system is flexible and can be easily extended by adding more items and their corresponding weights to the `inventory_weights_items.json` file. Custom weights allow players to tailor the game’s weight system to their preferences, giving them control over how certain items impact movement and gameplay.
+- when the server starts
+- when `/reload` is used
+
+The server syncs resolved item weight data to clients so tooltips show the same values as the server.
+
+## Conflict Handling
+
+If the same item is defined in multiple datapack files, MT Inventory Weight logs a warning.
+
+The first loaded definition is kept.
+
+::: warning
+Avoid defining the same item weight in multiple datapacks unless you know which datapack load order will win.
+:::
+
+## Containers and Backpacks
+
+Supported shulkers and backpacks use special weight handling.
+
+Current rule:
+
+```text
+final container weight = empty container weight + weight inside / 2
+```
+
+Tooltips show:
+
+```text
+Weight inside: %s
+Weight: %s
+```
+
+`Weight inside` is the full uncompressed contents weight.
+
+`Weight` is the effective weight used by the player weight system.
+
+## Default Automatic Weight Calculation
+
+If an item does not have a datapack override, MT Inventory Weight calculates a fallback weight automatically.
+
+The default calculation can consider:
+
+- item category
+- max stack size
+- food value and saturation
+- fireproof status
+- durability
+- armor protection
+- tool durability
+- item rarity
+- block hardness
+- block blast resistance
+- block transparency
+- slabs and stairs
+- block entities
+
+This allows most vanilla and modded items to work without manual configuration.
+
+## Add-on API
+
+Mods can provide custom item weight logic through the public add-on API:
+
+```text
+com.megatrex4.api.v1
+```
+
+Add-ons can register an `ItemWeightProvider` to calculate weights dynamically from item data, NBT, capabilities, or another mod's API.
+
+See the [Add-on API](./addon-api.md) page for examples.
+
+## Example Datapack Structure
+
+```text
+my_weight_pack/
+├─ pack.mcmeta
+└─ data/
+   └─ my_weight_pack/
+      └─ inventory_weight/
+         └─ items/
+            └─ item_weights.json
+```
+
+Example `pack.mcmeta`:
+
+```json
+{
+  "pack": {
+    "pack_format": 15,
+    "description": "Custom MT Inventory Weight item weights"
+  }
+}
+```
+
+Example `item_weights.json`:
+
+```json
+{
+  "minecraft:iron_ingot": 100.0,
+  "minecraft:diamond": 200.0,
+  "minecraft:obsidian": 1200.0
+}
+```
+
+## Old Config Migration
+
+Old versions used item-specific config files such as:
+
+```text
+config/inventoryweight/inventory_weights_items.json
+```
+
+Some experimental or transitional builds may also have used item-specific TOML-style config files.
+
+::: warning
+These old item-specific config files are no longer read by MT Inventory Weight.
+
+The item weight system is now data-driven. Specific item weights must be defined through datapacks in:
+
+```text
+data/<namespace>/inventory_weight/items/*.json
+```
+:::
+
+To migrate old custom item weights, move them into a datapack item weight file.

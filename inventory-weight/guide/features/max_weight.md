@@ -1,70 +1,236 @@
 ---
 title: "Maximum Weight"
-description: "A guide on how the maximum weight is determined in the MT Inventory Weight mod, including how multipliers, armor, and admin commands affect it."
+description: "A guide to how maximum carry weight is calculated in MT Inventory Weight, including base server config, armor pockets, capacity bonuses, commands, and add-ons."
 ---
 
-# **Maximum Weight**
+# Maximum Weight
 
-In the **MT Inventory Weight** mod, a player's **Maximum Weight** is the upper limit of how much they can carry in their inventory before penalties like the Overload effect kick in. This maximum weight is influenced by several factors: the player's base maximum weight, additional armor-based weight from pockets, multipliers set by admins, and more. Let's dive into how this system works.
+In MT Inventory Weight, a player's **maximum weight** is the amount of weight they can carry before becoming overloaded.
 
-## **Base Maximum Weight**
+When the player's current carried weight reaches or exceeds their maximum weight, the Overload system can apply penalties such as movement speed reduction, attack speed reduction, attack damage reduction, jump reduction, and the Overload status effect.
 
-The **base maximum weight** is the default amount of weight a player can carry before experiencing penalties. This value can be configured by server administrators, providing flexibility for different gameplay scenarios.
+## Final Maximum Weight
 
-- **Base Weight** is the standard value every player starts with.
-- **Admin Control**: Admins can modify this base value using in-game commands to adjust how much weight each player can carry before being affected by Overload.
+The current calculation is:
 
-For example, an admin can increase the base weight for players who need to carry more items in specific roles or gameplay challenges.
+```text
+final max weight = base max weight + capacity bonuses + armor pocket capacity
+```
 
-## **Weight Multipliers**
+Add-ons may also modify this value through the public API.
 
-While referred to as "multipliers," these are actually additional weight values that are **added** to the player's base maximum weight. These multipliers allow players to increase their total carrying capacity, often applied through the use of armor in the game, or an administrator's command.
+## Base Maximum Weight
 
-- **Weight Multiplier**: This is a bonus value added on top of the base weight. It doesn't scale the weight but instead increases the maximum weight directly.
-- **Admin Control**: Admins can add multipliers to a player's maximum weight using commands, giving them more flexibility in determining a player's inventory capacity.
+The base maximum weight is configured in the server config:
 
-For example, if a player has a base maximum weight of 50 units and an admin grants a multiplier of 10, the player's new maximum weight becomes 60 units.
+```text
+config/inventoryweight/server-config.toml
+```
 
-## **Armor Pockets and Extra Carrying Capacity**
+Default:
 
-Armor equipped with **pockets** provides an additional carrying capacity for the player, adding to their overall maximum weight. The more pockets a player has in their armor, the higher their maximum carrying weight.
+```toml
+maxWeight = 90000.0
+```
 
-- **Armor Max Weight**: This is the weight provided by armor pieces with pockets. Players can increase their maximum weight by equipping armor with more pockets.
-- **Pockets System**: For more detailed information on how armor pockets work and how they affect carrying capacity, visit the [Pockets Guide](./pockets.md).
+This is the starting carry capacity for players before armor pockets or other bonuses are applied.
 
-By strategically using armor with pockets, players can increase their maximum weight, enabling them to carry more items without hitting the Overload limit.
+Server settings are managed by **fzzy_config** and can update live while the game/server is running.
 
-## **Final Maximum Weight Calculation**
+## Capacity Bonus
 
-The player's **final maximum weight** is the sum of their base maximum weight, any multipliers applied by admins, and the additional weight provided by armor pockets. This total represents how much a player can carry before being penalized with the Overload effect.
+Older versions sometimes called this value a "multiplier", but in the current system it is an **additive capacity bonus**.
 
-### **Final Maximum Weight Formula**
+That means it does not multiply the player's max weight. It adds a flat value.
 
-1. **Base Maximum Weight**: The starting weight each player has.
-2. **Weight Multiplier**: Additional weight added through in-game bonuses or admin commands.
-3. **Armor Max Weight**: Extra weight from armor pockets.
+Example:
 
-The total maximum weight is calculated by simply **adding** these three factors together. For example:
+```text
+base max weight = 90000
+capacity bonus = 10000
+final max weight = 100000
+```
 
-- **Base Weight**: 50 units
-- **Weight Multiplier**: 10 units
-- **Armor Max Weight**: 20 units (from armor pockets)
+Admins can set this value with commands.
 
-**Final Maximum Weight**:  
-\[ 50 + 10 + 20 = 80 \, \text{units} \]
+## Armor Pocket Capacity
 
-In this case, the player can carry 80 units of weight before experiencing the Overload effect.
+Armor pockets add extra max weight.
 
-## **Admin Commands and Maximum Weight Control**
+Formula:
 
-Admins have full control over a player's base maximum weight and can apply additional multipliers or reset values as needed. This flexibility is key to balancing inventory weight across different gameplay scenarios, making sure no player is unfairly penalized.
+```text
+armor pocket capacity = total pockets worn * pocketWeight
+```
 
-### **Admin Commands**
+The `pocketWeight` value is configured in the server config.
 
-- **Set Base Maximum Weight**: Admins can adjust the base maximum weight for a player using commands. This changes the core value a player can carry before hitting the limit.
-- **Set Weight Multiplier**: Admins can add extra weight to a player's maximum carrying capacity. This does not multiply the weight but adds a flat value to the base weight.
+Default:
 
-These commands are essential for managing different player roles, balancing team inventory, or creating unique gameplay challenges that rely on weight management.
+```toml
+pocketWeight = 9000.0
+```
 
+Example:
 
+```text
+4 pockets * 9000 = 36000 extra capacity
+```
 
+If the player's base max weight is `90000`, the final max weight becomes:
+
+```text
+90000 + 36000 = 126000
+```
+
+See the [Pockets](./pockets.md) page for details about pocket calculation and datapack overrides.
+
+## Full Example
+
+Assume:
+
+```text
+base max weight = 90000
+admin/player capacity bonus = 10000
+armor pockets = 4
+pocketWeight = 9000
+```
+
+Calculate armor pocket capacity:
+
+```text
+4 * 9000 = 36000
+```
+
+Final max weight:
+
+```text
+90000 + 10000 + 36000 = 136000
+```
+
+The player can carry up to `136000` weight before being overloaded.
+
+## Commands
+
+Operators can inspect and change weight values with commands.
+
+### Set Base Maximum Weight
+
+```text
+/inventoryweight set base <value>
+```
+
+Example:
+
+```text
+/inventoryweight set base 120000
+```
+
+This changes the server base max weight and applies it live.
+
+### Get Base Maximum Weight
+
+```text
+/inventoryweight get base
+```
+
+### Set Player Capacity Bonus
+
+```text
+/inventoryweight set bonus <player> <value>
+```
+
+or for yourself:
+
+```text
+/inventoryweight set bonus <value>
+```
+
+Example:
+
+```text
+/inventoryweight set bonus Steve 10000
+```
+
+### Get Player Capacity Bonus
+
+```text
+/inventoryweight get bonus <player>
+```
+
+or for yourself:
+
+```text
+/inventoryweight get bonus
+```
+
+### Get Combined Maximum Weight
+
+```text
+/inventoryweight get combined <player>
+```
+
+or for yourself:
+
+```text
+/inventoryweight get combined
+```
+
+This returns the final max weight after base value, player capacity bonus, armor pockets, and other providers.
+
+### Get Current Weight
+
+```text
+/inventoryweight get value <player>
+```
+
+or for yourself:
+
+```text
+/inventoryweight get value
+```
+
+## Add-on API
+
+Add-ons can modify max weight through the public API.
+
+Relevant API types:
+
+```text
+com.megatrex4.api.v1.CapacityProvider
+com.megatrex4.api.v1.CapacityModifier
+InventoryWeightEvents.MODIFY_MAX_WEIGHT
+```
+
+Add-ons can provide:
+
+- additive capacity bonuses
+- multiplicative capacity modifiers
+- class/race/progression bonuses
+- trinket-based capacity bonuses
+- equipment-based capacity bonuses
+
+Example:
+
+```java
+registrar.registerCapacityProvider(
+        new Identifier("example", "warrior_bonus"),
+        1000,
+        player -> CapacityModifier.additive(10000.0f)
+);
+```
+
+## Multiplayer Behavior
+
+The server is authoritative for maximum weight.
+
+Clients receive synced player state for HUD display and synced server config/datapack data for tooltips.
+
+If a server config value is changed through fzzy_config, MT Inventory Weight applies the change live and updates online players.
+
+## Related Pages
+
+- [Server Configuration](../options/inventory_weights_server.md)
+- [Pockets](./pockets.md)
+- [Overload Effect](./overload_effect.md)
+- [Add-on API](./addon-api.md)

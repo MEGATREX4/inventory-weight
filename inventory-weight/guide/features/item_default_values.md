@@ -1,99 +1,178 @@
 ---
 title: "Default Item Values"
-description: "How to use and configure default item weights in the MT Inventory Weight mod."
+description: "How default item weights are calculated in MT Inventory Weight and how server category values, datapacks, and automatic fallback logic interact."
 ---
 
-# **Default Item Values**
+# Default Item Values
 
-In **MT Inventory Weight**, you can configure default item weights to suit your gameplay needs. This guide explains how default item weights work, how to modify them, and how they interact with custom item weights.
+MT Inventory Weight uses default item values when an item does not have a specific datapack or add-on override.
 
-## **Understanding Default Item Values**
+The current system is **data-driven** and configuration-driven:
 
-**MT Inventory Weight** uses a set of default values to determine the weight of various items. These values are applied when no specific custom weight is defined for an item. The mod categorizes items into several groups, each with its own default weight:
+- broad category values are configured in the server config
+- specific item overrides are configured with datapacks
+- automatic fallback logic handles most vanilla and modded items
+- add-ons can provide custom logic through the API
 
-- **Buckets**: Represents the weight of items like water buckets.
-- **Bottles**: Represents the weight of items like glass bottles.
-- **Blocks**: Represents the weight of block-type items.
-- **Ingots**: Represents the weight of ingots, such as iron or gold ingots.
-- **Nuggets**: Represents the weight of small items like gold nuggets.
-- **Items**: Represents a general weight for miscellaneous items.
-- **Creative**: Represents a special weight for items used in creative mode.
+::: warning
+The old `InventoryWeightUtil` static-value workflow and old item JSON config system are no longer the main configuration method.
 
-### **Default Weights**
+Specific item weights should be configured through datapacks, not through `inventory_weights_items.json` or item-specific TOML config files.
+:::
 
-The default weights are set as follows:
+## Server Category Defaults
 
-- **BUCKETS** = 810.0f
-- **BOTTLES** = 270.0f
-- **BLOCKS** = 810.0f
-- **INGOTS** = 90.0f
-- **NUGGETS** = 10.0f
-- **ITEMS** = 50.0f
-- **CREATIVE** = 30000.0f
-- **POCKET_WEIGHT** = 10000.0f
-- **MAXWEIGHT** = 80000.0f
+Default category values are configured in:
 
-You can define default item weights in your configuration files. For more information, see the [Configuration Guide](../options/inventory_weights_server.md).
-
-These values will override the defaults provided by the mod when the world or server loads. To apply these configurations:
-
-1. Save your configurations in a `.json` file.
-2. Place the file in the appropriate folder for your mod's configuration (`config/inventory_weight`).
-3. Restart your Minecraft world or server to apply changes.
-
-## **Block Weights**
-
-For block-type items, the weight is influenced by several factors:
-
-- **Base Weight**: Default weight for blocks is set by `InventoryWeightUtil.BLOCKS`.
-- **Hardness**: Weight increases with block hardness.
-- **Blast Resistance**: Weight increases based on blast resistance, with a cap to prevent excessive values.
-- **Transparency**: Weight decreases if the block is transparent.
-- **Rarity**: Additional weight is applied based on the item's rarity tier, with a multiplier effect.
-
-In creative mode, blocks have a special weight defined by `InventoryWeightUtil.CREATIVE`.
-
-```java
-            weight += (hardness * 10);
-            weight += Math.min((blastResistance * 50), 10000);
-
-            // Subtract a value if the block is transparent
-            if (isTransparent) {
-                weight -= 1000;
-            }
-
-            weight *= (getRarityWeight(stack) * 1.3f);
-
-            return (int) Math.floor(Math.max(weight, InventoryWeightUtil.ITEMS));
+```text
+config/inventoryweight/server-config.toml
 ```
 
-## **Item Weights**
+Current default values:
 
-For regular items, the weight is influenced by:
+| Setting | Default | Description |
+| --- | ---: | --- |
+| `bucketWeight` | `120.0` | Bucket-like items |
+| `bottleWeight` | `60.0` | Bottles and potions |
+| `blockWeight` | `240.0` | Base block item weight |
+| `ingotWeight` | `90.0` | Ingots, gems, alloys, and shards |
+| `nuggetWeight` | `10.0` | Nuggets |
+| `itemWeight` | `50.0` | Generic fallback item weight |
+| `creativeWeight` | `30000.0` | Creative/technical items |
+| `pocketWeight` | `9000.0` | Capacity added by one armor pocket |
+| `maxWeight` | `90000.0` | Base player max weight |
 
-- **Category Base Weight**: Base weight is derived from the category of the item (e.g., ingots, nuggets).
-- **Stack Size**: Weight is adjusted based on the stack size, with a multiplier effect.
-- **Durability**: Weight is modified based on the item’s durability, especially for single-stack items.
-- **Rarity**: Additional weight is applied based on the item's rarity, increasing weight according to rarity tiers.
+These values can be edited with fzzy_config and can update live while the server is running.
 
-```java
-        // Modify weight based on stack size
-        if (maxStackSize > 1) {
-            float stackMultiplier = 1 + (10f / maxStackSize); // Example multiplier
-            weight *= stackMultiplier;
-        }
+## Item Category Detection
 
-        else if (maxStackSize == 1 && maxDurability > 0) {
-            if (isHasArmor(item)) {
-                weight += (float) (getArmorValue(item) * 10);
-                weight += (InventoryWeightUtil.ITEMS + (((float) maxDurability / 300) * 300));
-            }
-            if (isHasDamage(item)) {
-                weight += (float) (InventoryWeightUtil.ITEMS + ((maxDurability / 1500.0) * 300));
-            }
-        }
+The mod classifies items into categories based on the item ID and item type.
 
-        weight *= (getRarityWeight(stack) * 1.3f);
+Examples:
 
-        return (int) Math.floor(Math.max(weight, 1.0f));
+- IDs containing `bucket` use `bucketWeight`
+- IDs containing `bottle` or `potion` use `bottleWeight`
+- IDs containing `ingot`, `alloy`, `gem`, or `shard` use `ingotWeight`
+- IDs containing `nugget` use `nuggetWeight`
+- block items use `blockWeight`
+- creative/technical items use `creativeWeight`
+- everything else uses `itemWeight`
+
+## Default Item Weight Calculation
+
+For regular items, the mod can consider:
+
+- category base weight
+- max stack size
+- food value
+- saturation
+- snack status
+- fireproof status
+- durability
+- armor protection
+- tool durability
+- rarity
+
+The result is floored and clamped to at least `1.0`.
+
+## Default Block Weight Calculation
+
+For blocks, the mod can consider:
+
+- base block weight
+- block hardness
+- blast resistance
+- opacity/transparency
+- block entity status
+- slab shape
+- stair shape
+- rarity
+
+This gives blocks more reasonable automatic weights without requiring every block to be listed manually.
+
+## Creative/Technical Items
+
+Some items are treated as creative/technical items and use `creativeWeight`.
+
+Examples can include:
+
+- barrier
+- light
+- structure block
+- jigsaw
+- command blocks
+- structure void
+- portal-like items
+- debug stick
+- spawner
+- spawn eggs
+- bedrock
+
+## Containers
+
+Supported shulkers and backpacks use a special rule:
+
+```text
+final container weight = empty container weight + weight inside / 2
 ```
+
+The empty container weight normally uses `itemWeight`.
+
+Tooltip example:
+
+```text
+Weight inside: 10.0k
+Weight: 5.1k
+```
+
+## Override Order
+
+The mod checks weight providers by priority.
+
+Typical order:
+
+1. NBT-specific datapack rules
+2. datapack item overrides
+3. backpack/container providers
+4. shulker box provider
+5. vanilla block calculation
+6. vanilla item calculation
+7. generic fallback
+
+Add-ons can register custom providers with their own priorities.
+
+## Customizing Defaults
+
+Use the server config to adjust broad category weights:
+
+```toml
+bucketWeight = 120.0
+bottleWeight = 60.0
+blockWeight = 240.0
+ingotWeight = 90.0
+nuggetWeight = 10.0
+itemWeight = 50.0
+creativeWeight = 30000.0
+```
+
+Use datapacks for exact item weights:
+
+```text
+data/<namespace>/inventory_weight/items/*.json
+```
+
+Example:
+
+```json
+{
+  "minecraft:stone": 260.0,
+  "minecraft:diamond": 120.0
+}
+```
+
+## Related Pages
+
+- [Server Configuration](../options/inventory_weights_server.md)
+- [Items Configuration](../options/inventory_weights_items.md)
+- [Custom Item Weights](./item_custom_values.md)
+- [Datapack Customization](./datapacks.md)

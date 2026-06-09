@@ -1,46 +1,222 @@
 ---
 title: "Custom Tooltips"
-description: "Overview of the custom tooltips added by the MT Inventory Weight mod, displaying item weight and pocket information."
+description: "Overview of the custom tooltips added by MT Inventory Weight, including item weight, container weight, exact values, and armor pocket information."
 ---
 
-# **Custom Tooltips**
+# Custom Tooltips
 
-In the **MT Inventory Weight** mod, nearly all items in the game come with custom tooltips that provide additional information about the item's weight and any special attributes, such as the number of pockets for armor pieces. These tooltips are an essential feature for players, helping them understand the weight mechanics and how different items affect their overall inventory capacity.
+MT Inventory Weight adds client-side item tooltips that help players understand how each item affects their carried weight.
 
-## **Tooltip Information**
+Tooltips are calculated using the same weight system as the HUD and overload logic. On multiplayer servers, the client receives synced server/datapack data so tooltip values match the server.
 
-For most items, the tooltips will display the following information:
+## Enabling or Disabling Tooltips
 
-- **Item Weight**: The tooltip will show the weight of the item in the player's inventory, helping the player to manage their load effectively.
-- **Armor Pockets**: If the item is a piece of armor or has pockets, additional information will appear detailing how many pockets are available on that armor piece.
+Tooltips can be enabled or disabled in the client config:
 
-### **Item Weight**
+```toml
+showTooltips = true
+```
 
-The tooltip for an item's weight appears in **gray text** and will look something like:
+The client config is usually located at:
 
-`Weight: 3.5`
+```text
+config/inventoryweight/client-config.toml
+```
 
-The weight displayed depends on whether the item has a **custom weight** (a predefined weight for specific items) or a **default weight** based on its category, such as blocks, ingots, bottles, etc.
+If [Mod Menu](https://modrinth.com/mod/modmenu) is installed, this can usually be changed from the in-game config screen.
 
-- **Custom Weights**: Certain items, such as weapons or tools, may have custom weights, which are shown directly in the tooltip.
-- **Default Weights**: Items without a specific custom weight will show a default weight based on their item category.
+## Regular Item Tooltips
 
-For example:
-- **Diamond Sword** might have a tooltip that displays a weight of 2.5 units.
-- **Oak Planks** might have a standard weight of 1.0 units.
+For most items, the tooltip shows:
 
-### **Armor and Pockets**
+```text
+Weight: %s
+```
 
-For armor pieces, tooltips may also provide information about the **number of pockets** the armor has. This information is shown in **blue text**, making it easy to distinguish from the item weight.
+Example:
 
-Example of an armor tooltip:
+```text
+Weight: 120
+```
 
-`+3 Pockets`
+If the item stack has more than one item, the tooltip can also show the stack's total weight:
 
-Pockets are important because they affect how much additional weight a player can carry by distributing it across the armor, depending on the number of pockets. For more details about pockets, please refer to the [Pockets Documentation](pockets.md).
+```text
+Total Weight: %s
+```
 
-## **Usage Scenarios**
+Example:
 
-1. **Managing Inventory Weight**: Players can use the tooltips to plan what items to carry in their inventory, prioritizing lighter or more important items.
-2. **Armor and Pockets**: Players can evaluate how their armor contributes to carrying capacity by checking how many pockets are available on each armor piece.
-3. **Custom Items**: Modded or custom items in the game may have unique weights defined, helping players understand their impact on inventory weight.
+```text
+Weight: 120
+Total Weight: 7.7k
+```
+
+## Modified/Base Weight Tooltips
+
+Some items have a calculated weight that differs from their base weight because of modifiers such as:
+
+- rarity
+- durability
+- food value
+- block hardness
+- blast resistance
+- fireproof status
+- container compression
+- other provider/add-on logic
+
+When a weight has modifiers, the tooltip can show:
+
+```text
+Base Weight: %s
+```
+
+Example:
+
+```text
+Weight: 450
+Base Weight: 240
+```
+
+## Shulker and Backpack Tooltips
+
+Supported shulkers and backpacks have special container tooltips.
+
+They show both the full weight of the contents and the effective compressed weight used by the mod.
+
+Example:
+
+```text
+Weight inside: 10.0k
+Weight: 5.1k
+```
+
+The current container rule is:
+
+```text
+final container weight = empty container weight + weight inside / 2
+```
+
+Where:
+
+- **Weight inside** is the full uncompressed weight of stored items.
+- **Weight** is the effective weight used by the inventory weight system.
+
+For stacked containers, the tooltip can also show:
+
+```text
+Total weight inside: %s
+Total Weight: %s
+```
+
+::: info
+Containers are not weightless. They reduce the effective weight of stored items, but the stored items still count.
+:::
+
+## Armor Pocket Tooltips
+
+Armor and items with pocket data can show pocket information:
+
+```text
+Pockets: %s
+```
+
+Example:
+
+```text
+Pockets: 3
+```
+
+Pockets add extra maximum carry capacity when the armor is worn.
+
+The capacity added is:
+
+```text
+pockets * pocketWeight
+```
+
+The `pocketWeight` value is configured on the server.
+
+See the [Pockets](./pockets.md) page for more information.
+
+## Compact and Exact Values
+
+By default, large values are displayed in compact form.
+
+Examples:
+
+```text
+1.5k
+2.0M
+3.4B
+```
+
+Hold **Shift** to show exact numeric values.
+
+Example without Shift:
+
+```text
+Weight: 1.5k
+```
+
+Example with Shift:
+
+```text
+Weight: 1,500
+```
+
+When exact values are available, the tooltip can show a hint:
+
+```text
+Hold Shift for exact values
+```
+
+## Where Tooltip Values Come From
+
+Tooltip values can come from several sources:
+
+1. Datapack item weight definitions
+2. NBT-specific datapack rules
+3. Add-on API providers
+4. Built-in shulker/backpack providers
+5. Built-in vanilla block/item fallback calculation
+6. Server category weights from fzzy_config
+
+## Datapack Sync
+
+On multiplayer servers, item weights and pocket definitions are controlled by the server.
+
+The server syncs resolved datapack/config data to clients so tooltip values are accurate.
+
+If tooltips look wrong, try:
+
+- reconnecting to the server
+- using `/reload`
+- checking for datapack conflicts
+- checking server logs for sync messages
+
+## Customizing Tooltip Behavior
+
+Tooltip visibility is controlled by client config:
+
+```toml
+showTooltips = true
+```
+
+Specific item weights should be customized with datapacks:
+
+```text
+data/<namespace>/inventory_weight/items/*.json
+```
+
+Pocket values should be customized with datapacks:
+
+```text
+data/<namespace>/inventory_weight/pockets/*.json
+```
+
+For more details, see:
+
+- [Inventory Weights Items Configuration](../options/inventory_weights_items.md)
+- [Pockets](./pockets.md)
+- [Datapack Customization](./datapacks.md)

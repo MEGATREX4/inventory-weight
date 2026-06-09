@@ -1,118 +1,280 @@
 ---
 title: "Commands"
-description: "A guide on available admin commands in MT Inventory Weight mod, including setting and retrieving player inventory weights."
+description: "A guide to MT Inventory Weight admin commands for setting base weight, capacity bonuses, reading player weight data, and debugging item or armor weights."
 ---
 
-# **Commands**
+# Commands
 
-In the **MT Inventory Weight** mod, a set of admin commands allows for full control over a player's inventory weight, including setting base values, adding multipliers, and retrieving current weight information. These commands are crucial for managing gameplay balance, adjusting weight limits, or debugging inventory and armor weight in the game.
+MT Inventory Weight provides server commands for administrators and operators.
 
-## **Available Commands**
+Commands can be used to:
 
-### **/inventoryweight**
+- change the global base max weight
+- set player capacity bonuses
+- inspect current player weight
+- inspect final max weight
+- debug item weights
+- debug armor pocket values
 
-The primary command used to manage inventory weight for players. It has several subcommands, allowing admins to set and get different weight values for themselves or other players.
+::: warning
+All commands listed here require permission level `4` by default.
+:::
 
-#### **/inventoryweight set**
+## `/inventoryweight`
 
-This command is used to set specific weight-related values for players. It has the following subcommands:
+Main command for managing inventory weight values.
 
-- **/inventoryweight set base \<value\>**
-  - Sets the **base maximum weight** for the player issuing the command.
-  - Example: `/inventoryweight set base 50`
-  - This will set the player's base maximum weight to 50 units.
+## Set Commands
 
-- **/inventoryweight set multiplier \<value\>**
-  - Sets an additional **multiplier** (flat value) to the player's maximum weight.
-  - Example: `/inventoryweight set multiplier 10`
-  - This adds 10 units to the player's max weight.
+### `/inventoryweight set base <value>`
 
-- **/inventoryweight set multiplier \<player\> \<value\>**
-  - Sets the multiplier for another player.
-  - Example: `/inventoryweight set multiplier player123 15`
-  - This will give player `player123` a 15-unit weight increase.
+Sets the global base maximum weight from the server config.
 
-#### **/inventoryweight get**
+Example:
 
-This set of commands allows admins to retrieve information about the weight-related stats of players.
+```text
+/inventoryweight set base 120000
+```
 
-- **/inventoryweight get base**
-  - Returns the **base maximum weight** of the player issuing the command.
-  - Example: `/inventoryweight get base`
+This changes:
 
-- **/inventoryweight get base \<player\>**
-  - Returns the base maximum weight of another player.
-  - Example: `/inventoryweight get base player123`
+```toml
+maxWeight = 120000.0
+```
 
-- **/inventoryweight get multiplier**
-  - Returns the player's **current multiplier**.
-  - Example: `/inventoryweight get multiplier`
+The change is applied live and synced to clients.
 
-- **/inventoryweight get multiplier \<player\>**
-  - Retrieves the multiplier of another player.
-  - Example: `/inventoryweight get multiplier player123`
+::: info
+This is a global server value, not a per-player base value.
+:::
 
-- **/inventoryweight get combined**
-  - Retrieves the player's **final maximum weight**, which includes the base weight, multiplier, and armor weight from pockets.
-  - Example: `/inventoryweight get combined`
+### `/inventoryweight set bonus <value>`
 
-- **/inventoryweight get combined \<player\>**
-  - Retrieves another player's final maximum weight.
-  - Example: `/inventoryweight get combined player123`
+Sets your own additive capacity bonus.
 
-- **/inventoryweight get value**
-  - Returns the **current total weight** of the items in the player's inventory.
-  - Example: `/inventoryweight get value`
+Example:
 
-- **/inventoryweight get value \<player\>**
-  - Retrieves the current total weight of another player's inventory.
-  - Example: `/inventoryweight get value player123`
+```text
+/inventoryweight set bonus 10000
+```
 
-### **/debugweight**
+This adds `10000` to your final max weight.
 
-The `debugweight` command is useful for debugging individual item weights in the game. It can give information about the weight of the item currently held in the player's main hand.
+### `/inventoryweight set bonus <player> <value>`
 
-- **/debugweight**
-  - Displays the weight of the item the player is currently holding.
-  - If a custom weight is assigned to the item, the command will show that. If not, it will display the default weight based on the item category.
-  - Example: `/debugweight`
-  
-  Output could be something like:
-  - "The item 'minecraft:diamond_sword' weighs 2.5 units."
-  - If no custom weight exists, it will show the fallback weight: "The item 'minecraft:wood' weighs 1.0 units."
+Sets another player's additive capacity bonus.
 
-### **/debugarmor**
+Example:
 
-This command provides detailed information about the player's armor and the pockets it has.
+```text
+/inventoryweight set bonus Steve 10000
+```
 
-- **/debugarmor**
-  - Displays the total **armor weight** and how many **pockets** each armor piece has.
-  - Example: `/debugarmor`
-  
-  Output example:
-  - "Chestplate: 2 pockets, Leggings: 1 pocket."
-  - "Total armor weight: 5 units."
-  
-  If no armor pieces have pockets, it will inform the player: "No pockets detected on equipped armor."
+This adds `10000` to Steve's final max weight.
 
-## **Usage Scenarios**
+::: warning
+Older versions used the word `multiplier`, but the current command is `bonus`.
 
-1. **Set Player Limits**: 
-   - Use `/inventoryweight set base` and `/inventoryweight set multiplier` to adjust how much weight a player can carry before being affected by penalties.
-   
-2. **Get Player Info**:
-   - Use `/inventoryweight get base`, `/inventoryweight get multiplier`, and `/inventoryweight get combined` to monitor how much weight a player can carry and adjust balance accordingly.
+This value is additive. It does not multiply max weight.
+:::
 
-3. **Debugging Items and Armor**:
-   - Use `/debugweight` to check how much weight an item adds to the player's inventory, especially useful for modded items or debugging custom weights.
-   - Use `/debugarmor` to inspect how many pockets armor pieces have and their overall weight contribution.
+## Get Commands
 
-## **Permissions**
+### `/inventoryweight get base`
 
-All the above commands require the player issuing them to have a permission level of 4 or higher (typically admin-level permissions).
+Gets the global base maximum weight.
 
-This ensures that only server administrators or players with appropriate permissions can adjust inventory weight settings or retrieve sensitive player weight information.
+Example:
 
-## **Summary**
+```text
+/inventoryweight get base
+```
 
-The MT Inventory Weight mod provides a robust set of commands for managing and debugging inventory weight mechanics. Admins can easily modify a player's weight capacity, monitor their inventory stats, and debug items and armor to maintain balance in gameplay.
+### `/inventoryweight get bonus`
+
+Gets your own additive capacity bonus.
+
+Example:
+
+```text
+/inventoryweight get bonus
+```
+
+### `/inventoryweight get bonus <player>`
+
+Gets another player's additive capacity bonus.
+
+Example:
+
+```text
+/inventoryweight get bonus Steve
+```
+
+### `/inventoryweight get combined`
+
+Gets your final maximum weight.
+
+Example:
+
+```text
+/inventoryweight get combined
+```
+
+This value includes:
+
+- global base max weight
+- player capacity bonus
+- armor pocket capacity
+- add-on capacity providers
+- max-weight event modifiers
+
+### `/inventoryweight get combined <player>`
+
+Gets another player's final maximum weight.
+
+Example:
+
+```text
+/inventoryweight get combined Steve
+```
+
+### `/inventoryweight get value`
+
+Gets your current carried inventory weight.
+
+Example:
+
+```text
+/inventoryweight get value
+```
+
+### `/inventoryweight get value <player>`
+
+Gets another player's current carried inventory weight.
+
+Example:
+
+```text
+/inventoryweight get value Steve
+```
+
+## Debug Commands
+
+## `/debugweight`
+
+Displays the calculated weight of the item in your main hand.
+
+Example:
+
+```text
+/debugweight
+```
+
+This is useful for checking:
+
+- datapack item weights
+- automatic fallback weights
+- NBT-specific rules
+- shulker/backpack effective weight
+- modded item weights
+- add-on provider behavior
+
+Example output:
+
+```text
+minecraft:diamond_sword weighs 350
+```
+
+## `/debugarmor`
+
+Displays armor pocket information for your equipped armor.
+
+Example:
+
+```text
+/debugarmor
+```
+
+This can show each armor item's pocket count and the total armor capacity bonus.
+
+Example output:
+
+```text
+minecraft:diamond_chestplate: 2 pockets
+Total armor capacity bonus: 18000
+```
+
+If no armor with pockets is found, the command tells the player.
+
+## Common Usage Scenarios
+
+### Increase Carry Capacity for Everyone
+
+```text
+/inventoryweight set base 150000
+```
+
+This raises the global base max weight.
+
+### Give One Player Extra Capacity
+
+```text
+/inventoryweight set bonus Steve 25000
+```
+
+This gives Steve an extra `25000` max weight.
+
+### Check a Player's Final Max Weight
+
+```text
+/inventoryweight get combined Steve
+```
+
+### Check How Heavy an Item Is
+
+Hold the item in your main hand and run:
+
+```text
+/debugweight
+```
+
+### Check Armor Pockets
+
+Equip armor and run:
+
+```text
+/debugarmor
+```
+
+## Current Maximum Weight Formula
+
+The final maximum weight is generally:
+
+```text
+base max weight + player capacity bonus + armor pocket capacity + add-on modifiers
+```
+
+See [Maximum Weight](./max_weight.md) for more details.
+
+## Server Config and Live Updates
+
+The base max weight is also stored in the server config:
+
+```text
+config/inventoryweight/server-config.toml
+```
+
+Changing it through fzzy_config or commands applies live while the server is running.
+
+## Permissions
+
+By default, commands require permission level `4`, which usually means server operator/admin.
+
+This prevents normal players from changing weight balance or inspecting other players' data.
+
+## Related Pages
+
+- [Maximum Weight](./max_weight.md)
+- [Server Configuration](../options/inventory_weights_server.md)
+- [Default Item Values](./item_default_values.md)
+- [Pockets](./pockets.md)
