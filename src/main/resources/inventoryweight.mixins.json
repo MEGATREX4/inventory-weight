@@ -3,9 +3,9 @@
   "package": "com.megatrex4.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "PlayerEntityMixin"
+    "PlayerJumpMixin"
   ],
   "injectors": {
     "defaultRequire": 1
-	}
+  }
 }
