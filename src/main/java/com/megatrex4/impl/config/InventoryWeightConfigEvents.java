@@ -84,7 +84,7 @@ public final class InventoryWeightConfigEvents {
         ServerWeightSettings settings = WeightSettings.refreshFromConfig();
 
         InventoryWeight.LOGGER.info(
-                "Applying Inventory Weight server settings live from {}: maxWeight={}, pocketWeight={}, realisticMode={}, overloadPenaltyStrength={}",
+                "Applying Inventory Weight server settings live from {}: configuredDefaultMaxWeight={}, pocketWeight={}, realisticMode={}, overloadPenaltyStrength={}. Player max-weight attributes are not overwritten.",
                 reason,
                 settings.maxWeight(),
                 settings.pocketWeight(),

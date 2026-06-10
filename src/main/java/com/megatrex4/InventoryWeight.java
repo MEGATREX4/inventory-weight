@@ -1,5 +1,6 @@
 package com.megatrex4;
 
+import com.megatrex4.api.v1.InventoryWeightAttributes;
 import com.megatrex4.commands.InventoryWeightCommands;
 import com.megatrex4.effects.InventoryWeightEffects;
 import com.megatrex4.impl.InventoryWeightServices;
@@ -32,32 +33,35 @@ public final class InventoryWeight implements ModInitializer {
         LOGGER.info("Minecraft weight systems are being registered now.");
         LOGGER.info("==================================================");
 
-        LOGGER.info("[1/8] Registering fzzy_config live update listener...");
+        LOGGER.info("[1/9] Registering Inventory Weight attributes...");
+        InventoryWeightAttributes.register();
+
+        LOGGER.info("[2/9] Registering fzzy_config live update listener...");
         InventoryWeightConfigEvents.register();
 
-        LOGGER.info("[2/8] Registering default weight, capacity, pocket, and inventory providers...");
+        LOGGER.info("[3/9] Registering default weight, capacity, pocket, and inventory providers...");
         InventoryWeightServices.registerDefaults();
 
-        LOGGER.info("[3/8] Loading Inventory Weight add-on entrypoints...");
+        LOGGER.info("[4/9] Loading Inventory Weight add-on entrypoints...");
         InventoryWeightServices.loadAddonEntrypoints();
 
-        LOGGER.info("[4/8] Registering status effects...");
+        LOGGER.info("[5/9] Registering status effects...");
         InventoryWeightEffects.register();
         LOGGER.info("Registered status effect: {}:overload", MOD_ID);
 
-        LOGGER.info("[5/8] Registering datapack reload listeners...");
+        LOGGER.info("[6/9] Registering datapack reload listeners...");
         WeightDataReloadListener.register();
 
-        LOGGER.info("[6/8] Registering server networking...");
+        LOGGER.info("[7/9] Registering server networking...");
         InventoryWeightNetworking.registerServer();
 
-        LOGGER.info("[7/8] Registering commands...");
+        LOGGER.info("[8/9] Registering commands...");
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             InventoryWeightCommands.register(dispatcher);
             LOGGER.info("Inventory Weight commands registered for environment: {}", environment);
         });
 
-        LOGGER.info("[8/8] Registering server tick handler...");
+        LOGGER.info("[9/9] Registering server tick handler...");
         ServerTickEvents.END_SERVER_TICK.register(PlayerWeightController::tickServer);
 
         registerLifecycleDebugLogging();

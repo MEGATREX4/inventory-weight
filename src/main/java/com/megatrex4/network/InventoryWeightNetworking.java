@@ -1,6 +1,7 @@
 package com.megatrex4.network;
 
 import com.megatrex4.InventoryWeight;
+import com.megatrex4.impl.player.PlayerWeightController;
 import com.megatrex4.impl.data.WeightDataSnapshot;
 import com.megatrex4.impl.data.WeightDataStore;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
@@ -30,6 +31,7 @@ public final class InventoryWeightNetworking {
         InventoryWeight.LOGGER.info("Registering Inventory Weight server networking channel: {}", WEIGHT_DATA_SYNC);
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             InventoryWeight.LOGGER.info("Player {} joined; syncing Inventory Weight datapack data.", handler.player.getName().getString());
+            PlayerWeightController.updatePlayer(handler.player);
             sendDataTo(handler.player);
         });
     }

@@ -3,6 +3,7 @@ package com.megatrex4.impl.weight;
 import com.megatrex4.InventoryWeight;
 import com.megatrex4.api.v1.CapacityModifier;
 import com.megatrex4.api.v1.CapacityProvider;
+import com.megatrex4.api.v1.InventoryWeightAttributes;
 import com.megatrex4.api.v1.InventoryWeightEvents;
 import com.megatrex4.impl.config.WeightSettings;
 import com.megatrex4.impl.registry.PrioritizedRegistry;
@@ -16,8 +17,9 @@ public final class CapacityService {
     }
 
     public float getMaxWeight(ServerPlayerEntity player) {
-        float base = WeightSettings.get().maxWeight();
-        float additive = 0.0f;
+        float configuredBase = WeightSettings.get().maxWeight();
+        float attributeBonus = (float) InventoryWeightAttributes.getValue(player);
+        float additive = attributeBonus;
         float multiplier = 1.0f;
 
         for (PrioritizedRegistry.Entry<CapacityProvider> entry : providers.entries()) {
@@ -26,11 +28,18 @@ public final class CapacityService {
                 additive += modifier.additive();
                 multiplier *= modifier.multiplier();
             } catch (Exception e) {
-                InventoryWeight.LOGGER.error("Capacity provider {} failed for {}", entry.id(), player.getName().getString(), e);
+                InventoryWeight.LOGGER.error(
+                        "Capacity provider {} failed for {}",
+                        entry.id(),
+                        player.getName().getString(),
+                        e
+                );
             }
         }
 
-        float result = Math.max(1.0f, (base + additive) * multiplier);
-        return InventoryWeightEvents.MODIFY_MAX_WEIGHT.invoker().modify(player, result);
+        float result = Math.max(1.0f, (configuredBase + additive) * multiplier);
+        return InventoryWeightEvents.MODIFY_MAX_WEIGHT
+                .invoker()
+                .modify(player, result);
     }
 }
