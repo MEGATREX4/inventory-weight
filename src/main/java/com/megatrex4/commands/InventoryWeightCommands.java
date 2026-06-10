@@ -26,7 +26,7 @@ public final class InventoryWeightCommands {
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("inventoryweight")
-                .requires(source -> source.hasPermissionLevel(4))
+                .requires(CommandManager.requirePermissionLevel(CommandManager.OWNERS_CHECK))
                 .then(CommandManager.literal("set")
                         .then(CommandManager.literal("base")
                                 .then(CommandManager.argument("value", FloatArgumentType.floatArg(1.0f))
@@ -130,7 +130,7 @@ public final class InventoryWeightCommands {
                                 }))));
 
         dispatcher.register(CommandManager.literal("debugweight")
-                .requires(source -> source.hasPermissionLevel(4))
+                .requires(CommandManager.requirePermissionLevel(CommandManager.OWNERS_CHECK))
                 .executes(context -> {
                     ServerPlayerEntity player = context.getSource().getPlayerOrThrow();
                     ItemStack stack = player.getMainHandStack();
@@ -148,7 +148,7 @@ public final class InventoryWeightCommands {
         );
 
         dispatcher.register(CommandManager.literal("debugarmor")
-                .requires(source -> source.hasPermissionLevel(4))
+                .requires(CommandManager.requirePermissionLevel(CommandManager.OWNERS_CHECK))
                 .executes(context -> {
                     ServerPlayerEntity player = context.getSource().getPlayerOrThrow();
                     boolean any = false;
