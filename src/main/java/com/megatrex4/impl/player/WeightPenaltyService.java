@@ -106,7 +106,7 @@ public final class WeightPenaltyService {
 
         AttributeModifierManager.replace(
                 player,
-                EntityAttributes.GENERIC_MOVEMENT_SPEED,
+                EntityAttributes.MOVEMENT_SPEED,
                 SPEED_MODIFIER_ID,
                 prefix + "_speed_penalty",
                 -speedDecrease,
@@ -114,7 +114,7 @@ public final class WeightPenaltyService {
         );
         AttributeModifierManager.replace(
                 player,
-                EntityAttributes.GENERIC_ATTACK_SPEED,
+                EntityAttributes.ATTACK_SPEED,
                 ATTACK_SPEED_MODIFIER_ID,
                 prefix + "_attack_speed_penalty",
                 -attackSpeedDecrease,
@@ -122,7 +122,7 @@ public final class WeightPenaltyService {
         );
         AttributeModifierManager.replace(
                 player,
-                EntityAttributes.GENERIC_ATTACK_DAMAGE,
+                EntityAttributes.ATTACK_DAMAGE,
                 DAMAGE_REDUCTION_MODIFIER_ID,
                 prefix + "_damage_penalty",
                 -damageReduction,

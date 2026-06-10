@@ -1,6 +1,7 @@
 package com.megatrex4.impl.weight;
 
 import com.megatrex4.impl.config.ServerWeightSettings;
+import net.minecraft.component.type.ConsumableComponent;
 import net.minecraft.component.type.FoodComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Rarity;
@@ -38,15 +39,22 @@ public final class WeightMath {
         return rarityWeight * 1.3f;
     }
 
-    public static float foodWeight(FoodComponent foodComponent) {
+    public static float foodWeight(
+            FoodComponent foodComponent,
+            ConsumableComponent consumableComponent
+    ) {
         if (foodComponent == null) {
             return 0.0f;
         }
 
         float weight = foodComponent.nutrition();
 
-        if (foodComponent.eatSeconds() <= 0.8f) {
+        if (consumableComponent != null && consumableComponent.consumeSeconds() <= 0.8f) {
             weight /= 2.0f;
+        }
+
+        if (foodComponent.canAlwaysEat()) {
+            weight += 2.0f;
         }
 
         weight += foodComponent.saturation();

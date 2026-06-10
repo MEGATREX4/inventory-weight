@@ -1,6 +1,7 @@
 package com.megatrex4.impl.weight.pocket;
 
 import com.megatrex4.api.v1.PocketProvider;
+import com.megatrex4.impl.weight.ArmorAttributeHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
@@ -15,8 +16,8 @@ public final class VanillaArmorPocketProvider implements PocketProvider {
             return OptionalInt.empty();
         }
 
-        int protection = armorItem.getProtection();
-        float toughness = armorItem.getToughness();
+        int protection = ArmorAttributeHelper.getProtection(stack);
+        float toughness = ArmorAttributeHelper.getToughness(stack);
         int pockets = (int) Math.max(1, 7 - (int) (protection / 1.2f) - toughness);
         return OptionalInt.of(pockets);
     }

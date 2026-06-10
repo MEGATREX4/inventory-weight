@@ -69,7 +69,7 @@ dependencies {
 			"jars/tomlkt-jvm-0.3.7.jar"
 	)
 	
-	modImplementation "dev.emi:trinkets:${trinkets_version}"
+	// modImplementation "dev.emi:trinkets:${trinkets_version}"
 
 	modImplementation include("org.ladysnake.cardinal-components-api:cardinal-components-base:${project.cardinal_components_version}") {
 		exclude group: "org.ladysnake.cardinal-components-api", module: "cardinal-components-level"

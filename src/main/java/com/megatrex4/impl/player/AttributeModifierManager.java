@@ -12,9 +12,9 @@ public final class AttributeModifierManager {
     private AttributeModifierManager() {}
 
     public static void removeAllWeightModifiers(PlayerEntity player) {
-        remove(player, EntityAttributes.GENERIC_MOVEMENT_SPEED, WeightPenaltyService.SPEED_MODIFIER_ID);
-        remove(player, EntityAttributes.GENERIC_ATTACK_SPEED, WeightPenaltyService.ATTACK_SPEED_MODIFIER_ID);
-        remove(player, EntityAttributes.GENERIC_ATTACK_DAMAGE, WeightPenaltyService.DAMAGE_REDUCTION_MODIFIER_ID);
+        remove(player, EntityAttributes.MOVEMENT_SPEED, WeightPenaltyService.SPEED_MODIFIER_ID);
+        remove(player, EntityAttributes.ATTACK_SPEED, WeightPenaltyService.ATTACK_SPEED_MODIFIER_ID);
+        remove(player, EntityAttributes.ATTACK_DAMAGE, WeightPenaltyService.DAMAGE_REDUCTION_MODIFIER_ID);
     }
 
     public static void replace(

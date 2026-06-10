@@ -6,13 +6,17 @@ import com.megatrex4.api.v1.WeightLookup;
 import com.megatrex4.api.v1.WeightResult;
 import com.megatrex4.impl.config.ServerWeightSettings;
 import com.megatrex4.impl.config.WeightSettings;
+import com.megatrex4.impl.weight.ArmorAttributeHelper;
 import com.megatrex4.impl.weight.ItemCategory;
 import com.megatrex4.impl.weight.ItemCategoryClassifier;
 import com.megatrex4.impl.weight.WeightMath;
 import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.ConsumableComponent;
+import net.minecraft.component.type.DamageResistantComponent;
 import net.minecraft.component.type.FoodComponent;
 import net.minecraft.item.*;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.tag.DamageTypeTags;
 
 import java.util.Optional;
 
@@ -35,18 +39,23 @@ public final class VanillaItemWeightProvider implements ItemWeightProvider {
         if (maxStackSize > 1) {
             weight *= WeightMath.stackMultiplier(maxStackSize);
             FoodComponent foodComponent = stack.get(DataComponentTypes.FOOD);
+            ConsumableComponent consumableComponent = stack.get(DataComponentTypes.CONSUMABLE);
+
             if (foodComponent != null) {
-                weight += WeightMath.foodWeight(foodComponent);
+                weight += WeightMath.foodWeight(foodComponent, consumableComponent);
             }
-            if (stack.contains(DataComponentTypes.FIRE_RESISTANT)) {
+
+            DamageResistantComponent damageResistant = stack.get(DataComponentTypes.DAMAGE_RESISTANT);
+
+            if (damageResistant != null && damageResistant.types().equals(DamageTypeTags.IS_FIRE)) {
                 weight *= 1.25f;
             }
         } else if (maxStackSize == 1 && maxDurability > 0) {
-            if (item instanceof ArmorItem armorItem) {
-                weight += WeightMath.armorProtectionWeight(armorItem.getProtection());
+            if (item instanceof ArmorItem) {
+                weight += WeightMath.armorProtectionWeight(ArmorAttributeHelper.getProtection(stack));
                 weight += settings.itemWeight() + (((float) maxDurability / 300.0f) * 300.0f);
             }
-            if (item instanceof ToolItem) {
+            if (stack.contains(DataComponentTypes.TOOL)) {
                 weight += settings.itemWeight() + WeightMath.toolDurabilityWeight(maxDurability);
             }
         }

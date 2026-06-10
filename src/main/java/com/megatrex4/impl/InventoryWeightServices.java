@@ -94,8 +94,8 @@ public final class InventoryWeightServices {
         if (FabricLoader.getInstance().isModLoaded("trinkets")) {
             InventoryWeight.LOGGER.info("Trinkets detected; registering Inventory Weight Trinkets compatibility.");
             try {
-                TrinketsCompat.register(REGISTRAR);
-                InventoryWeight.LOGGER.info("Trinkets compatibility registered successfully.");
+//                TrinketsCompat.register(REGISTRAR);
+//                InventoryWeight.LOGGER.info("Trinkets compatibility registered successfully.");
             } catch (Throwable throwable) {
                 InventoryWeight.LOGGER.error("Failed to initialize Trinkets compatibility", throwable);
             }

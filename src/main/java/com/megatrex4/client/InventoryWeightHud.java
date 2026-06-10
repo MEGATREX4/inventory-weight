@@ -11,6 +11,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.util.Identifier;
@@ -258,7 +259,18 @@ public final class InventoryWeightHud {
     }
 
     private static void drawIcon(DrawContext context, Identifier icon, int x, int y, int width, int height) {
-        context.drawTexture(icon, x, y, width, height, 0, 0, TEXTURE_SIZE, TEXTURE_SIZE, TEXTURE_SIZE, TEXTURE_SIZE);
+        context.drawTexture(
+                RenderLayer::getGuiTextured,
+                icon,
+                x,
+                y,
+                0.0F,
+                0.0F,
+                width,
+                height,
+                TEXTURE_SIZE,
+                TEXTURE_SIZE
+        );
     }
 
     private static int color(float current, float max) {
