@@ -23,10 +23,4 @@ public final class ItemStackData {
 
         stack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt));
     }
-
-    @Nullable
-    public static NbtCompound getBlockEntityData(ItemStack stack) {
-        NbtComponent component = stack.get(DataComponentTypes.BLOCK_ENTITY_DATA);
-        return component == null ? null : component.copyNbt();
-    }
 }

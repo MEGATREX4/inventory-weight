@@ -108,10 +108,23 @@ public final class InventoryWeightHud {
         context.fill(x, y, x + fill, y + height, color);
 
         if (overloaded || current >= max) {
-            context.drawBorder(x - 2, y - 2, width + 4, height + 4, 0xFFFF3030);
+            drawBorder(context, x - 2, y - 2, width + 4, height + 4, 0xFFFF3030);
         } else {
-            context.drawBorder(x - 2, y - 2, width + 4, height + 4, 0xAAFFFFFF);
+            drawBorder(context, x - 2, y - 2, width + 4, height + 4, 0xAAFFFFFF);
         }
+    }
+    private static void drawBorder(
+            DrawContext context,
+            int x,
+            int y,
+            int width,
+            int height,
+            int color
+    ) {
+        context.fill(x, y, x + width, y + 1, color);
+        context.fill(x, y + height - 1, x + width, y + height, color);
+        context.fill(x, y + 1, x + 1, y + height - 1, color);
+        context.fill(x + width - 1, y + 1, x + width, y + height - 1, color);
     }
 
     private static void renderHudText(DrawContext context, TextRenderer textRenderer, InventoryWeightConfig.Client config, int elementX, int elementY, int elementWidth, int elementHeight, int screenWidth, int screenHeight, float current, float max) {

@@ -19,7 +19,7 @@ public final class PlayerWeightService {
     }
 
     public WeightResult getInventoryWeight(PlayerEntity player) {
-        WeightContext context = new WeightContext(player.getWorld(), player, 0);
+        WeightContext context = new WeightContext(player.getEntityWorld(), player, 0);
         WeightResult total = WeightResult.ZERO;
 
         for (PrioritizedRegistry.Entry<PlayerWeightSource> entry : sources.entries()) {

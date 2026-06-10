@@ -137,7 +137,7 @@ public final class InventoryWeightCommands {
                     Identifier itemId = Registries.ITEM.getId(stack.getItem());
                     WeightResult weight = InventoryWeightServices.weightService().getWeight(
                             stack,
-                            new WeightContext(player.getWorld(), player, 0)
+                            new WeightContext(player.getEntityWorld(), player, 0)
                     );
                     context.getSource().sendFeedback(
                             () -> Text.translatable("command.inventoryweight.debugweight", itemId.toString(), WeightMath.exact(weight.weight())),

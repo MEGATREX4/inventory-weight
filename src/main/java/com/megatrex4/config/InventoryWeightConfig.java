@@ -93,7 +93,7 @@ public final class InventoryWeightConfig {
             }
 
             InventoryWeightConfigEvents.applyServerConfigChange(
-                    playerEntity.getServer(),
+                    playerEntity.getEntityWorld().getServer(),
                     "fzzy_config direct Config.onUpdateServer"
             );
         }

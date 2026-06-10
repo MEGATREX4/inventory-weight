@@ -49,7 +49,7 @@ public final class InventoryWeightConfigEvents {
             }
 
             InventoryWeight.LOGGER.info("Inventory Weight server config changed by {}; applying live runtime update.", player.getName().getString());
-            applyServerConfigChange(player.getServer(), "fzzy_config server update event");
+            applyServerConfigChange(player.getEntityWorld().getServer(), "fzzy_config server update event");
         });
     }
 

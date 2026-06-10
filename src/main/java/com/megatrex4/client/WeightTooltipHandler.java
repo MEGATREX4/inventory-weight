@@ -8,12 +8,13 @@ import com.megatrex4.impl.weight.WeightMath;
 import com.megatrex4.impl.weight.provider.BackpackWeightProvider;
 import com.megatrex4.impl.weight.provider.ShulkerBoxWeightProvider;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
 
@@ -35,7 +36,7 @@ public final class WeightTooltipHandler {
         WeightResult unit = InventoryWeightServices.weightService().getWeight(stack, weightContext);
         WeightResult total = unit.multiply(stack.getCount());
 
-        boolean exact = Screen.hasShiftDown();
+        boolean exact = isShiftDown();
         boolean container = isWeightContainer(stack);
 
         int index = Math.min(1, tooltip.size());
@@ -107,5 +108,16 @@ public final class WeightTooltipHandler {
 
     private static String format(float weight, boolean exact) {
         return exact ? WeightMath.exact(weight) : WeightMath.compact(weight);
+    }
+
+    private static boolean isShiftDown() {
+        MinecraftClient client = MinecraftClient.getInstance();
+
+        if (client.getWindow() == null) {
+            return false;
+        }
+
+        return InputUtil.isKeyPressed(client.getWindow(), GLFW.GLFW_KEY_LEFT_SHIFT)
+                || InputUtil.isKeyPressed(client.getWindow(), GLFW.GLFW_KEY_RIGHT_SHIFT);
     }
 }
