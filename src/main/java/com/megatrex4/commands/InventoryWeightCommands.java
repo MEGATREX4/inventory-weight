@@ -7,11 +7,12 @@ import com.megatrex4.config.InventoryWeightConfig;
 import com.megatrex4.impl.InventoryWeightServices;
 import com.megatrex4.impl.config.InventoryWeightConfigEvents;
 import com.megatrex4.impl.player.PlayerWeightController;
+import com.megatrex4.impl.weight.ArmorAttributeHelper;
 import com.megatrex4.impl.weight.WeightMath;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.item.ArmorItem;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.server.command.CommandManager;
@@ -151,11 +152,23 @@ public final class InventoryWeightCommands {
                 .executes(context -> {
                     ServerPlayerEntity player = context.getSource().getPlayerOrThrow();
                     boolean any = false;
-                    for (ItemStack armor : player.getInventory().armor) {
-                        if (armor.getItem() instanceof ArmorItem) {
+                    for (EquipmentSlot slot : new EquipmentSlot[]{
+                            EquipmentSlot.HEAD,
+                            EquipmentSlot.CHEST,
+                            EquipmentSlot.LEGS,
+                            EquipmentSlot.FEET
+                    }) {
+                        ItemStack armor = player.getEquippedStack(slot);
+
+                        if (ArmorAttributeHelper.isArmorStack(armor)) {
                             any = true;
-                            int pockets = InventoryWeightServices.pocketService().getPockets(armor, player).orElse(0);
+
+                            int pockets = InventoryWeightServices.pocketService()
+                                    .getPockets(armor, player)
+                                    .orElse(0);
+
                             String item = Registries.ITEM.getId(armor.getItem()).toString();
+
                             context.getSource().sendFeedback(
                                     () -> Text.translatable("command.inventoryweight.debugarmor.piece", item, pockets),
                                     false

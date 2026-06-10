@@ -6,11 +6,11 @@ import com.megatrex4.api.v1.WeightLookup;
 import com.megatrex4.api.v1.WeightResult;
 import com.megatrex4.impl.config.WeightSettings;
 import com.megatrex4.impl.weight.ItemStackData;
+import com.megatrex4.impl.weight.NbtCompat;
 import com.megatrex4.impl.weight.NbtItemStackReader;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.tag.TagKey;
@@ -37,11 +37,13 @@ public final class BackpackWeightProvider implements ItemWeightProvider {
         }
 
         NbtCompound tag = ItemStackData.getCustomData(stack);
+
         if (tag == null) {
             return Optional.of(WeightResult.of(WeightSettings.get().itemWeight(), 0.0f));
         }
 
         String itemId = Registries.ITEM.getId(stack.getItem()).toString().toLowerCase(Locale.ROOT);
+
         return Optional.of(calculateBackpackWeight(itemId, tag, context, lookup).sanitized());
     }
 
@@ -51,6 +53,7 @@ public final class BackpackWeightProvider implements ItemWeightProvider {
         }
 
         String itemId = Registries.ITEM.getId(stack.getItem()).toString().toLowerCase(Locale.ROOT);
+
         return isBackpack(itemId, stack);
     }
 
@@ -59,6 +62,7 @@ public final class BackpackWeightProvider implements ItemWeightProvider {
                 Registries.ITEM.getKey(),
                 Identifier.of("travelersbackpack", "custom_travelers_backpack")
         );
+
         return stack.isIn(travelerBackpackTag);
     }
 
@@ -66,59 +70,108 @@ public final class BackpackWeightProvider implements ItemWeightProvider {
         if (itemId.contains("chestplate")) {
             return false;
         }
+
         if (isTravelerBackpack(stack)) {
             return true;
         }
+
         NbtCompound tag = ItemStackData.getCustomData(stack);
+
         if (tag != null && tag.contains("Inventory")) {
             return true;
         }
+
         for (String knownBackpack : KNOWN_BACKPACK_NAMES) {
             if (itemId.contains(knownBackpack)) {
                 return true;
             }
         }
+
         return false;
     }
 
-    private static WeightResult calculateBackpackWeight(String itemId, NbtCompound tag, WeightContext context, WeightLookup lookup) {
+    private static WeightResult calculateBackpackWeight(
+            String itemId,
+            NbtCompound tag,
+            WeightContext context,
+            WeightLookup lookup
+    ) {
         if (isTravelersBackpackId(itemId)) {
             return calculateTravelersBackpackWeight(tag, context, lookup);
         }
+
         if (itemId.contains("pouch") || itemId.contains("satchel")) {
-            return calculateScoutWeightFromNbtList(tag.getList("Items", NbtElement.COMPOUND_TYPE), context, lookup);
+            return calculateScoutWeightFromNbtList(NbtCompat.list(tag, "Items"), context, lookup);
         }
+
         if (itemId.contains("toolbox")) {
             return calculateToolboxWeight(tag, context, lookup);
         }
+
         if (itemId.contains("drawer")) {
-            NbtCompound blockEntityTag = tag.getCompound("BlockEntityTag");
+            NbtCompound blockEntityTag = NbtCompat.compoundOrEmpty(tag, "BlockEntityTag");
+
             if (blockEntityTag.contains("items")) {
-                return calculateDrawerWeightFromNbtList(blockEntityTag.getList("items", NbtElement.COMPOUND_TYPE), context, lookup);
+                return calculateDrawerWeightFromNbtList(
+                        NbtCompat.list(blockEntityTag, "items"),
+                        context,
+                        lookup
+                );
             }
         }
+
         if (tag.contains("pack_inventory")) {
-            NbtCompound packInventoryTag = tag.getCompound("pack_inventory");
-            return calculatePackItUpWeightFromNbtList(packInventoryTag.getList("stack_contents", NbtElement.COMPOUND_TYPE), context, lookup);
+            NbtCompound packInventoryTag = NbtCompat.compoundOrEmpty(tag, "pack_inventory");
+
+            return calculatePackItUpWeightFromNbtList(
+                    NbtCompat.list(packInventoryTag, "stack_contents"),
+                    context,
+                    lookup
+            );
         }
+
         if (tag.contains("Inventory") && itemId.contains("inmis")) {
-            return calculateInmisWeightFromNbtList(tag.getList("Inventory", NbtElement.COMPOUND_TYPE), context, lookup);
+            return calculateInmisWeightFromNbtList(
+                    NbtCompat.list(tag, "Inventory"),
+                    context,
+                    lookup
+            );
         }
+
         if (tag.contains("Inventory")) {
-            return calculateStandardWeightFromNbtList(tag.getList("Inventory", NbtElement.COMPOUND_TYPE), context, lookup);
+            return calculateStandardWeightFromNbtList(
+                    NbtCompat.list(tag, "Inventory"),
+                    context,
+                    lookup
+            );
         }
+
         if (tag.contains("BlockEntityTag") && itemId.contains("sophisticatedstorage")) {
-            NbtCompound blockEntityTag = tag.getCompound("BlockEntityTag");
+            NbtCompound blockEntityTag = NbtCompat.compoundOrEmpty(tag, "BlockEntityTag");
+
             if (blockEntityTag.contains("storageWrapper")) {
-                NbtCompound storageWrapperTag = blockEntityTag.getCompound("storageWrapper");
-                NbtCompound contentsTag = storageWrapperTag.getCompound("contents");
-                NbtList itemList = contentsTag.getCompound("inventory").getList("Items", NbtElement.COMPOUND_TYPE);
-                return calculateStandardWeightFromNbtList(itemList, context, lookup);
+                NbtCompound storageWrapperTag = NbtCompat.compoundOrEmpty(blockEntityTag, "storageWrapper");
+                NbtCompound contentsTag = NbtCompat.compoundOrEmpty(storageWrapperTag, "contents");
+                NbtCompound inventoryTag = NbtCompat.compoundOrEmpty(contentsTag, "inventory");
+
+                return calculateStandardWeightFromNbtList(
+                        NbtCompat.list(inventoryTag, "Items"),
+                        context,
+                        lookup
+                );
             }
         }
+
         if (tag.contains("BlockEntityTag")) {
-            return calculateStandardWeightFromNbtList(tag.getCompound("BlockEntityTag").getList("Items", NbtElement.COMPOUND_TYPE), context, lookup);
+            NbtCompound blockEntityTag = NbtCompat.compoundOrEmpty(tag, "BlockEntityTag");
+
+            return calculateStandardWeightFromNbtList(
+                    NbtCompat.list(blockEntityTag, "Items"),
+                    context,
+                    lookup
+            );
         }
+
         return WeightResult.of(WeightSettings.get().itemWeight(), 0.0f);
     }
 
@@ -126,97 +179,191 @@ public final class BackpackWeightProvider implements ItemWeightProvider {
         return itemId.contains("travelersbackpack") || itemId.contains("travellersbackpack");
     }
 
-    private static WeightResult calculateTravelersBackpackWeight(NbtCompound tag, WeightContext context, WeightLookup lookup) {
+    private static WeightResult calculateTravelersBackpackWeight(
+            NbtCompound tag,
+            WeightContext context,
+            WeightLookup lookup
+    ) {
         BackpackAccumulator accumulator = BackpackAccumulator.create();
 
         if (tag.contains("Inventory")) {
-            NbtList inventoryItems = tag.getCompound("Inventory").getList("Items", NbtElement.COMPOUND_TYPE);
+            NbtCompound inventoryTag = NbtCompat.compoundOrEmpty(tag, "Inventory");
+            NbtList inventoryItems = NbtCompat.list(inventoryTag, "Items");
+
             for (int i = 0; i < inventoryItems.size(); i++) {
-                accumulator.addInsideStack(stackFromStandardNbt(inventoryItems.getCompound(i)), context, lookup);
+                accumulator.addInsideStack(
+                        stackFromStandardNbt(NbtCompat.listCompound(inventoryItems, i)),
+                        context,
+                        lookup
+                );
             }
         }
 
-        if (tag.contains("LeftTank")) {
-            accumulator.addInsideWeight(tag.getCompound("LeftTank").getInt("amount") / 1000.0f);
+        NbtCompound leftTank = NbtCompat.compound(tag, "LeftTank");
+        if (leftTank != null) {
+            accumulator.addInsideWeight(NbtCompat.intValue(leftTank, "amount", 0) / 1000.0f);
         }
-        if (tag.contains("RightTank")) {
-            accumulator.addInsideWeight(tag.getCompound("RightTank").getInt("amount") / 1000.0f);
+
+        NbtCompound rightTank = NbtCompat.compound(tag, "RightTank");
+        if (rightTank != null) {
+            accumulator.addInsideWeight(NbtCompat.intValue(rightTank, "amount", 0) / 1000.0f);
         }
 
         return accumulator.result();
     }
 
-    private static WeightResult calculateScoutWeightFromNbtList(NbtList itemList, WeightContext context, WeightLookup lookup) {
+    private static WeightResult calculateScoutWeightFromNbtList(
+            NbtList itemList,
+            WeightContext context,
+            WeightLookup lookup
+    ) {
         BackpackAccumulator accumulator = BackpackAccumulator.create();
+
         for (int i = 0; i < itemList.size(); i++) {
-            NbtCompound itemTag = itemList.getCompound(i);
-            if (itemTag.contains("Stack", NbtElement.COMPOUND_TYPE)) {
-                accumulator.addInsideStack(stackFromStandardNbt(itemTag.getCompound("Stack")), context, lookup);
+            NbtCompound itemTag = NbtCompat.listCompound(itemList, i);
+
+            if (itemTag == null) {
+                continue;
+            }
+
+            NbtCompound stackTag = NbtCompat.compound(itemTag, "Stack");
+
+            if (stackTag != null) {
+                accumulator.addInsideStack(stackFromStandardNbt(stackTag), context, lookup);
             }
         }
+
         return accumulator.result();
     }
 
-    private static WeightResult calculateToolboxWeight(NbtCompound tag, WeightContext context, WeightLookup lookup) {
+    private static WeightResult calculateToolboxWeight(
+            NbtCompound tag,
+            WeightContext context,
+            WeightLookup lookup
+    ) {
         BackpackAccumulator accumulator = BackpackAccumulator.create();
-        if (tag.contains("Inventory")) {
-            NbtCompound inventoryTag = tag.getCompound("Inventory");
-            NbtList itemList = inventoryTag.getList("Items", NbtElement.COMPOUND_TYPE);
+
+        NbtCompound inventoryTag = NbtCompat.compound(tag, "Inventory");
+
+        if (inventoryTag != null) {
+            NbtList itemList = NbtCompat.list(inventoryTag, "Items");
+
             for (int i = 0; i < itemList.size(); i++) {
-                accumulator.addInsideStack(stackFromStandardNbt(itemList.getCompound(i)), context, lookup);
+                accumulator.addInsideStack(
+                        stackFromStandardNbt(NbtCompat.listCompound(itemList, i)),
+                        context,
+                        lookup
+                );
             }
         }
+
         return accumulator.result();
     }
 
-    private static WeightResult calculateDrawerWeightFromNbtList(NbtList itemList, WeightContext context, WeightLookup lookup) {
+    private static WeightResult calculateDrawerWeightFromNbtList(
+            NbtList itemList,
+            WeightContext context,
+            WeightLookup lookup
+    ) {
         BackpackAccumulator accumulator = BackpackAccumulator.create();
+
         for (int i = 0; i < itemList.size(); i++) {
-            NbtCompound drawerTag = itemList.getCompound(i);
-            int amount = drawerTag.getInt("amount");
-            NbtCompound itemTag = drawerTag.getCompound("item");
+            NbtCompound drawerTag = NbtCompat.listCompound(itemList, i);
+
+            if (drawerTag == null) {
+                continue;
+            }
+
+            int amount = NbtCompat.intValue(drawerTag, "amount", 0);
+            NbtCompound itemTag = NbtCompat.compound(drawerTag, "item");
+
+            if (itemTag == null) {
+                continue;
+            }
+
             ItemStack stack = NbtItemStackReader.fromIdCountSafely(
-                    itemTag.getString("item"),
+                    NbtCompat.string(itemTag, "item"),
                     amount,
-                    itemTag.contains("tag", NbtElement.COMPOUND_TYPE) ? itemTag.getCompound("tag") : null
+                    NbtCompat.compound(itemTag, "tag")
             );
+
             accumulator.addInsideStack(stack, context, lookup);
         }
+
         return accumulator.result();
     }
 
-    private static WeightResult calculateInmisWeightFromNbtList(NbtList itemList, WeightContext context, WeightLookup lookup) {
+    private static WeightResult calculateInmisWeightFromNbtList(
+            NbtList itemList,
+            WeightContext context,
+            WeightLookup lookup
+    ) {
         BackpackAccumulator accumulator = BackpackAccumulator.create();
+
         for (int i = 0; i < itemList.size(); i++) {
-            NbtCompound itemTag = itemList.getCompound(i);
-            if (itemTag.contains("Stack", NbtElement.COMPOUND_TYPE)) {
-                accumulator.addInsideStack(stackFromStandardNbt(itemTag.getCompound("Stack")), context, lookup);
+            NbtCompound itemTag = NbtCompat.listCompound(itemList, i);
+
+            if (itemTag == null) {
+                continue;
+            }
+
+            NbtCompound stackTag = NbtCompat.compound(itemTag, "Stack");
+
+            if (stackTag != null) {
+                accumulator.addInsideStack(stackFromStandardNbt(stackTag), context, lookup);
             }
         }
+
         return accumulator.result();
     }
 
-    private static WeightResult calculatePackItUpWeightFromNbtList(NbtList itemList, WeightContext context, WeightLookup lookup) {
+    private static WeightResult calculatePackItUpWeightFromNbtList(
+            NbtList itemList,
+            WeightContext context,
+            WeightLookup lookup
+    ) {
         BackpackAccumulator accumulator = BackpackAccumulator.create();
+
         for (int i = 0; i < itemList.size(); i++) {
-            NbtCompound itemTag = itemList.getCompound(i);
-            String itemId = itemTag.getString("id");
-            int count = itemTag.contains("count") ? itemTag.getShort("count") : itemTag.getInt("Count");
+            NbtCompound itemTag = NbtCompat.listCompound(itemList, i);
+
+            if (itemTag == null) {
+                continue;
+            }
+
+            String itemId = NbtCompat.string(itemTag, "id");
+
+            int count = itemTag.contains("count")
+                    ? NbtCompat.shortValue(itemTag, "count", (short) 1)
+                    : NbtCompat.intValue(itemTag, "Count", 1);
+
             ItemStack stack = NbtItemStackReader.fromIdCountSafely(
                     itemId,
                     count,
-                    itemTag.contains("tag", NbtElement.COMPOUND_TYPE) ? itemTag.getCompound("tag") : null
+                    NbtCompat.compound(itemTag, "tag")
             );
+
             accumulator.addInsideStack(stack, context, lookup);
         }
+
         return accumulator.result();
     }
 
-    private static WeightResult calculateStandardWeightFromNbtList(NbtList itemList, WeightContext context, WeightLookup lookup) {
+    private static WeightResult calculateStandardWeightFromNbtList(
+            NbtList itemList,
+            WeightContext context,
+            WeightLookup lookup
+    ) {
         BackpackAccumulator accumulator = BackpackAccumulator.create();
+
         for (int i = 0; i < itemList.size(); i++) {
-            accumulator.addInsideStack(NbtItemStackReader.fromNbtSafely(itemList.getCompound(i)), context, lookup);
+            accumulator.addInsideStack(
+                    NbtItemStackReader.fromNbtSafely(NbtCompat.listCompound(itemList, i)),
+                    context,
+                    lookup
+            );
         }
+
         return accumulator.result();
     }
 
@@ -251,7 +398,6 @@ public final class BackpackWeightProvider implements ItemWeightProvider {
 
         WeightResult result() {
             float effectiveWeight = emptyContainerWeight + (insideWeight / CONTENT_WEIGHT_DIVISOR);
-
             return WeightResult.of(effectiveWeight, insideWeight);
         }
     }

@@ -7,11 +7,10 @@ import com.megatrex4.config.HudTextMode;
 import com.megatrex4.config.HudTextPosition;
 import com.megatrex4.config.InventoryWeightConfig;
 import com.megatrex4.impl.weight.WeightMath;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.util.Identifier;
@@ -73,10 +72,17 @@ public final class InventoryWeightHud {
         renderHudText(context, client.textRenderer, config, x, y, elementWidth, elementHeight, screenWidth, screenHeight, current, max);
     }
 
-    private static void renderSpriteHud(DrawContext context, MinecraftClient client, int x, int y, int width, int height, float current, float max, boolean overloaded) {
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-
+    private static void renderSpriteHud(
+            DrawContext context,
+            MinecraftClient client,
+            int x,
+            int y,
+            int width,
+            int height,
+            float current,
+            float max,
+            boolean overloaded
+    ) {
         drawIcon(context, EMPTY_ICON, x, y, width, height);
 
         if (overloaded || current >= max) {
@@ -85,11 +91,11 @@ public final class InventoryWeightHud {
             drawIcon(context, getFilledIcon(current, max), x, y, width, height);
         }
 
-        if (client.player != null && (client.player.hasStatusEffect(StatusEffects.STRENGTH) || client.player.hasStatusEffect(StatusEffects.HASTE))) {
+        if (client.player != null
+                && (client.player.hasStatusEffect(StatusEffects.STRENGTH)
+                || client.player.hasStatusEffect(StatusEffects.HASTE))) {
             drawIcon(context, STRENGTH_ICON, x, y, width, height);
         }
-
-        RenderSystem.disableBlend();
     }
 
     private static void renderBarHud(DrawContext context, int x, int y, int width, int height, float current, float max, boolean overloaded) {
@@ -258,7 +264,14 @@ public final class InventoryWeightHud {
         return Identifier.of(MOD_ID, "textures/gui/inventory_filled/inventory_filled_" + filledIndex + ".png");
     }
 
-    private static void drawIcon(DrawContext context, Identifier icon, int x, int y, int width, int height) {
+    private static void drawIcon(
+            DrawContext context,
+            Identifier icon,
+            int x,
+            int y,
+            int width,
+            int height
+    ) {
         context.drawTexture(
                 RenderLayer::getGuiTextured,
                 icon,

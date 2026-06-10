@@ -22,12 +22,12 @@ public interface PlayerWeightComponent extends AutoSyncedComponent {
             NbtCompound tag,
             RegistryWrapper.WrapperLookup registryLookup
     ) {
-        setCapacityBonus(tag.getFloat("capacityBonus"));
+        setCapacityBonus(tag.getFloat("capacityBonus", 0.0f));
 
         setWeightState(
-                tag.getFloat("currentInventoryWeight"),
-                tag.getFloat("maxWeight"),
-                tag.getBoolean("overloaded")
+                tag.getFloat("currentInventoryWeight", 0.0f),
+                tag.getFloat("maxWeight", 0.0f),
+                tag.getBoolean("overloaded", false)
         );
     }
 

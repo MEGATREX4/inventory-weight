@@ -14,7 +14,8 @@ import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ConsumableComponent;
 import net.minecraft.component.type.DamageResistantComponent;
 import net.minecraft.component.type.FoodComponent;
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.tag.DamageTypeTags;
 
@@ -24,13 +25,16 @@ public final class VanillaItemWeightProvider implements ItemWeightProvider {
     @Override
     public Optional<WeightResult> getWeight(ItemStack stack, WeightContext context, WeightLookup lookup) {
         Item item = stack.getItem();
+
         String itemId = Registries.ITEM.getId(item).toString();
+
         if (itemId.contains("air")) {
             return Optional.of(WeightResult.ZERO);
         }
 
         ServerWeightSettings settings = WeightSettings.get();
         ItemCategory category = ItemCategoryClassifier.classify(stack);
+
         float weight = WeightMath.baseWeight(category, settings);
 
         int maxStackSize = item.getMaxCount();
@@ -38,6 +42,7 @@ public final class VanillaItemWeightProvider implements ItemWeightProvider {
 
         if (maxStackSize > 1) {
             weight *= WeightMath.stackMultiplier(maxStackSize);
+
             FoodComponent foodComponent = stack.get(DataComponentTypes.FOOD);
             ConsumableComponent consumableComponent = stack.get(DataComponentTypes.CONSUMABLE);
 
@@ -51,16 +56,18 @@ public final class VanillaItemWeightProvider implements ItemWeightProvider {
                 weight *= 1.25f;
             }
         } else if (maxStackSize == 1 && maxDurability > 0) {
-            if (item instanceof ArmorItem) {
+            if (ArmorAttributeHelper.isArmorStack(stack)) {
                 weight += WeightMath.armorProtectionWeight(ArmorAttributeHelper.getProtection(stack));
                 weight += settings.itemWeight() + (((float) maxDurability / 300.0f) * 300.0f);
             }
+
             if (stack.contains(DataComponentTypes.TOOL)) {
                 weight += settings.itemWeight() + WeightMath.toolDurabilityWeight(maxDurability);
             }
         }
 
         weight *= WeightMath.rarityMultiplier(stack);
+
         return Optional.of(WeightResult.of(WeightMath.finalFloor(weight)));
     }
 }
