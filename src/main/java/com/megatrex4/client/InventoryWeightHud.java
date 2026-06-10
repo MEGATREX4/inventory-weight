@@ -8,7 +8,7 @@ import com.megatrex4.config.HudTextPosition;
 import com.megatrex4.config.InventoryWeightConfig;
 import com.megatrex4.impl.weight.WeightMath;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
@@ -273,7 +273,7 @@ public final class InventoryWeightHud {
             int height
     ) {
         context.drawTexture(
-                RenderLayer::getGuiTextured,
+                RenderPipelines.GUI_TEXTURED,
                 icon,
                 x,
                 y,

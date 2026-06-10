@@ -1,7 +1,7 @@
 package com.megatrex4.component;
 
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.storage.ReadView;
+import net.minecraft.storage.WriteView;
 import org.ladysnake.cca.api.v3.component.sync.AutoSyncedComponent;
 
 public interface PlayerWeightComponent extends AutoSyncedComponent {
@@ -18,27 +18,21 @@ public interface PlayerWeightComponent extends AutoSyncedComponent {
     void setWeightState(float currentInventoryWeight, float maxWeight, boolean overloaded);
 
     @Override
-    default void readFromNbt(
-            NbtCompound tag,
-            RegistryWrapper.WrapperLookup registryLookup
-    ) {
-        setCapacityBonus(tag.getFloat("capacityBonus", 0.0f));
+    default void readData(ReadView readView) {
+        setCapacityBonus(readView.getFloat("capacityBonus", 0.0f));
 
         setWeightState(
-                tag.getFloat("currentInventoryWeight", 0.0f),
-                tag.getFloat("maxWeight", 0.0f),
-                tag.getBoolean("overloaded", false)
+                readView.getFloat("currentInventoryWeight", 0.0f),
+                readView.getFloat("maxWeight", 0.0f),
+                readView.getBoolean("overloaded", false)
         );
     }
 
     @Override
-    default void writeToNbt(
-            NbtCompound tag,
-            RegistryWrapper.WrapperLookup registryLookup
-    ) {
-        tag.putFloat("capacityBonus", getCapacityBonus());
-        tag.putFloat("currentInventoryWeight", getCurrentInventoryWeight());
-        tag.putFloat("maxWeight", getMaxWeight());
-        tag.putBoolean("overloaded", isOverloaded());
+    default void writeData(WriteView writeView) {
+        writeView.putFloat("capacityBonus", getCapacityBonus());
+        writeView.putFloat("currentInventoryWeight", getCurrentInventoryWeight());
+        writeView.putFloat("maxWeight", getMaxWeight());
+        writeView.putBoolean("overloaded", isOverloaded());
     }
 }
