@@ -54,6 +54,52 @@ public final class ExampleInventoryWeightAddon implements InventoryWeightEntrypo
 }
 ```
 
+## Max Weight Attribute
+
+MT Inventory Weight also exposes a normal Minecraft attribute for player max weight:
+
+```text
+inventoryweight:generic.max_weight
+```
+
+API constant:
+
+```java
+InventoryWeightAttributes.GENERIC_MAX_WEIGHT
+```
+
+This lets level systems, RPG mods, equipment mods, or add-ons add normal attribute modifiers to a player's carrying capacity.
+
+Example:
+
+```java
+EntityAttributeInstance instance = player.getAttributes().getCustomInstance(
+        InventoryWeightAttributes.GENERIC_MAX_WEIGHT
+);
+
+if (instance != null) {
+    instance.addPersistentModifier(new EntityAttributeModifier(
+            UUID.fromString("11111111-2222-3333-4444-555555555555"),
+            "example_max_weight_bonus",
+            10000.0,
+            EntityAttributeModifier.Operation.ADDITION
+    ));
+}
+```
+
+The final max weight calculation is:
+
+```text
+server config maxWeight
++ inventoryweight:generic.max_weight attribute value
++ CCA capacity bonus
++ armor pocket capacity
++ add-on capacity providers
+= final max weight
+```
+
+This attribute is an additional max-weight contribution, not the whole final max weight. The mod does not overwrite this attribute during normal config updates. Other mods such as PlayerEx can safely control it with standard attribute modifiers.
+
 ## Provider Types
 
 The registrar supports:

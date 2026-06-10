@@ -251,7 +251,7 @@ Equip armor and run:
 The final maximum weight is generally:
 
 ```text
-base max weight + player capacity bonus + armor pocket capacity + add-on modifiers
+server config maxWeight + max-weight attribute value + player capacity bonus + armor pocket capacity + add-on modifiers
 ```
 
 See [Maximum Weight](./max_weight.md) for more details.

@@ -14,14 +14,19 @@ When the player's current carried weight reaches or exceeds their maximum weight
 The current calculation is:
 
 ```text
-final max weight = base max weight + capacity bonuses + armor pocket capacity
+server config maxWeight
++ inventoryweight:generic.max_weight attribute value
++ CCA capacity bonus
++ armor pocket capacity
++ add-on capacity providers
+= final max weight
 ```
 
 Add-ons may also modify this value through the public API.
 
-## Base Maximum Weight
+## Server Config Base Weight
 
-The base maximum weight is configured in the server config:
+The base carry capacity comes from the server config:
 
 ```text
 config/inventoryweight/server-config.toml
@@ -33,9 +38,23 @@ Default:
 maxWeight = 90000.0
 ```
 
-This is the starting carry capacity for players before armor pockets or other bonuses are applied.
+## Max Weight Attribute
 
-Server settings are managed by **fzzy_config** and can update live while the game/server is running.
+The Minecraft attribute adds extra max weight on top of the server config value:
+
+```text
+inventoryweight:generic.max_weight
+```
+
+Default attribute value:
+
+```text
+0
+```
+
+Other mods, such as PlayerEx or RPG/level systems, can add standard attribute modifiers to this attribute.
+
+Normal config updates do not overwrite player attribute values.
 
 ## Capacity Bonus
 
@@ -46,9 +65,10 @@ That means it does not multiply the player's max weight. It adds a flat value.
 Example:
 
 ```text
-base max weight = 90000
+server config maxWeight = 90000
+inventoryweight:generic.max_weight = 5000
 capacity bonus = 10000
-final max weight = 100000
+final max weight = 105000
 ```
 
 Admins can set this value with commands.
@@ -77,10 +97,10 @@ Example:
 4 pockets * 9000 = 36000 extra capacity
 ```
 
-If the player's base max weight is `90000`, the final max weight becomes:
+If the server config max weight is `90000` and the player has `0` attribute bonus, the final max weight becomes:
 
 ```text
-90000 + 36000 = 126000
+90000 + 0 + 36000 = 126000
 ```
 
 See the [Pockets](./pockets.md) page for details about pocket calculation and datapack overrides.
@@ -90,7 +110,8 @@ See the [Pockets](./pockets.md) page for details about pocket calculation and da
 Assume:
 
 ```text
-base max weight = 90000
+server config maxWeight = 90000
+inventoryweight:generic.max_weight = 5000
 admin/player capacity bonus = 10000
 armor pockets = 4
 pocketWeight = 9000
@@ -105,16 +126,16 @@ Calculate armor pocket capacity:
 Final max weight:
 
 ```text
-90000 + 10000 + 36000 = 136000
+90000 + 5000 + 10000 + 36000 = 141000
 ```
 
-The player can carry up to `136000` weight before being overloaded.
+The player can carry up to `141000` weight before being overloaded.
 
 ## Commands
 
 Operators can inspect and change weight values with commands.
 
-### Set Base Maximum Weight
+### Set Configured Default Maximum Weight
 
 ```text
 /inventoryweight set base <value>
@@ -126,9 +147,9 @@ Example:
 /inventoryweight set base 120000
 ```
 
-This changes the server base max weight and applies it live.
+This changes the configured default/fallback max weight. It does not forcibly overwrite existing player max-weight attribute values.
 
-### Get Base Maximum Weight
+### Get Configured Default Maximum Weight
 
 ```text
 /inventoryweight get base
@@ -176,7 +197,7 @@ or for yourself:
 /inventoryweight get combined
 ```
 
-This returns the final max weight after base value, player capacity bonus, armor pockets, and other providers.
+This returns the final max weight after the max-weight attribute, player capacity bonus, armor pockets, and other providers.
 
 ### Get Current Weight
 
