@@ -68,8 +68,8 @@ dependencies {
 			"jars/kotlinx-serialization-json-jvm-1.6.3.jar",
 			"jars/tomlkt-jvm-0.3.7.jar"
 	)
-	
-	// modImplementation "dev.emi:trinkets:${trinkets_version}"
+
+	modImplementation "maven.modrinth:trinkets-canary:${project.trinkets_version}"
 
 	modImplementation include("org.ladysnake.cardinal-components-api:cardinal-components-base:${project.cardinal_components_version}") {
 		exclude group: "org.ladysnake.cardinal-components-api", module: "cardinal-components-level"
