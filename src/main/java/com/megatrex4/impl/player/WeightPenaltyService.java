@@ -1,5 +1,6 @@
 package com.megatrex4.impl.player;
 
+import com.megatrex4.InventoryWeight;
 import com.megatrex4.effects.InventoryWeightEffects;
 import com.megatrex4.impl.config.ServerWeightSettings;
 import com.megatrex4.impl.config.WeightSettings;
@@ -9,14 +10,20 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.Identifier;
 
 import java.util.UUID;
 
 public final class WeightPenaltyService {
     public static final double BASE_PENALTY = 0.50;
-    public static final UUID SPEED_MODIFIER_UUID = UUID.fromString("a53f3d53-2b63-4a78-851f-4c5795876d8c");
-    public static final UUID ATTACK_SPEED_MODIFIER_UUID = UUID.fromString("c7d4f84c-9e6e-45d0-888e-df63a7e3d206");
-    public static final UUID DAMAGE_REDUCTION_MODIFIER_UUID = UUID.fromString("e87c1e8a-6d3f-4b3a-8cbb-d29048a85f0d");
+    public static final Identifier SPEED_MODIFIER_ID =
+            Identifier.of(InventoryWeight.MOD_ID, "overload_speed_penalty");
+
+    public static final Identifier ATTACK_SPEED_MODIFIER_ID =
+            Identifier.of(InventoryWeight.MOD_ID, "overload_attack_speed_penalty");
+
+    public static final Identifier DAMAGE_REDUCTION_MODIFIER_ID =
+            Identifier.of(InventoryWeight.MOD_ID, "overload_damage_penalty");
 
     private WeightPenaltyService() {}
 
@@ -100,7 +107,7 @@ public final class WeightPenaltyService {
         AttributeModifierManager.replace(
                 player,
                 EntityAttributes.GENERIC_MOVEMENT_SPEED,
-                SPEED_MODIFIER_UUID,
+                SPEED_MODIFIER_ID,
                 prefix + "_speed_penalty",
                 -speedDecrease,
                 EntityAttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
@@ -108,7 +115,7 @@ public final class WeightPenaltyService {
         AttributeModifierManager.replace(
                 player,
                 EntityAttributes.GENERIC_ATTACK_SPEED,
-                ATTACK_SPEED_MODIFIER_UUID,
+                ATTACK_SPEED_MODIFIER_ID,
                 prefix + "_attack_speed_penalty",
                 -attackSpeedDecrease,
                 EntityAttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
@@ -116,7 +123,7 @@ public final class WeightPenaltyService {
         AttributeModifierManager.replace(
                 player,
                 EntityAttributes.GENERIC_ATTACK_DAMAGE,
-                DAMAGE_REDUCTION_MODIFIER_UUID,
+                DAMAGE_REDUCTION_MODIFIER_ID,
                 prefix + "_damage_penalty",
                 -damageReduction,
                 EntityAttributeModifier.Operation.ADD_MULTIPLIED_TOTAL

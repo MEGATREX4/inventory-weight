@@ -12,7 +12,7 @@ import static com.megatrex4.InventoryWeight.MOD_ID;
 
 public final class PlayerWeightComponentRegistry implements EntityComponentInitializer {
     public static final ComponentKey<PlayerWeightComponent> PLAYER_WEIGHT = ComponentRegistry.getOrCreate(
-            new Identifier(MOD_ID, "player_weight"),
+            Identifier.of(MOD_ID, "player_weight"),
             PlayerWeightComponent.class
     );
 

@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
  * Safe helpers for reading ItemStacks from third-party container NBT.
  *
  * Some mods store non-vanilla strings in places that look like item ids, for example
- * "[certus_quartz_wrench]". Constructing new Identifier(...) with such strings crashes.
+ * "[certus_quartz_wrench]". Constructing Identifier.of(...) with such strings crashes.
  * These helpers use Identifier.tryParse(...) and skip invalid/unknown ids instead.
  */
 public final class NbtItemStackReader {

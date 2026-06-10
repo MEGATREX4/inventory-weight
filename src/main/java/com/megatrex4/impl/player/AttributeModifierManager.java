@@ -6,22 +6,21 @@ import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.entry.RegistryEntry;
-
-import java.util.UUID;
+import net.minecraft.util.Identifier;
 
 public final class AttributeModifierManager {
     private AttributeModifierManager() {}
 
     public static void removeAllWeightModifiers(PlayerEntity player) {
-        remove(player, EntityAttributes.GENERIC_MOVEMENT_SPEED, WeightPenaltyService.SPEED_MODIFIER_UUID);
-        remove(player, EntityAttributes.GENERIC_ATTACK_SPEED, WeightPenaltyService.ATTACK_SPEED_MODIFIER_UUID);
-        remove(player, EntityAttributes.GENERIC_ATTACK_DAMAGE, WeightPenaltyService.DAMAGE_REDUCTION_MODIFIER_UUID);
+        remove(player, EntityAttributes.GENERIC_MOVEMENT_SPEED, WeightPenaltyService.SPEED_MODIFIER_ID);
+        remove(player, EntityAttributes.GENERIC_ATTACK_SPEED, WeightPenaltyService.ATTACK_SPEED_MODIFIER_ID);
+        remove(player, EntityAttributes.GENERIC_ATTACK_DAMAGE, WeightPenaltyService.DAMAGE_REDUCTION_MODIFIER_ID);
     }
 
     public static void replace(
             PlayerEntity player,
             RegistryEntry<EntityAttribute> attribute,
-            UUID uuid,
+            Identifier id,
             String name,
             double value,
             EntityAttributeModifier.Operation operation
@@ -32,19 +31,19 @@ public final class AttributeModifierManager {
             return;
         }
 
-        instance.removeModifier(uuid);
-        instance.addPersistentModifier(new EntityAttributeModifier(uuid, name, value, operation));
+        instance.removeModifier(id);
+        instance.addPersistentModifier(new EntityAttributeModifier(id, value, operation));
     }
 
     public static void remove(
             PlayerEntity player,
             RegistryEntry<EntityAttribute> attribute,
-            UUID uuid
+            Identifier id
     ) {
         EntityAttributeInstance instance = player.getAttributes().getCustomInstance(attribute);
 
         if (instance != null) {
-            instance.removeModifier(uuid);
+            instance.removeModifier(id);
         }
     }
 }

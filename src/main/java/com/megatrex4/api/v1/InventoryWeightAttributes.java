@@ -12,13 +12,11 @@ import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.UUID;
-
 import static com.megatrex4.InventoryWeight.MOD_ID;
 
 public final class InventoryWeightAttributes {
     public static final Identifier GENERIC_MAX_WEIGHT_ID =
-            new Identifier(MOD_ID, "generic.max_weight");
+            Identifier.of(MOD_ID, "generic.max_weight");
 
     public static final RegistryEntry<EntityAttribute> GENERIC_MAX_WEIGHT =
             Registry.registerReference(
@@ -61,11 +59,10 @@ public final class InventoryWeightAttributes {
     }
 
     public static EntityAttributeModifier createModifier(
-            UUID uuid,
-            String name,
+            Identifier id,
             double value,
             EntityAttributeModifier.Operation operation
     ) {
-        return new EntityAttributeModifier(uuid, name, value, operation);
+        return new EntityAttributeModifier(id, value, operation);
     }
 }

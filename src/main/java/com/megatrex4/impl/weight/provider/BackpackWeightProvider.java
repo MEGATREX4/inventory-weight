@@ -57,7 +57,7 @@ public final class BackpackWeightProvider implements ItemWeightProvider {
     public static boolean isTravelerBackpack(ItemStack stack) {
         TagKey<Item> travelerBackpackTag = TagKey.of(
                 Registries.ITEM.getKey(),
-                new Identifier("travelersbackpack", "custom_travelers_backpack")
+                Identifier.of("travelersbackpack", "custom_travelers_backpack")
         );
         return stack.isIn(travelerBackpackTag);
     }

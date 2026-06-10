@@ -26,7 +26,7 @@ public final class WeightDataReloadListener {
         ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(new SimpleSynchronousResourceReloadListener() {
             @Override
             public Identifier getFabricId() {
-                return new Identifier(InventoryWeight.MOD_ID, "weight_data");
+                return Identifier.of(InventoryWeight.MOD_ID, "weight_data");
             }
 
             @Override

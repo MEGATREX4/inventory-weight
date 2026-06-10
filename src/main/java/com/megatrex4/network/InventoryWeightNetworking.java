@@ -16,7 +16,7 @@ import net.minecraft.util.Identifier;
 import static com.megatrex4.InventoryWeight.MOD_ID;
 
 public final class InventoryWeightNetworking {
-    public static final Identifier WEIGHT_DATA_SYNC = new Identifier(MOD_ID, "weight_data_sync");
+    public static final Identifier WEIGHT_DATA_SYNC = Identifier.of(MOD_ID, "weight_data_sync");
 
     private static boolean serverRegistered;
 

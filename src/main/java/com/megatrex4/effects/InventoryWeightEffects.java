@@ -12,7 +12,7 @@ public final class InventoryWeightEffects {
     public static final RegistryEntry<StatusEffect> OVERLOAD =
             Registry.registerReference(
                     Registries.STATUS_EFFECT,
-                    new Identifier(MOD_ID, "overload"),
+                    Identifier.of(MOD_ID, "overload"),
                     new OverloadEffect()
             );
 

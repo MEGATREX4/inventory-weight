@@ -16,7 +16,7 @@ public final class TrinketsCompat {
 
     public static void register(InventoryWeightRegistrar registrar) {
         registrar.registerPlayerWeightSource(
-                new Identifier(MOD_ID, "trinkets"),
+                Identifier.of(MOD_ID, "trinkets"),
                 1000,
                 (player, context, lookup) -> TrinketsApi.getTrinketComponent(player)
                         .map(component -> calculate(component, context, lookup))

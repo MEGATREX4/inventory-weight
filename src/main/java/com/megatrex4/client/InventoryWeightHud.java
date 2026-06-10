@@ -11,6 +11,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
@@ -27,13 +28,13 @@ public final class InventoryWeightHud {
     private static final int EDGE_MARGIN = 2;
     private static final int TEXT_GAP = 3;
 
-    private static final Identifier EMPTY_ICON = new Identifier(MOD_ID, "textures/gui/inventory_empty.png");
-    private static final Identifier OVERLOAD_ICON = new Identifier(MOD_ID, "textures/gui/inventory_overload.png");
-    private static final Identifier STRENGTH_ICON = new Identifier(MOD_ID, "textures/gui/inventory_strength.png");
+    private static final Identifier EMPTY_ICON = Identifier.of(MOD_ID, "textures/gui/inventory_empty.png");
+    private static final Identifier OVERLOAD_ICON = Identifier.of(MOD_ID, "textures/gui/inventory_overload.png");
+    private static final Identifier STRENGTH_ICON = Identifier.of(MOD_ID, "textures/gui/inventory_strength.png");
 
     private InventoryWeightHud() {}
 
-    public static void render(DrawContext context, float tickDelta) {
+    public static void render(DrawContext context, RenderTickCounter tickCounter) {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client.player == null || client.getDebugHud().shouldShowDebugHud()) {
             return;
@@ -253,7 +254,7 @@ public final class InventoryWeightHud {
     private static Identifier getFilledIcon(float current, float max) {
         int filledIndex = max <= 0.0f ? 1 : (int) Math.ceil((current / max) * 12.0f);
         filledIndex = Math.max(1, Math.min(filledIndex, 12));
-        return new Identifier(MOD_ID, "textures/gui/inventory_filled/inventory_filled_" + filledIndex + ".png");
+        return Identifier.of(MOD_ID, "textures/gui/inventory_filled/inventory_filled_" + filledIndex + ".png");
     }
 
     private static void drawIcon(DrawContext context, Identifier icon, int x, int y, int width, int height) {

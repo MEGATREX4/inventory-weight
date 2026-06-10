@@ -15,8 +15,8 @@ import net.minecraft.util.Identifier;
 import static com.megatrex4.InventoryWeight.MOD_ID;
 
 public final class InventoryWeightConfig {
-    public static final Identifier SERVER_CONFIG_ID = new Identifier(MOD_ID, "server-config");
-    public static final Identifier CLIENT_CONFIG_ID = new Identifier(MOD_ID, "client-config");
+    public static final Identifier SERVER_CONFIG_ID = Identifier.of(MOD_ID, "server-config");
+    public static final Identifier CLIENT_CONFIG_ID = Identifier.of(MOD_ID, "client-config");
 
     private static Server SERVER_INSTANCE;
     private static Client CLIENT_INSTANCE;
