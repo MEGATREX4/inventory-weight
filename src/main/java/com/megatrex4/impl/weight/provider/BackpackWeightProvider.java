@@ -5,6 +5,7 @@ import com.megatrex4.api.v1.WeightContext;
 import com.megatrex4.api.v1.WeightLookup;
 import com.megatrex4.api.v1.WeightResult;
 import com.megatrex4.impl.config.WeightSettings;
+import com.megatrex4.impl.weight.ItemStackData;
 import com.megatrex4.impl.weight.NbtItemStackReader;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -35,7 +36,7 @@ public final class BackpackWeightProvider implements ItemWeightProvider {
             return Optional.empty();
         }
 
-        NbtCompound tag = stack.getNbt();
+        NbtCompound tag = ItemStackData.getCustomData(stack);
         if (tag == null) {
             return Optional.of(WeightResult.of(WeightSettings.get().itemWeight(), 0.0f));
         }
@@ -68,7 +69,7 @@ public final class BackpackWeightProvider implements ItemWeightProvider {
         if (isTravelerBackpack(stack)) {
             return true;
         }
-        NbtCompound tag = stack.getNbt();
+        NbtCompound tag = ItemStackData.getCustomData(stack);
         if (tag != null && tag.contains("Inventory")) {
             return true;
         }

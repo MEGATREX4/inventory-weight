@@ -5,6 +5,7 @@ import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.registry.entry.RegistryEntry;
 
 import java.util.UUID;
 
@@ -17,17 +18,31 @@ public final class AttributeModifierManager {
         remove(player, EntityAttributes.GENERIC_ATTACK_DAMAGE, WeightPenaltyService.DAMAGE_REDUCTION_MODIFIER_UUID);
     }
 
-    public static void replace(PlayerEntity player, EntityAttribute attribute, UUID uuid, String name, double value, EntityAttributeModifier.Operation operation) {
+    public static void replace(
+            PlayerEntity player,
+            RegistryEntry<EntityAttribute> attribute,
+            UUID uuid,
+            String name,
+            double value,
+            EntityAttributeModifier.Operation operation
+    ) {
         EntityAttributeInstance instance = player.getAttributes().getCustomInstance(attribute);
+
         if (instance == null) {
             return;
         }
+
         instance.removeModifier(uuid);
         instance.addPersistentModifier(new EntityAttributeModifier(uuid, name, value, operation));
     }
 
-    public static void remove(PlayerEntity player, EntityAttribute attribute, UUID uuid) {
+    public static void remove(
+            PlayerEntity player,
+            RegistryEntry<EntityAttribute> attribute,
+            UUID uuid
+    ) {
         EntityAttributeInstance instance = player.getAttributes().getCustomInstance(attribute);
+
         if (instance != null) {
             instance.removeModifier(uuid);
         }

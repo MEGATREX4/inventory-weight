@@ -9,6 +9,8 @@ import com.megatrex4.impl.config.WeightSettings;
 import com.megatrex4.impl.weight.ItemCategory;
 import com.megatrex4.impl.weight.ItemCategoryClassifier;
 import com.megatrex4.impl.weight.WeightMath;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.FoodComponent;
 import net.minecraft.item.*;
 import net.minecraft.registry.Registries;
 
@@ -32,10 +34,11 @@ public final class VanillaItemWeightProvider implements ItemWeightProvider {
 
         if (maxStackSize > 1) {
             weight *= WeightMath.stackMultiplier(maxStackSize);
-            if (item.isFood()) {
-                weight += WeightMath.foodWeight(item.getFoodComponent());
+            FoodComponent foodComponent = stack.get(DataComponentTypes.FOOD);
+            if (foodComponent != null) {
+                weight += WeightMath.foodWeight(foodComponent);
             }
-            if (item.isFireproof()) {
+            if (stack.contains(DataComponentTypes.FIRE_RESISTANT)) {
                 weight *= 1.25f;
             }
         } else if (maxStackSize == 1 && maxDurability > 0) {

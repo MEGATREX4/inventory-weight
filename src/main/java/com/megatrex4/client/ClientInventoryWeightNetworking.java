@@ -4,6 +4,7 @@ import com.megatrex4.InventoryWeight;
 import com.megatrex4.impl.data.WeightDataSnapshot;
 import com.megatrex4.impl.data.WeightDataStore;
 import com.megatrex4.network.InventoryWeightNetworking;
+import com.megatrex4.network.WeightDataSyncPayload;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 
 public final class ClientInventoryWeightNetworking {
@@ -17,15 +18,11 @@ public final class ClientInventoryWeightNetworking {
         }
         registered = true;
 
-        ClientPlayNetworking.registerGlobalReceiver(InventoryWeightNetworking.WEIGHT_DATA_SYNC, (client, handler, buf, responseSender) -> {
-            WeightDataSnapshot snapshot;
-            try {
-                snapshot = WeightDataStore.decodeSnapshot(buf);
-            } catch (Exception e) {
-                InventoryWeight.LOGGER.error("Failed to decode Inventory Weight data sync packet", e);
-                return;
-            }
-            client.execute(() -> WeightDataStore.INSTANCE.applySnapshot(snapshot));
-        });
+        ClientPlayNetworking.registerGlobalReceiver(
+                WeightDataSyncPayload.ID,
+                (payload, context) -> {
+                    WeightDataStore.INSTANCE.applySnapshot(payload.snapshot());
+                }
+        );
     }
 }

@@ -103,7 +103,7 @@ public final class WeightPenaltyService {
                 SPEED_MODIFIER_UUID,
                 prefix + "_speed_penalty",
                 -speedDecrease,
-                EntityAttributeModifier.Operation.MULTIPLY_TOTAL
+                EntityAttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
         );
         AttributeModifierManager.replace(
                 player,
@@ -111,7 +111,7 @@ public final class WeightPenaltyService {
                 ATTACK_SPEED_MODIFIER_UUID,
                 prefix + "_attack_speed_penalty",
                 -attackSpeedDecrease,
-                EntityAttributeModifier.Operation.MULTIPLY_TOTAL
+                EntityAttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
         );
         AttributeModifierManager.replace(
                 player,
@@ -119,7 +119,7 @@ public final class WeightPenaltyService {
                 DAMAGE_REDUCTION_MODIFIER_UUID,
                 prefix + "_damage_penalty",
                 -damageReduction,
-                EntityAttributeModifier.Operation.MULTIPLY_TOTAL
+                EntityAttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
         );
     }
 

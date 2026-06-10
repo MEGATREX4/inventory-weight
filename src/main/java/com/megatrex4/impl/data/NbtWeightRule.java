@@ -1,5 +1,6 @@
 package com.megatrex4.impl.data;
 
+import com.megatrex4.impl.weight.ItemStackData;
 import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -16,7 +17,7 @@ public record NbtWeightRule(Identifier itemId, String nbtKey, Map<String, Float>
         if (!itemId.equals(Registries.ITEM.getId(stack.getItem()))) {
             return Optional.empty();
         }
-        NbtCompound nbt = stack.getNbt();
+        NbtCompound nbt = ItemStackData.getCustomData(stack);
         if (nbt == null || !nbt.contains(nbtKey)) {
             return Optional.empty();
         }

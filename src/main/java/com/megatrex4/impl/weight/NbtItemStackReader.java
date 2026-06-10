@@ -50,7 +50,7 @@ public final class NbtItemStackReader {
         ItemStack stack = new ItemStack(item, count);
 
         if (itemNbt != null) {
-            stack.setNbt(itemNbt);
+            ItemStackData.setCustomData(stack, itemNbt);
         }
 
         return stack;

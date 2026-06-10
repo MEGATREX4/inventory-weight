@@ -9,7 +9,8 @@ import com.megatrex4.impl.weight.provider.BackpackWeightProvider;
 import com.megatrex4.impl.weight.provider.ShulkerBoxWeightProvider;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.item.TooltipContext;
+import net.minecraft.client.item.TooltipType;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -19,7 +20,12 @@ import java.util.List;
 public final class WeightTooltipHandler {
     private WeightTooltipHandler() {}
 
-    public static void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip) {
+    public static void appendTooltip(
+            ItemStack stack,
+            Item.TooltipContext context,
+            TooltipType type,
+            List<Text> tooltip
+    ) {
         if (!InventoryWeightConfig.getClient().showTooltips || stack == null || stack.isEmpty()) {
             return;
         }

@@ -5,6 +5,7 @@ import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,7 +29,7 @@ public final class InventoryWeightApi {
         return InventoryWeightServices.capacityService().getMaxWeight(player);
     }
 
-    public static EntityAttribute getMaxWeightAttribute() {
+    public static RegistryEntry<EntityAttribute> getMaxWeightAttribute() {
         return InventoryWeightAttributes.GENERIC_MAX_WEIGHT;
     }
 

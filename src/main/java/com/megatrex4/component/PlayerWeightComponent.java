@@ -1,7 +1,8 @@
 package com.megatrex4.component;
 
-import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryWrapper;
+import org.ladysnake.cca.api.v3.component.sync.AutoSyncedComponent;
 
 public interface PlayerWeightComponent extends AutoSyncedComponent {
     float getCapacityBonus();
@@ -17,8 +18,12 @@ public interface PlayerWeightComponent extends AutoSyncedComponent {
     void setWeightState(float currentInventoryWeight, float maxWeight, boolean overloaded);
 
     @Override
-    default void readFromNbt(NbtCompound tag) {
+    default void readFromNbt(
+            NbtCompound tag,
+            RegistryWrapper.WrapperLookup registryLookup
+    ) {
         setCapacityBonus(tag.getFloat("capacityBonus"));
+
         setWeightState(
                 tag.getFloat("currentInventoryWeight"),
                 tag.getFloat("maxWeight"),
@@ -27,7 +32,10 @@ public interface PlayerWeightComponent extends AutoSyncedComponent {
     }
 
     @Override
-    default void writeToNbt(NbtCompound tag) {
+    default void writeToNbt(
+            NbtCompound tag,
+            RegistryWrapper.WrapperLookup registryLookup
+    ) {
         tag.putFloat("capacityBonus", getCapacityBonus());
         tag.putFloat("currentInventoryWeight", getCurrentInventoryWeight());
         tag.putFloat("maxWeight", getMaxWeight());

@@ -11,8 +11,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(PlayerEntity.class)
 public abstract class PlayerAttributeMixin {
     @Inject(method = "createPlayerAttributes", at = @At("RETURN"))
-    private static void inventoryweight$addMaxWeightAttribute(CallbackInfoReturnable<DefaultAttributeContainer.Builder> cir) {
-        // Attribute is an additional max-weight contribution on top of config maxWeight.
-        cir.getReturnValue().add(InventoryWeightAttributes.GENERIC_MAX_WEIGHT, 0.0D);
+    private static void inventoryweight$addMaxWeightAttribute(
+            CallbackInfoReturnable<DefaultAttributeContainer.Builder> cir
+    ) {
+        cir.getReturnValue().add(
+                InventoryWeightAttributes.GENERIC_MAX_WEIGHT,
+                0.0D
+        );
     }
 }

@@ -5,6 +5,7 @@ import com.megatrex4.impl.player.PlayerWeightController;
 import com.megatrex4.impl.data.WeightDataSnapshot;
 import com.megatrex4.impl.data.WeightDataStore;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.PacketByteBuf;
@@ -22,25 +23,16 @@ public final class InventoryWeightNetworking {
     private InventoryWeightNetworking() {}
 
     public static void registerServer() {
-        if (serverRegistered) {
-            InventoryWeight.LOGGER.debug("Inventory Weight server networking was already registered; skipping duplicate registration.");
-            return;
-        }
-        serverRegistered = true;
-
-        InventoryWeight.LOGGER.info("Registering Inventory Weight server networking channel: {}", WEIGHT_DATA_SYNC);
-        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-            InventoryWeight.LOGGER.info("Player {} joined; syncing Inventory Weight datapack data.", handler.player.getName().getString());
-            PlayerWeightController.updatePlayer(handler.player);
-            sendDataTo(handler.player);
-        });
+        PayloadTypeRegistry.playS2C().register(
+                WeightDataSyncPayload.ID,
+                WeightDataSyncPayload.CODEC
+        );
     }
 
     public static void sendDataTo(ServerPlayerEntity player) {
         WeightDataSnapshot snapshot = WeightDataStore.INSTANCE.snapshot();
-        PacketByteBuf buf = PacketByteBufs.create();
-        WeightDataStore.encodeSnapshot(buf, snapshot);
-        ServerPlayNetworking.send(player, WEIGHT_DATA_SYNC, buf);
+
+        ServerPlayNetworking.send(player, new WeightDataSyncPayload(snapshot));
 
         InventoryWeight.LOGGER.debug(
                 "Synced Inventory Weight data to {}: {} item weights, {} pocket definitions, {} NBT weight rules, {} NBT pocket rules.",

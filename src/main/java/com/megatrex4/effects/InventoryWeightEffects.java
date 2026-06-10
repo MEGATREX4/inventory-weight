@@ -3,12 +3,18 @@ package com.megatrex4.effects;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Identifier;
 
 import static com.megatrex4.InventoryWeight.MOD_ID;
 
 public final class InventoryWeightEffects {
-    public static final StatusEffect OVERLOAD = new OverloadEffect();
+    public static final RegistryEntry<StatusEffect> OVERLOAD =
+            Registry.registerReference(
+                    Registries.STATUS_EFFECT,
+                    new Identifier(MOD_ID, "overload"),
+                    new OverloadEffect()
+            );
 
     private static boolean registered;
 
@@ -18,7 +24,7 @@ public final class InventoryWeightEffects {
         if (registered) {
             return;
         }
+
         registered = true;
-        Registry.register(Registries.STATUS_EFFECT, new Identifier(MOD_ID, "overload"), OVERLOAD);
     }
 }

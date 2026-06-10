@@ -5,8 +5,11 @@ import com.megatrex4.api.v1.WeightContext;
 import com.megatrex4.api.v1.WeightLookup;
 import com.megatrex4.api.v1.WeightResult;
 import com.megatrex4.impl.config.WeightSettings;
+import com.megatrex4.impl.weight.ItemStackData;
 import com.megatrex4.impl.weight.NbtItemStackReader;
 import net.minecraft.block.ShulkerBoxBlock;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.ContainerComponent;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -37,19 +40,19 @@ public final class ShulkerBoxWeightProvider implements ItemWeightProvider {
                 && blockItem.getBlock() instanceof ShulkerBoxBlock;
     }
 
-    private static float calculateInsideWeight(ItemStack shulkerBoxStack, WeightContext context, WeightLookup lookup) {
-        NbtCompound nbt = shulkerBoxStack.getNbt();
-        if (nbt == null || !nbt.contains("BlockEntityTag")) {
-            return 0.0f;
-        }
-
-        NbtCompound blockEntityTag = nbt.getCompound("BlockEntityTag");
-        NbtList itemList = blockEntityTag.getList("Items", 10);
+    private static float calculateInsideWeight(
+            ItemStack shulkerBoxStack,
+            WeightContext context,
+            WeightLookup lookup
+    ) {
+        ContainerComponent container = shulkerBoxStack.getOrDefault(
+                DataComponentTypes.CONTAINER,
+                ContainerComponent.DEFAULT
+        );
 
         float insideWeight = 0.0f;
 
-        for (int i = 0; i < itemList.size(); i++) {
-            ItemStack contained = NbtItemStackReader.fromNbtSafely(itemList.getCompound(i));
+        for (ItemStack contained : container.iterateNonEmpty()) {
             if (!contained.isEmpty()) {
                 insideWeight += lookup.getWeight(contained, context.nested())
                         .multiply(contained.getCount())
