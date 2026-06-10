@@ -56,21 +56,27 @@ dependencies {
 	modImplementation "maven.modrinth:fabric-language-kotlin:${project.kotlin_language_version}"
 	modImplementation include("maven.modrinth:fzzy-config:${project.fzzy_config_version}")
 	// Jankson is already included in fiber-0.23.0-2.jar, so we don't need it separately
-	modImplementation include(files("jars/kotlin-stdlib-1.9.24.jar"))
-	modImplementation include(files("jars/kotlin-stdlib-jdk8-1.9.24.jar"))
-	modImplementation include(files("jars/kotlin-reflect-1.9.24.jar"))
-	modImplementation include(files("jars/kotlinx-coroutines-core-jvm-1.8.0.jar"))
-	modImplementation include(files("jars/kotlinx-coroutines-jdk8-1.8.0.jar"))
-	modImplementation include(files("jars/fiber-0.23.0-2.jar"))
-	modImplementation include(files("jars/atomicfu-jvm-0.24.0.jar"))
-	modImplementation include(files("jars/kotlinx-serialization-core-jvm-1.6.3.jar"))
-	modImplementation include(files("jars/kotlinx-serialization-json-jvm-1.6.3.jar"))
-	modImplementation include(files("jars/tomlkt-jvm-0.3.7.jar"))
+	localRuntime files(
+			"jars/kotlin-stdlib-1.9.24.jar",
+			"jars/kotlin-stdlib-jdk8-1.9.24.jar",
+			"jars/kotlin-reflect-1.9.24.jar",
+			"jars/kotlinx-coroutines-core-jvm-1.8.0.jar",
+			"jars/kotlinx-coroutines-jdk8-1.8.0.jar",
+			"jars/fiber-0.23.0-2.jar",
+			"jars/atomicfu-jvm-0.24.0.jar",
+			"jars/kotlinx-serialization-core-jvm-1.6.3.jar",
+			"jars/kotlinx-serialization-json-jvm-1.6.3.jar",
+			"jars/tomlkt-jvm-0.3.7.jar"
+	)
 	
 	modImplementation "dev.emi:trinkets:${trinkets_version}"
 
-	modImplementation include("dev.onyxstudios.cardinal-components-api:cardinal-components-base:${project.cca_version}")
-	modImplementation include("dev.onyxstudios.cardinal-components-api:cardinal-components-entity:${project.cca_version}")
+	modImplementation include("dev.onyxstudios.cardinal-components-api:cardinal-components-base:${project.cardinal_components_version}") {
+		exclude group: "dev.onyxstudios.cardinal-components-api", module: "cardinal-components-level"
+	}
+	modImplementation include("dev.onyxstudios.cardinal-components-api:cardinal-components-entity:${project.cardinal_components_version}") {
+		exclude group: "dev.onyxstudios.cardinal-components-api", module: "cardinal-components-level"
+	}
 }
 
 processResources {
