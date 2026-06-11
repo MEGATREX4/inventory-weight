@@ -1,15 +1,11 @@
 package com.megatrex4.effects;
 
-import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.entity.effect.StatusEffectCategory;
 
-public final class OverloadEffect extends StatusEffect {
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
+
+public final class OverloadEffect extends MobEffect {
     public OverloadEffect() {
-        super(StatusEffectCategory.HARMFUL, 0xFF0000);
-    }
-
-    @Override
-    public boolean canApplyUpdateEffect(int duration, int amplifier) {
-        return false;
+        super(MobEffectCategory.HARMFUL, 0xFF0000);
     }
 }

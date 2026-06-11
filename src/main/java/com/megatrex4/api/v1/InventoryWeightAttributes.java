@@ -1,33 +1,33 @@
 package com.megatrex4.api.v1;
 
 import com.megatrex4.InventoryWeight;
-import net.minecraft.entity.attribute.ClampedEntityAttribute;
-import net.minecraft.entity.attribute.EntityAttribute;
-import net.minecraft.entity.attribute.EntityAttributeInstance;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.RangedAttribute;
+import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
 
 import static com.megatrex4.InventoryWeight.MOD_ID;
 
 public final class InventoryWeightAttributes {
     public static final Identifier GENERIC_MAX_WEIGHT_ID =
-            Identifier.of(MOD_ID, "generic.max_weight");
+            Identifier.fromNamespaceAndPath(MOD_ID, "generic.max_weight");
 
-    public static final RegistryEntry<EntityAttribute> GENERIC_MAX_WEIGHT =
-            Registry.registerReference(
-                    Registries.ATTRIBUTE,
+    public static final Holder<Attribute> GENERIC_MAX_WEIGHT =
+            Registry.registerForHolder(
+                    BuiltInRegistries.ATTRIBUTE,
                     GENERIC_MAX_WEIGHT_ID,
-                    new ClampedEntityAttribute(
+                    new RangedAttribute(
                             "attribute.name.inventoryweight.generic.max_weight",
                             0.0D,
                             0.0D,
                             1_000_000_000.0D
-                    ).setTracked(true)
+                    ).setSyncable(true)
             );
 
     private InventoryWeightAttributes() {}
@@ -40,29 +40,29 @@ public final class InventoryWeightAttributes {
     }
 
     @Nullable
-    public static EntityAttributeInstance getInstance(PlayerEntity player) {
-        return player.getAttributes().getCustomInstance(GENERIC_MAX_WEIGHT);
+    public static AttributeInstance getInstance(Player player) {
+        return player.getAttributes().getInstance(GENERIC_MAX_WEIGHT);
     }
 
-    public static boolean hasAttribute(PlayerEntity player) {
+    public static boolean hasAttribute(Player player) {
         return player.getAttributes().hasAttribute(GENERIC_MAX_WEIGHT);
     }
 
-    public static double getValue(PlayerEntity player) {
-        EntityAttributeInstance instance = getInstance(player);
+    public static double getValue(Player player) {
+        AttributeInstance instance = getInstance(player);
         return instance == null ? 0.0D : instance.getValue();
     }
 
-    public static double getBaseValue(PlayerEntity player) {
-        EntityAttributeInstance instance = getInstance(player);
+    public static double getBaseValue(Player player) {
+        AttributeInstance instance = getInstance(player);
         return instance == null ? 0.0D : instance.getBaseValue();
     }
 
-    public static EntityAttributeModifier createModifier(
+    public static AttributeModifier createModifier(
             Identifier id,
             double value,
-            EntityAttributeModifier.Operation operation
+            AttributeModifier.Operation operation
     ) {
-        return new EntityAttributeModifier(id, value, operation);
+        return new AttributeModifier(id, value, operation);
     }
 }

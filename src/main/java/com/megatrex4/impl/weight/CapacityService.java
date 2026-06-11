@@ -7,7 +7,8 @@ import com.megatrex4.api.v1.InventoryWeightAttributes;
 import com.megatrex4.api.v1.InventoryWeightEvents;
 import com.megatrex4.impl.config.WeightSettings;
 import com.megatrex4.impl.registry.PrioritizedRegistry;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerEntity;
+import net.minecraft.server.level.ServerPlayer;
 
 public final class CapacityService {
     private final PrioritizedRegistry<CapacityProvider> providers;
@@ -16,7 +17,7 @@ public final class CapacityService {
         this.providers = providers;
     }
 
-    public float getMaxWeight(ServerPlayerEntity player) {
+    public float getMaxWeight(ServerPlayer player) {
         float configuredBase = WeightSettings.get().maxWeight();
         float attributeBonus = (float) InventoryWeightAttributes.getValue(player);
         float additive = attributeBonus;

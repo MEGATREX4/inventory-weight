@@ -8,13 +8,15 @@ import com.megatrex4.impl.config.WeightSettings;
 import com.megatrex4.impl.weight.ItemStackData;
 import com.megatrex4.impl.weight.NbtCompat;
 import com.megatrex4.impl.weight.NbtItemStackReader;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.resources.Identifier;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+
 
 import java.util.Locale;
 import java.util.Optional;
@@ -36,13 +38,13 @@ public final class BackpackWeightProvider implements ItemWeightProvider {
             return Optional.empty();
         }
 
-        NbtCompound tag = ItemStackData.getCustomData(stack);
+        CompoundTag tag = ItemStackData.getCustomData(stack);
 
         if (tag == null) {
             return Optional.of(WeightResult.of(WeightSettings.get().itemWeight(), 0.0f));
         }
 
-        String itemId = Registries.ITEM.getId(stack.getItem()).toString().toLowerCase(Locale.ROOT);
+        String itemId = BuiltInRegistries.ITEM.getKey(stack.getItem()).toString().toLowerCase(Locale.ROOT);
 
         return Optional.of(calculateBackpackWeight(itemId, tag, context, lookup).sanitized());
     }
@@ -52,18 +54,18 @@ public final class BackpackWeightProvider implements ItemWeightProvider {
             return false;
         }
 
-        String itemId = Registries.ITEM.getId(stack.getItem()).toString().toLowerCase(Locale.ROOT);
+        String itemId = BuiltInRegistries.ITEM.getKey(stack.getItem()).toString().toLowerCase(Locale.ROOT);
 
         return isBackpack(itemId, stack);
     }
 
     public static boolean isTravelerBackpack(ItemStack stack) {
-        TagKey<Item> travelerBackpackTag = TagKey.of(
-                Registries.ITEM.getKey(),
-                Identifier.of("travelersbackpack", "custom_travelers_backpack")
+        TagKey<Item> travelerBackpackTag = TagKey.create(
+                Registries.ITEM,
+                Identifier.fromNamespaceAndPath("travelersbackpack", "custom_travelers_backpack")
         );
 
-        return stack.isIn(travelerBackpackTag);
+        return stack.is(travelerBackpackTag);
     }
 
     private static boolean isBackpack(String itemId, ItemStack stack) {
@@ -75,7 +77,7 @@ public final class BackpackWeightProvider implements ItemWeightProvider {
             return true;
         }
 
-        NbtCompound tag = ItemStackData.getCustomData(stack);
+        CompoundTag tag = ItemStackData.getCustomData(stack);
 
         if (tag != null && tag.contains("Inventory")) {
             return true;
@@ -92,7 +94,7 @@ public final class BackpackWeightProvider implements ItemWeightProvider {
 
     private static WeightResult calculateBackpackWeight(
             String itemId,
-            NbtCompound tag,
+            CompoundTag tag,
             WeightContext context,
             WeightLookup lookup
     ) {
@@ -101,7 +103,7 @@ public final class BackpackWeightProvider implements ItemWeightProvider {
         }
 
         if (itemId.contains("pouch") || itemId.contains("satchel")) {
-            return calculateScoutWeightFromNbtList(NbtCompat.list(tag, "Items"), context, lookup);
+            return calculateScoutWeightFromListTag(NbtCompat.list(tag, "Items"), context, lookup);
         }
 
         if (itemId.contains("toolbox")) {
@@ -109,10 +111,10 @@ public final class BackpackWeightProvider implements ItemWeightProvider {
         }
 
         if (itemId.contains("drawer")) {
-            NbtCompound blockEntityTag = NbtCompat.compoundOrEmpty(tag, "BlockEntityTag");
+            CompoundTag blockEntityTag = NbtCompat.compoundOrEmpty(tag, "BlockEntityTag");
 
             if (blockEntityTag.contains("items")) {
-                return calculateDrawerWeightFromNbtList(
+                return calculateDrawerWeightFromListTag(
                         NbtCompat.list(blockEntityTag, "items"),
                         context,
                         lookup
@@ -121,9 +123,9 @@ public final class BackpackWeightProvider implements ItemWeightProvider {
         }
 
         if (tag.contains("pack_inventory")) {
-            NbtCompound packInventoryTag = NbtCompat.compoundOrEmpty(tag, "pack_inventory");
+            CompoundTag packInventoryTag = NbtCompat.compoundOrEmpty(tag, "pack_inventory");
 
-            return calculatePackItUpWeightFromNbtList(
+            return calculatePackItUpWeightFromListTag(
                     NbtCompat.list(packInventoryTag, "stack_contents"),
                     context,
                     lookup
@@ -131,7 +133,7 @@ public final class BackpackWeightProvider implements ItemWeightProvider {
         }
 
         if (tag.contains("Inventory") && itemId.contains("inmis")) {
-            return calculateInmisWeightFromNbtList(
+            return calculateInmisWeightFromListTag(
                     NbtCompat.list(tag, "Inventory"),
                     context,
                     lookup
@@ -139,7 +141,7 @@ public final class BackpackWeightProvider implements ItemWeightProvider {
         }
 
         if (tag.contains("Inventory")) {
-            return calculateStandardWeightFromNbtList(
+            return calculateStandardWeightFromListTag(
                     NbtCompat.list(tag, "Inventory"),
                     context,
                     lookup
@@ -147,14 +149,14 @@ public final class BackpackWeightProvider implements ItemWeightProvider {
         }
 
         if (tag.contains("BlockEntityTag") && itemId.contains("sophisticatedstorage")) {
-            NbtCompound blockEntityTag = NbtCompat.compoundOrEmpty(tag, "BlockEntityTag");
+            CompoundTag blockEntityTag = NbtCompat.compoundOrEmpty(tag, "BlockEntityTag");
 
             if (blockEntityTag.contains("storageWrapper")) {
-                NbtCompound storageWrapperTag = NbtCompat.compoundOrEmpty(blockEntityTag, "storageWrapper");
-                NbtCompound contentsTag = NbtCompat.compoundOrEmpty(storageWrapperTag, "contents");
-                NbtCompound inventoryTag = NbtCompat.compoundOrEmpty(contentsTag, "inventory");
+                CompoundTag storageWrapperTag = NbtCompat.compoundOrEmpty(blockEntityTag, "storageWrapper");
+                CompoundTag contentsTag = NbtCompat.compoundOrEmpty(storageWrapperTag, "contents");
+                CompoundTag inventoryTag = NbtCompat.compoundOrEmpty(contentsTag, "inventory");
 
-                return calculateStandardWeightFromNbtList(
+                return calculateStandardWeightFromListTag(
                         NbtCompat.list(inventoryTag, "Items"),
                         context,
                         lookup
@@ -163,9 +165,9 @@ public final class BackpackWeightProvider implements ItemWeightProvider {
         }
 
         if (tag.contains("BlockEntityTag")) {
-            NbtCompound blockEntityTag = NbtCompat.compoundOrEmpty(tag, "BlockEntityTag");
+            CompoundTag blockEntityTag = NbtCompat.compoundOrEmpty(tag, "BlockEntityTag");
 
-            return calculateStandardWeightFromNbtList(
+            return calculateStandardWeightFromListTag(
                     NbtCompat.list(blockEntityTag, "Items"),
                     context,
                     lookup
@@ -180,15 +182,15 @@ public final class BackpackWeightProvider implements ItemWeightProvider {
     }
 
     private static WeightResult calculateTravelersBackpackWeight(
-            NbtCompound tag,
+            CompoundTag tag,
             WeightContext context,
             WeightLookup lookup
     ) {
         BackpackAccumulator accumulator = BackpackAccumulator.create();
 
         if (tag.contains("Inventory")) {
-            NbtCompound inventoryTag = NbtCompat.compoundOrEmpty(tag, "Inventory");
-            NbtList inventoryItems = NbtCompat.list(inventoryTag, "Items");
+            CompoundTag inventoryTag = NbtCompat.compoundOrEmpty(tag, "Inventory");
+            ListTag inventoryItems = NbtCompat.list(inventoryTag, "Items");
 
             for (int i = 0; i < inventoryItems.size(); i++) {
                 accumulator.addInsideStack(
@@ -199,12 +201,12 @@ public final class BackpackWeightProvider implements ItemWeightProvider {
             }
         }
 
-        NbtCompound leftTank = NbtCompat.compound(tag, "LeftTank");
+        CompoundTag leftTank = NbtCompat.compound(tag, "LeftTank");
         if (leftTank != null) {
             accumulator.addInsideWeight(NbtCompat.intValue(leftTank, "amount", 0) / 1000.0f);
         }
 
-        NbtCompound rightTank = NbtCompat.compound(tag, "RightTank");
+        CompoundTag rightTank = NbtCompat.compound(tag, "RightTank");
         if (rightTank != null) {
             accumulator.addInsideWeight(NbtCompat.intValue(rightTank, "amount", 0) / 1000.0f);
         }
@@ -212,21 +214,21 @@ public final class BackpackWeightProvider implements ItemWeightProvider {
         return accumulator.result();
     }
 
-    private static WeightResult calculateScoutWeightFromNbtList(
-            NbtList itemList,
+    private static WeightResult calculateScoutWeightFromListTag(
+            ListTag itemList,
             WeightContext context,
             WeightLookup lookup
     ) {
         BackpackAccumulator accumulator = BackpackAccumulator.create();
 
         for (int i = 0; i < itemList.size(); i++) {
-            NbtCompound itemTag = NbtCompat.listCompound(itemList, i);
+            CompoundTag itemTag = NbtCompat.listCompound(itemList, i);
 
             if (itemTag == null) {
                 continue;
             }
 
-            NbtCompound stackTag = NbtCompat.compound(itemTag, "Stack");
+            CompoundTag stackTag = NbtCompat.compound(itemTag, "Stack");
 
             if (stackTag != null) {
                 accumulator.addInsideStack(stackFromStandardNbt(stackTag), context, lookup);
@@ -237,16 +239,16 @@ public final class BackpackWeightProvider implements ItemWeightProvider {
     }
 
     private static WeightResult calculateToolboxWeight(
-            NbtCompound tag,
+            CompoundTag tag,
             WeightContext context,
             WeightLookup lookup
     ) {
         BackpackAccumulator accumulator = BackpackAccumulator.create();
 
-        NbtCompound inventoryTag = NbtCompat.compound(tag, "Inventory");
+        CompoundTag inventoryTag = NbtCompat.compound(tag, "Inventory");
 
         if (inventoryTag != null) {
-            NbtList itemList = NbtCompat.list(inventoryTag, "Items");
+            ListTag itemList = NbtCompat.list(inventoryTag, "Items");
 
             for (int i = 0; i < itemList.size(); i++) {
                 accumulator.addInsideStack(
@@ -260,22 +262,22 @@ public final class BackpackWeightProvider implements ItemWeightProvider {
         return accumulator.result();
     }
 
-    private static WeightResult calculateDrawerWeightFromNbtList(
-            NbtList itemList,
+    private static WeightResult calculateDrawerWeightFromListTag(
+            ListTag itemList,
             WeightContext context,
             WeightLookup lookup
     ) {
         BackpackAccumulator accumulator = BackpackAccumulator.create();
 
         for (int i = 0; i < itemList.size(); i++) {
-            NbtCompound drawerTag = NbtCompat.listCompound(itemList, i);
+            CompoundTag drawerTag = NbtCompat.listCompound(itemList, i);
 
             if (drawerTag == null) {
                 continue;
             }
 
             int amount = NbtCompat.intValue(drawerTag, "amount", 0);
-            NbtCompound itemTag = NbtCompat.compound(drawerTag, "item");
+            CompoundTag itemTag = NbtCompat.compound(drawerTag, "item");
 
             if (itemTag == null) {
                 continue;
@@ -293,21 +295,21 @@ public final class BackpackWeightProvider implements ItemWeightProvider {
         return accumulator.result();
     }
 
-    private static WeightResult calculateInmisWeightFromNbtList(
-            NbtList itemList,
+    private static WeightResult calculateInmisWeightFromListTag(
+            ListTag itemList,
             WeightContext context,
             WeightLookup lookup
     ) {
         BackpackAccumulator accumulator = BackpackAccumulator.create();
 
         for (int i = 0; i < itemList.size(); i++) {
-            NbtCompound itemTag = NbtCompat.listCompound(itemList, i);
+            CompoundTag itemTag = NbtCompat.listCompound(itemList, i);
 
             if (itemTag == null) {
                 continue;
             }
 
-            NbtCompound stackTag = NbtCompat.compound(itemTag, "Stack");
+            CompoundTag stackTag = NbtCompat.compound(itemTag, "Stack");
 
             if (stackTag != null) {
                 accumulator.addInsideStack(stackFromStandardNbt(stackTag), context, lookup);
@@ -317,15 +319,15 @@ public final class BackpackWeightProvider implements ItemWeightProvider {
         return accumulator.result();
     }
 
-    private static WeightResult calculatePackItUpWeightFromNbtList(
-            NbtList itemList,
+    private static WeightResult calculatePackItUpWeightFromListTag(
+            ListTag itemList,
             WeightContext context,
             WeightLookup lookup
     ) {
         BackpackAccumulator accumulator = BackpackAccumulator.create();
 
         for (int i = 0; i < itemList.size(); i++) {
-            NbtCompound itemTag = NbtCompat.listCompound(itemList, i);
+            CompoundTag itemTag = NbtCompat.listCompound(itemList, i);
 
             if (itemTag == null) {
                 continue;
@@ -349,8 +351,8 @@ public final class BackpackWeightProvider implements ItemWeightProvider {
         return accumulator.result();
     }
 
-    private static WeightResult calculateStandardWeightFromNbtList(
-            NbtList itemList,
+    private static WeightResult calculateStandardWeightFromListTag(
+            ListTag itemList,
             WeightContext context,
             WeightLookup lookup
     ) {
@@ -367,7 +369,7 @@ public final class BackpackWeightProvider implements ItemWeightProvider {
         return accumulator.result();
     }
 
-    private static ItemStack stackFromStandardNbt(NbtCompound tag) {
+    private static ItemStack stackFromStandardNbt(CompoundTag tag) {
         return NbtItemStackReader.fromNbtSafely(tag);
     }
 

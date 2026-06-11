@@ -4,30 +4,30 @@ import com.megatrex4.InventoryWeight;
 import com.megatrex4.effects.InventoryWeightEffects;
 import com.megatrex4.impl.config.ServerWeightSettings;
 import com.megatrex4.impl.config.WeightSettings;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.effect.MobEffectInstance;
 
 import java.util.UUID;
 
 public final class WeightPenaltyService {
     public static final double BASE_PENALTY = 0.50;
     public static final Identifier SPEED_MODIFIER_ID =
-            Identifier.of(InventoryWeight.MOD_ID, "overload_speed_penalty");
+            Identifier.fromNamespaceAndPath(InventoryWeight.MOD_ID, "overload_speed_penalty");
 
     public static final Identifier ATTACK_SPEED_MODIFIER_ID =
-            Identifier.of(InventoryWeight.MOD_ID, "overload_attack_speed_penalty");
+            Identifier.fromNamespaceAndPath(InventoryWeight.MOD_ID, "overload_attack_speed_penalty");
 
     public static final Identifier DAMAGE_REDUCTION_MODIFIER_ID =
-            Identifier.of(InventoryWeight.MOD_ID, "overload_damage_penalty");
+            Identifier.fromNamespaceAndPath(InventoryWeight.MOD_ID, "overload_damage_penalty");
 
     private WeightPenaltyService() {}
 
-    public static void apply(ServerPlayerEntity player, float currentWeight, float maxWeight) {
+    public static void apply(ServerPlayer player, float currentWeight, float maxWeight) {
         ServerWeightSettings settings = WeightSettings.get();
         if (settings.overloadPenaltyStrength() <= 0.0f) {
             clear(player);
@@ -39,7 +39,7 @@ public final class WeightPenaltyService {
             return;
         }
 
-        player.removeStatusEffect(InventoryWeightEffects.OVERLOAD);
+        player.removeEffect(InventoryWeightEffects.OVERLOAD);
 
         if (settings.realisticMode() && currentWeight > maxWeight * 0.1f) {
             applyRealisticPenalties(player, currentWeight, maxWeight);
@@ -48,27 +48,27 @@ public final class WeightPenaltyService {
         }
     }
 
-    public static void clear(ServerPlayerEntity player) {
-        player.removeStatusEffect(InventoryWeightEffects.OVERLOAD);
+    public static void clear(ServerPlayer player) {
+        player.removeEffect(InventoryWeightEffects.OVERLOAD);
         AttributeModifierManager.removeAllWeightModifiers(player);
     }
 
-    private static void applyOverload(ServerPlayerEntity player, float currentWeight, float maxWeight, ServerWeightSettings settings) {
+    private static void applyOverload(ServerPlayer player, float currentWeight, float maxWeight, ServerWeightSettings settings) {
         float percentageFull = maxWeight <= 0.0f ? 100.0f : (currentWeight / maxWeight) * 100.0f;
         int overloadLevel = Math.max(0, ((int) percentageFull - 100) / 10);
         overloadLevel = Math.min(overloadLevel, 32);
 
-        int strengthAmplifier = player.hasStatusEffect(StatusEffects.STRENGTH)
-                ? player.getStatusEffect(StatusEffects.STRENGTH).getAmplifier()
+        int strengthAmplifier = player.hasEffect(MobEffects.STRENGTH)
+                ? player.getEffect(MobEffects.STRENGTH).getAmplifier()
                 : 0;
-        int hasteAmplifier = player.hasStatusEffect(StatusEffects.HASTE)
-                ? player.getStatusEffect(StatusEffects.HASTE).getAmplifier()
+        int hasteAmplifier = player.hasEffect(MobEffects.HASTE)
+                ? player.getEffect(MobEffects.HASTE).getAmplifier()
                 : 0;
 
         int adjustedLevel = Math.max(1, overloadLevel - (strengthAmplifier + hasteAmplifier));
         adjustedLevel = Math.min(adjustedLevel, 10);
 
-        player.addStatusEffect(new StatusEffectInstance(
+        player.addEffect(new MobEffectInstance(
                 InventoryWeightEffects.OVERLOAD,
                 40,
                 adjustedLevel - 1,
@@ -84,7 +84,7 @@ public final class WeightPenaltyService {
         replaceModifiers(player, speedDecrease, attackSpeedDecrease, damageReduction, "overload");
     }
 
-    private static void applyRealisticPenalties(ServerPlayerEntity player, float currentWeight, float maxWeight) {
+    private static void applyRealisticPenalties(ServerPlayer player, float currentWeight, float maxWeight) {
         double factor = (currentWeight - (0.1 * maxWeight)) / (maxWeight - (0.1 * maxWeight));
         factor = Math.max(0.0, Math.min(1.0, factor));
 
@@ -99,46 +99,46 @@ public final class WeightPenaltyService {
         replaceModifiers(player, speedDecrease, attackSpeedDecrease, damageReduction, "realistic_weight");
     }
 
-    private static void replaceModifiers(PlayerEntity player, double speedDecrease, double attackSpeedDecrease, double damageReduction, String prefix) {
+    private static void replaceModifiers(Player player, double speedDecrease, double attackSpeedDecrease, double damageReduction, String prefix) {
         speedDecrease = Math.min(speedDecrease, 0.9);
         attackSpeedDecrease = Math.min(attackSpeedDecrease, 0.9);
         damageReduction = Math.min(damageReduction, 0.9);
 
         AttributeModifierManager.replace(
                 player,
-                EntityAttributes.MOVEMENT_SPEED,
+                Attributes.MOVEMENT_SPEED,
                 SPEED_MODIFIER_ID,
                 prefix + "_speed_penalty",
                 -speedDecrease,
-                EntityAttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
+                AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
         );
         AttributeModifierManager.replace(
                 player,
-                EntityAttributes.ATTACK_SPEED,
+                Attributes.ATTACK_SPEED,
                 ATTACK_SPEED_MODIFIER_ID,
                 prefix + "_attack_speed_penalty",
                 -attackSpeedDecrease,
-                EntityAttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
+                AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
         );
         AttributeModifierManager.replace(
                 player,
-                EntityAttributes.ATTACK_DAMAGE,
+                Attributes.ATTACK_DAMAGE,
                 DAMAGE_REDUCTION_MODIFIER_ID,
                 prefix + "_damage_penalty",
                 -damageReduction,
-                EntityAttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
+                AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
         );
     }
 
-    public static float getJumpVelocity(PlayerEntity player, float baseJumpVelocity, float currentWeight, float maxWeight) {
+    public static float getJumpVelocity(Player player, float baseJumpVelocity, float currentWeight, float maxWeight) {
         ServerWeightSettings settings = WeightSettings.get();
         if (settings.overloadPenaltyStrength() <= 0.0f || player.isCreative() || player.isSpectator()) {
             return baseJumpVelocity;
         }
 
         if (currentWeight >= maxWeight) {
-            int amplifier = player.hasStatusEffect(InventoryWeightEffects.OVERLOAD)
-                    ? player.getStatusEffect(InventoryWeightEffects.OVERLOAD).getAmplifier()
+            int amplifier = player.hasEffect(InventoryWeightEffects.OVERLOAD)
+                    ? player.getEffect(InventoryWeightEffects.OVERLOAD).getAmplifier()
                     : 0;
             float reduced = baseJumpVelocity * 0.6f / (amplifier + 1.0f) / settings.overloadPenaltyStrength();
             return Math.max(reduced, baseJumpVelocity * 0.2f);

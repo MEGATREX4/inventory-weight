@@ -7,14 +7,14 @@ import com.megatrex4.config.HudTextMode;
 import com.megatrex4.config.HudTextPosition;
 import com.megatrex4.config.InventoryWeightConfig;
 import com.megatrex4.impl.weight.WeightMath;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.Mth;
+import net.minecraft.world.effect.MobEffects;
 
 import java.util.Locale;
 
@@ -28,25 +28,33 @@ public final class InventoryWeightHud {
     private static final int EDGE_MARGIN = 2;
     private static final int TEXT_GAP = 3;
 
-    private static final Identifier EMPTY_ICON = Identifier.of(MOD_ID, "textures/gui/inventory_empty.png");
-    private static final Identifier OVERLOAD_ICON = Identifier.of(MOD_ID, "textures/gui/inventory_overload.png");
-    private static final Identifier STRENGTH_ICON = Identifier.of(MOD_ID, "textures/gui/inventory_strength.png");
+    private static final Identifier EMPTY_ICON =
+            Identifier.fromNamespaceAndPath(MOD_ID, "textures/gui/inventory_empty.png");
+
+    private static final Identifier OVERLOAD_ICON =
+            Identifier.fromNamespaceAndPath(MOD_ID, "textures/gui/inventory_overload.png");
+
+    private static final Identifier STRENGTH_ICON =
+            Identifier.fromNamespaceAndPath(MOD_ID, "textures/gui/inventory_strength.png");
 
     private InventoryWeightHud() {}
 
-    public static void render(DrawContext context, RenderTickCounter tickCounter) {
-        MinecraftClient client = MinecraftClient.getInstance();
-        if (client.player == null || client.getDebugHud().shouldShowDebugHud()) {
+    public static void render(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
+        Minecraft minecraft = Minecraft.getInstance();
+
+        if (minecraft.player == null) {
             return;
         }
 
-        var component = PlayerWeightComponentRegistry.PLAYER_WEIGHT.maybeGet(client.player);
+        var component = PlayerWeightComponentRegistry.PLAYER_WEIGHT.maybeGet(minecraft.player);
+
         if (component.isEmpty()) {
             return;
         }
 
         float current = component.get().getCurrentInventoryWeight();
         float max = component.get().getMaxWeight();
+
         if (max <= 0.0f) {
             return;
         }
@@ -54,27 +62,64 @@ public final class InventoryWeightHud {
         InventoryWeightConfig.Client config = InventoryWeightConfig.getClient();
         HudStyle style = config.hudStyle == null ? HudStyle.SPRITE : config.hudStyle;
 
-        int elementWidth = style == HudStyle.SPRITE ? safePositive(config.spriteSize, DEFAULT_ICON_SIZE) : safePositive(config.barWidth, DEFAULT_BAR_WIDTH);
-        int elementHeight = style == HudStyle.SPRITE ? safePositive(config.spriteSize, DEFAULT_ICON_SIZE) : safePositive(config.barHeight, DEFAULT_BAR_HEIGHT);
+        int elementWidth = style == HudStyle.SPRITE
+                ? safePositive(config.spriteSize, DEFAULT_ICON_SIZE)
+                : safePositive(config.barWidth, DEFAULT_BAR_WIDTH);
 
-        int screenWidth = client.getWindow().getScaledWidth();
-        int screenHeight = client.getWindow().getScaledHeight();
+        int elementHeight = style == HudStyle.SPRITE
+                ? safePositive(config.spriteSize, DEFAULT_ICON_SIZE)
+                : safePositive(config.barHeight, DEFAULT_BAR_HEIGHT);
+
+        int screenWidth = minecraft.getWindow().getGuiScaledWidth();
+        int screenHeight = minecraft.getWindow().getGuiScaledHeight();
+
         int[] xy = position(config, screenWidth, screenHeight, elementWidth, elementHeight, style);
         int x = xy[0];
         int y = xy[1];
 
         if (style == HudStyle.SPRITE) {
-            renderSpriteHud(context, client, x, y, elementWidth, elementHeight, current, max, component.get().isOverloaded());
+            renderSpriteHud(
+                    graphics,
+                    minecraft,
+                    x,
+                    y,
+                    elementWidth,
+                    elementHeight,
+                    current,
+                    max,
+                    component.get().isOverloaded()
+            );
         } else {
-            renderBarHud(context, x, y, elementWidth, elementHeight, current, max, component.get().isOverloaded());
+            renderBarHud(
+                    graphics,
+                    x,
+                    y,
+                    elementWidth,
+                    elementHeight,
+                    current,
+                    max,
+                    component.get().isOverloaded()
+            );
         }
 
-        renderHudText(context, client.textRenderer, config, x, y, elementWidth, elementHeight, screenWidth, screenHeight, current, max);
+        renderHudText(
+                graphics,
+                minecraft.font,
+                config,
+                x,
+                y,
+                elementWidth,
+                elementHeight,
+                screenWidth,
+                screenHeight,
+                current,
+                max
+        );
     }
 
     private static void renderSpriteHud(
-            DrawContext context,
-            MinecraftClient client,
+            GuiGraphicsExtractor graphics,
+            Minecraft minecraft,
             int x,
             int y,
             int width,
@@ -83,70 +128,94 @@ public final class InventoryWeightHud {
             float max,
             boolean overloaded
     ) {
-        drawIcon(context, EMPTY_ICON, x, y, width, height);
+        drawIcon(graphics, EMPTY_ICON, x, y, width, height);
 
         if (overloaded || current >= max) {
-            drawIcon(context, OVERLOAD_ICON, x, y, width, height);
+            drawIcon(graphics, OVERLOAD_ICON, x, y, width, height);
         } else if (current > 0.0f) {
-            drawIcon(context, getFilledIcon(current, max), x, y, width, height);
+            drawIcon(graphics, getFilledIcon(current, max), x, y, width, height);
         }
 
-        if (client.player != null
-                && (client.player.hasStatusEffect(StatusEffects.STRENGTH)
-                || client.player.hasStatusEffect(StatusEffects.HASTE))) {
-            drawIcon(context, STRENGTH_ICON, x, y, width, height);
-        }
-    }
-
-    private static void renderBarHud(DrawContext context, int x, int y, int width, int height, float current, float max, boolean overloaded) {
-        float ratio = MathHelper.clamp(current / max, 0.0f, 1.0f);
-        int fill = Math.round(width * ratio);
-        int color = color(current, max);
-
-        context.fill(x - 2, y - 2, x + width + 2, y + height + 2, 0x99000000);
-        context.fill(x, y, x + width, y + height, 0xFF2A2A2A);
-        context.fill(x, y, x + fill, y + height, color);
-
-        if (overloaded || current >= max) {
-            drawBorder(context, x - 2, y - 2, width + 4, height + 4, 0xFFFF3030);
-        } else {
-            drawBorder(context, x - 2, y - 2, width + 4, height + 4, 0xAAFFFFFF);
+        if (minecraft.player != null
+                && (minecraft.player.hasEffect(MobEffects.STRENGTH)
+                || minecraft.player.hasEffect(MobEffects.HASTE))) {
+            drawIcon(graphics, STRENGTH_ICON, x, y, width, height);
         }
     }
-    private static void drawBorder(
-            DrawContext context,
+
+    private static void renderBarHud(
+            GuiGraphicsExtractor graphics,
             int x,
             int y,
             int width,
             int height,
-            int color
+            float current,
+            float max,
+            boolean overloaded
     ) {
-        context.fill(x, y, x + width, y + 1, color);
-        context.fill(x, y + height - 1, x + width, y + height, color);
-        context.fill(x, y + 1, x + 1, y + height - 1, color);
-        context.fill(x + width - 1, y + 1, x + width, y + height - 1, color);
+        float ratio = Mth.clamp(current / max, 0.0f, 1.0f);
+        int fill = Math.round(width * ratio);
+        int color = color(current, max);
+
+        graphics.fill(x - 2, y - 2, x + width + 2, y + height + 2, 0x99000000);
+        graphics.fill(x, y, x + width, y + height, 0xFF2A2A2A);
+        graphics.fill(x, y, x + fill, y + height, color);
+
+        if (overloaded || current >= max) {
+            graphics.outline(x - 2, y - 2, width + 4, height + 4, 0xFFFF3030);
+        } else {
+            graphics.outline(x - 2, y - 2, width + 4, height + 4, 0xAAFFFFFF);
+        }
     }
 
-    private static void renderHudText(DrawContext context, TextRenderer textRenderer, InventoryWeightConfig.Client config, int elementX, int elementY, int elementWidth, int elementHeight, int screenWidth, int screenHeight, float current, float max) {
+    private static void renderHudText(
+            GuiGraphicsExtractor graphics,
+            Font font,
+            InventoryWeightConfig.Client config,
+            int elementX,
+            int elementY,
+            int elementWidth,
+            int elementHeight,
+            int screenWidth,
+            int screenHeight,
+            float current,
+            float max
+    ) {
         String text = hudText(config, current, max);
+
         if (text.isEmpty()) {
             return;
         }
 
-        int textWidth = textRenderer.getWidth(text);
-        int textHeight = textRenderer.fontHeight;
-        int[] xy = textPosition(config, elementX, elementY, elementWidth, elementHeight, textWidth, textHeight, screenWidth, screenHeight);
+        int textWidth = font.width(text);
+        int textHeight = font.lineHeight;
+
+        int[] xy = textPosition(
+                config,
+                elementX,
+                elementY,
+                elementWidth,
+                elementHeight,
+                textWidth,
+                textHeight,
+                screenWidth,
+                screenHeight
+        );
+
         int color = 0xFF000000 | (config.hudTextColor & 0xFFFFFF);
 
-        if (config.hudTextShadow) {
-            context.drawTextWithShadow(textRenderer, text, xy[0], xy[1], color);
-        } else {
-            context.drawText(textRenderer, text, xy[0], xy[1], color, false);
-        }
+        graphics.text(font, text, xy[0], xy[1], color, config.hudTextShadow);
     }
 
-    private static String hudText(InventoryWeightConfig.Client config, float current, float max) {
-        HudTextMode mode = config.hudTextMode == null ? HudTextMode.CURRENT_MAX : config.hudTextMode;
+    private static String hudText(
+            InventoryWeightConfig.Client config,
+            float current,
+            float max
+    ) {
+        HudTextMode mode = config.hudTextMode == null
+                ? HudTextMode.CURRENT_MAX
+                : config.hudTextMode;
+
         float percent = max <= 0.0f ? 0.0f : (current / max) * 100.0f;
 
         return switch (mode) {
@@ -155,13 +224,33 @@ public final class InventoryWeightHud {
             case MAX -> WeightMath.compact(max);
             case PERCENT -> String.format(Locale.ROOT, "%.0f%%", percent);
             case REMAINING -> WeightMath.compact(Math.max(0.0f, max - current));
-            case CURRENT_MAX_PERCENT -> WeightMath.compact(current) + "/" + WeightMath.compact(max) + " (" + String.format(Locale.ROOT, "%.0f%%", percent) + ")";
-            case CURRENT_MAX -> WeightMath.compact(current) + "/" + WeightMath.compact(max);
+            case CURRENT_MAX_PERCENT -> WeightMath.compact(current)
+                    + "/"
+                    + WeightMath.compact(max)
+                    + " ("
+                    + String.format(Locale.ROOT, "%.0f%%", percent)
+                    + ")";
+            case CURRENT_MAX -> WeightMath.compact(current)
+                    + "/"
+                    + WeightMath.compact(max);
         };
     }
 
-    private static int[] textPosition(InventoryWeightConfig.Client config, int elementX, int elementY, int elementWidth, int elementHeight, int textWidth, int textHeight, int screenWidth, int screenHeight) {
-        HudTextPosition requested = config.hudTextPosition == null ? HudTextPosition.BELOW : config.hudTextPosition;
+    private static int[] textPosition(
+            InventoryWeightConfig.Client config,
+            int elementX,
+            int elementY,
+            int elementWidth,
+            int elementHeight,
+            int textWidth,
+            int textHeight,
+            int screenWidth,
+            int screenHeight
+    ) {
+        HudTextPosition requested = config.hudTextPosition == null
+                ? HudTextPosition.BELOW
+                : config.hudTextPosition;
+
         int x = elementX + (elementWidth - textWidth) / 2;
         int y = elementY + elementHeight + TEXT_GAP;
 
@@ -215,9 +304,20 @@ public final class InventoryWeightHud {
         return new int[]{x, y};
     }
 
-    private static int[] position(InventoryWeightConfig.Client config, int screenWidth, int screenHeight, int elementWidth, int elementHeight, HudStyle style) {
-        HudPosition hudPosition = config.hudPosition == null ? HudPosition.BOTTOM_RIGHT : config.hudPosition;
+    private static int[] position(
+            InventoryWeightConfig.Client config,
+            int screenWidth,
+            int screenHeight,
+            int elementWidth,
+            int elementHeight,
+            HudStyle style
+    ) {
+        HudPosition hudPosition = config.hudPosition == null
+                ? HudPosition.BOTTOM_RIGHT
+                : config.hudPosition;
+
         int bottomMargin = style == HudStyle.SPRITE ? 10 : 24;
+
         int x;
         int y;
 
@@ -272,26 +372,33 @@ public final class InventoryWeightHud {
     }
 
     private static Identifier getFilledIcon(float current, float max) {
-        int filledIndex = max <= 0.0f ? 1 : (int) Math.ceil((current / max) * 12.0f);
+        int filledIndex = max <= 0.0f
+                ? 1
+                : (int) Math.ceil((current / max) * 12.0f);
+
         filledIndex = Math.max(1, Math.min(filledIndex, 12));
-        return Identifier.of(MOD_ID, "textures/gui/inventory_filled/inventory_filled_" + filledIndex + ".png");
+
+        return Identifier.fromNamespaceAndPath(
+                MOD_ID,
+                "textures/gui/inventory_filled/inventory_filled_" + filledIndex + ".png"
+        );
     }
 
     private static void drawIcon(
-            DrawContext context,
+            GuiGraphicsExtractor graphics,
             Identifier icon,
             int x,
             int y,
             int width,
             int height
     ) {
-        context.drawTexture(
+        graphics.blit(
                 RenderPipelines.GUI_TEXTURED,
                 icon,
                 x,
                 y,
-                0.0F,
-                0.0F,
+                0,
+                0,
                 width,
                 height,
                 TEXTURE_SIZE,
@@ -301,9 +408,19 @@ public final class InventoryWeightHud {
 
     private static int color(float current, float max) {
         float percent = max <= 0.0f ? 0.0f : (current / max) * 100.0f;
-        if (percent >= 100.0f) return 0xFFFF3030;
-        if (percent >= 80.0f) return 0xFFFFAA00;
-        if (percent >= 50.0f) return 0xFFFFFF55;
+
+        if (percent >= 100.0f) {
+            return 0xFFFF3030;
+        }
+
+        if (percent >= 80.0f) {
+            return 0xFFFFAA00;
+        }
+
+        if (percent >= 50.0f) {
+            return 0xFFFFFF55;
+        }
+
         return 0xFF55FF55;
     }
 
@@ -311,9 +428,15 @@ public final class InventoryWeightHud {
         return value > 0 ? value : fallback;
     }
 
-    private static int clampToScreen(int value, int size, int screenSize, int margin) {
+    private static int clampToScreen(
+            int value,
+            int size,
+            int screenSize,
+            int margin
+    ) {
         int min = Math.max(0, margin);
         int max = Math.max(min, screenSize - size - margin);
+
         return Math.max(min, Math.min(value, max));
     }
 }

@@ -3,8 +3,8 @@ package com.megatrex4.impl.weight;
 import com.megatrex4.InventoryWeight;
 import com.megatrex4.api.v1.PocketProvider;
 import com.megatrex4.impl.registry.PrioritizedRegistry;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.OptionalInt;
@@ -16,7 +16,7 @@ public final class PocketService {
         this.providers = providers;
     }
 
-    public OptionalInt getPockets(ItemStack stack, @Nullable PlayerEntity wearer) {
+    public OptionalInt getPockets(ItemStack stack, @Nullable Player wearer) {
         if (stack == null || stack.isEmpty()) {
             return OptionalInt.empty();
         }

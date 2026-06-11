@@ -1,16 +1,16 @@
 package com.megatrex4.impl.weight;
 
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.AttributeModifiersComponent;
-import net.minecraft.component.type.EquippableComponent;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.attribute.EntityAttribute;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.equipment.Equippable;
 
 public final class ArmorAttributeHelper {
+
     private ArmorAttributeHelper() {}
 
     public static boolean isArmorStack(ItemStack stack) {
@@ -18,7 +18,7 @@ public final class ArmorAttributeHelper {
             return false;
         }
 
-        EquippableComponent equippable = stack.get(DataComponentTypes.EQUIPPABLE);
+        Equippable equippable = stack.get(DataComponents.EQUIPPABLE);
 
         if (equippable == null) {
             return false;
@@ -33,37 +33,41 @@ public final class ArmorAttributeHelper {
     }
 
     public static int getProtection(ItemStack stack) {
-        return (int) Math.round(getAdditiveAttributeValue(stack, EntityAttributes.ARMOR));
+        return (int) Math.round(getAdditiveAttributeValue(stack, Attributes.ARMOR));
     }
 
     public static float getToughness(ItemStack stack) {
-        return (float) getAdditiveAttributeValue(stack, EntityAttributes.ARMOR_TOUGHNESS);
+        return (float) getAdditiveAttributeValue(stack, Attributes.ARMOR_TOUGHNESS);
     }
 
     private static double getAdditiveAttributeValue(
             ItemStack stack,
-            RegistryEntry<EntityAttribute> attribute
+            Holder<Attribute> attribute
     ) {
-        AttributeModifiersComponent component = stack.get(DataComponentTypes.ATTRIBUTE_MODIFIERS);
-
-        if (component == null) {
+        if (stack == null || stack.isEmpty()) {
             return 0.0D;
         }
 
-        double total = 0.0D;
+        Equippable equippable = stack.get(DataComponents.EQUIPPABLE);
 
-        for (AttributeModifiersComponent.Entry entry : component.modifiers()) {
-            if (!entry.attribute().equals(attribute)) {
-                continue;
-            }
-
-            EntityAttributeModifier modifier = entry.modifier();
-
-            if (modifier.operation() == EntityAttributeModifier.Operation.ADD_VALUE) {
-                total += modifier.value();
-            }
+        if (equippable == null) {
+            return 0.0D;
         }
 
-        return total;
+        EquipmentSlot slot = equippable.slot();
+
+        double[] total = {0.0D};
+
+        stack.forEachModifier(slot, (modifierAttribute, modifier) -> {
+            if (!modifierAttribute.equals(attribute)) {
+                return;
+            }
+
+            if (modifier.operation() == AttributeModifier.Operation.ADD_VALUE) {
+                total[0] += modifier.amount();
+            }
+        });
+
+        return total[0];
     }
 }

@@ -1,6 +1,6 @@
 package com.megatrex4.api.v1;
 
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 
 @FunctionalInterface
 public interface PlayerWeightSource {
@@ -8,5 +8,5 @@ public interface PlayerWeightSource {
      * Adds weight from one player inventory/equipment source.
      * Examples: vanilla inventory, Trinkets slots, custom belts, custom RPG equipment.
      */
-    WeightResult getWeight(PlayerEntity player, WeightContext context, WeightLookup lookup);
+    WeightResult getWeight(Player player, WeightContext context, WeightLookup lookup);
 }

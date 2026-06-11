@@ -1,35 +1,31 @@
 package com.megatrex4.network;
 
 import com.megatrex4.InventoryWeight;
-import com.megatrex4.impl.player.PlayerWeightController;
 import com.megatrex4.impl.data.WeightDataSnapshot;
 import com.megatrex4.impl.data.WeightDataStore;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier;
+import net.minecraft.server.level.ServerPlayer;
 
 import static com.megatrex4.InventoryWeight.MOD_ID;
 
 public final class InventoryWeightNetworking {
-    public static final Identifier WEIGHT_DATA_SYNC = Identifier.of(MOD_ID, "weight_data_sync");
 
-    private static boolean serverRegistered;
+    public static final Identifier WEIGHT_DATA_SYNC =
+            Identifier.fromNamespaceAndPath(MOD_ID, "weight_data_sync");
 
     private InventoryWeightNetworking() {}
 
     public static void registerServer() {
-        PayloadTypeRegistry.playS2C().register(
-                WeightDataSyncPayload.ID,
+        PayloadTypeRegistry.clientboundPlay().register(
+                WeightDataSyncPayload.TYPE,
                 WeightDataSyncPayload.CODEC
         );
     }
 
-    public static void sendDataTo(ServerPlayerEntity player) {
+    public static void sendDataTo(ServerPlayer player) {
         WeightDataSnapshot snapshot = WeightDataStore.INSTANCE.snapshot();
 
         ServerPlayNetworking.send(player, new WeightDataSyncPayload(snapshot));
@@ -45,10 +41,14 @@ public final class InventoryWeightNetworking {
     }
 
     public static void sendDataToAll(MinecraftServer server) {
-        int playerCount = server.getPlayerManager().getPlayerList().size();
-        InventoryWeight.LOGGER.info("Syncing Inventory Weight datapack data to {} player(s).", playerCount);
+        int playerCount = server.getPlayerList().getPlayers().size();
 
-        for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
+        InventoryWeight.LOGGER.info(
+                "Syncing Inventory Weight datapack data to {} player(s).",
+                playerCount
+        );
+
+        for (ServerPlayer player : server.getPlayerList().getPlayers()) {
             sendDataTo(player);
         }
     }

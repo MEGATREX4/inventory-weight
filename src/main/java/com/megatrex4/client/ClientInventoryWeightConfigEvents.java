@@ -7,9 +7,10 @@ import com.megatrex4.impl.config.WeightSettings;
 import me.fzzyhmstrs.fzzy_config.api.ConfigApiJava;
 import me.fzzyhmstrs.fzzy_config.config.Config;
 import me.fzzyhmstrs.fzzy_config.event.api.OnUpdateClientListener;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.Identifier;
 
 public final class ClientInventoryWeightConfigEvents {
     private static boolean registered;
@@ -42,8 +43,8 @@ public final class ClientInventoryWeightConfigEvents {
                 return;
             }
 
-            MinecraftClient client = MinecraftClient.getInstance();
-            MinecraftServer integratedServer = client.getServer();
+            Minecraft minecraft = Minecraft.getInstance();
+            MinecraftServer integratedServer = minecraft.level.getServer();
 
             if (integratedServer == null) {
                 InventoryWeight.LOGGER.info(

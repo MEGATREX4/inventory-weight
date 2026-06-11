@@ -1,19 +1,16 @@
 package com.megatrex4.api.v1;
 
 import com.megatrex4.impl.InventoryWeightServices;
-import net.minecraft.entity.attribute.EntityAttribute;
-import net.minecraft.entity.attribute.EntityAttributeInstance;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.core.Holder;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.OptionalInt;
 
-/**
- * Stable public access point for add-ons.
- */
 public final class InventoryWeightApi {
     private InventoryWeightApi() {}
 
@@ -21,35 +18,32 @@ public final class InventoryWeightApi {
         return InventoryWeightServices.weightService().getWeight(stack, context);
     }
 
-    public static WeightResult getPlayerInventoryWeight(PlayerEntity player) {
+    public static WeightResult getPlayerInventoryWeight(Player player) {
         return InventoryWeightServices.playerWeightService().getInventoryWeight(player);
     }
 
-    public static float getMaxWeight(ServerPlayerEntity player) {
+    public static float getMaxWeight(ServerPlayer player) {
         return InventoryWeightServices.capacityService().getMaxWeight(player);
     }
 
-    public static RegistryEntry<EntityAttribute> getMaxWeightAttribute() {
+    public static Holder<Attribute> getMaxWeightAttribute() {
         return InventoryWeightAttributes.GENERIC_MAX_WEIGHT;
     }
 
     @Nullable
-    public static EntityAttributeInstance getMaxWeightAttributeInstance(PlayerEntity player) {
+    public static AttributeInstance getMaxWeightAttributeInstance(Player player) {
         return InventoryWeightAttributes.getInstance(player);
     }
 
-    public static double getMaxWeightAttributeValue(PlayerEntity player) {
+    public static double getMaxWeightAttributeValue(Player player) {
         return InventoryWeightAttributes.getValue(player);
     }
 
-    /**
-     * Returns only the attribute contribution that is added on top of server config maxWeight.
-     */
-    public static double getMaxWeightAttributeBonus(PlayerEntity player) {
+    public static double getMaxWeightAttributeBonus(Player player) {
         return InventoryWeightAttributes.getValue(player);
     }
 
-    public static OptionalInt getPockets(ItemStack stack, PlayerEntity wearer) {
+    public static OptionalInt getPockets(ItemStack stack, Player wearer) {
         return InventoryWeightServices.pocketService().getPockets(stack, wearer);
     }
 }

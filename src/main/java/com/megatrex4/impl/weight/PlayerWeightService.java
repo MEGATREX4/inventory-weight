@@ -6,8 +6,8 @@ import com.megatrex4.api.v1.PlayerWeightSource;
 import com.megatrex4.api.v1.WeightContext;
 import com.megatrex4.api.v1.WeightResult;
 import com.megatrex4.impl.registry.PrioritizedRegistry;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 
 public final class PlayerWeightService {
     private final WeightService weightService;
@@ -18,8 +18,8 @@ public final class PlayerWeightService {
         this.sources = sources;
     }
 
-    public WeightResult getInventoryWeight(PlayerEntity player) {
-        WeightContext context = new WeightContext(player.getEntityWorld(), player, 0);
+    public WeightResult getInventoryWeight(Player player) {
+        WeightContext context = new WeightContext(player.level(), player, 0);
         WeightResult total = WeightResult.ZERO;
 
         for (PrioritizedRegistry.Entry<PlayerWeightSource> entry : sources.entries()) {
@@ -30,7 +30,7 @@ public final class PlayerWeightService {
             }
         }
 
-        if (player instanceof ServerPlayerEntity serverPlayer) {
+        if (player instanceof ServerPlayer serverPlayer) {
             total = InventoryWeightEvents.MODIFY_PLAYER_INVENTORY_WEIGHT.invoker()
                     .modify(serverPlayer, total)
                     .sanitized();

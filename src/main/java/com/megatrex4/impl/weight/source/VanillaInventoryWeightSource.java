@@ -4,25 +4,25 @@ import com.megatrex4.api.v1.PlayerWeightSource;
 import com.megatrex4.api.v1.WeightContext;
 import com.megatrex4.api.v1.WeightLookup;
 import com.megatrex4.api.v1.WeightResult;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 public final class VanillaInventoryWeightSource implements PlayerWeightSource {
+
     @Override
-    public WeightResult getWeight(PlayerEntity player, WeightContext context, WeightLookup lookup) {
+    public WeightResult getWeight(Player player, WeightContext context, WeightLookup lookup) {
         WeightResult total = WeightResult.ZERO;
 
-        for (ItemStack stack : player.getInventory().getMainStacks()) {
+        for (ItemStack stack : player.getInventory().getNonEquipmentItems()) {
             total = addStack(total, stack, context, lookup);
         }
 
-        total = addStack(total, player.getEquippedStack(EquipmentSlot.OFFHAND), context, lookup);
-
-        total = addStack(total, player.getEquippedStack(EquipmentSlot.HEAD), context, lookup);
-        total = addStack(total, player.getEquippedStack(EquipmentSlot.CHEST), context, lookup);
-        total = addStack(total, player.getEquippedStack(EquipmentSlot.LEGS), context, lookup);
-        total = addStack(total, player.getEquippedStack(EquipmentSlot.FEET), context, lookup);
+        total = addStack(total, player.getItemBySlot(EquipmentSlot.OFFHAND), context, lookup);
+        total = addStack(total, player.getItemBySlot(EquipmentSlot.HEAD), context, lookup);
+        total = addStack(total, player.getItemBySlot(EquipmentSlot.CHEST), context, lookup);
+        total = addStack(total, player.getItemBySlot(EquipmentSlot.LEGS), context, lookup);
+        total = addStack(total, player.getItemBySlot(EquipmentSlot.FEET), context, lookup);
 
         return total;
     }

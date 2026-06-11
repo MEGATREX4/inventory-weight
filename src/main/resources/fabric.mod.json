@@ -30,7 +30,7 @@
 	],
 	"depends": {
 		"fabricloader": ">=0.15.5",
-		"minecraft": "~1.21",
+		"minecraft": "~26.1",
 		"java": ">=17",
 		"fabric-api": "*",
 		"fzzy_config": "*",

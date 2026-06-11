@@ -1,7 +1,7 @@
 package com.megatrex4.component;
 
 
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 import org.ladysnake.cca.api.v3.component.ComponentKey;
 import org.ladysnake.cca.api.v3.component.ComponentRegistry;
 import org.ladysnake.cca.api.v3.entity.EntityComponentFactoryRegistry;
@@ -12,7 +12,7 @@ import static com.megatrex4.InventoryWeight.MOD_ID;
 
 public final class PlayerWeightComponentRegistry implements EntityComponentInitializer {
     public static final ComponentKey<PlayerWeightComponent> PLAYER_WEIGHT = ComponentRegistry.getOrCreate(
-            Identifier.of(MOD_ID, "player_weight"),
+            Identifier.fromNamespaceAndPath(MOD_ID, "player_weight"),
             PlayerWeightComponent.class
     );
 

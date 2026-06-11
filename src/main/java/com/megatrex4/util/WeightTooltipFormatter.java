@@ -1,6 +1,6 @@
 package com.megatrex4.util;
 
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
 
 public final class WeightTooltipFormatter {
     private WeightTooltipFormatter() {}
@@ -10,13 +10,13 @@ public final class WeightTooltipFormatter {
         return String.format("%.1f%%", (current / max) * 100.0f);
     }
 
-    public static Formatting getWeightPercentageColor(float current, float max) {
-        if (max <= 0.0f) return Formatting.GRAY;
+    public static ChatFormatting getWeightPercentageColor(float current, float max) {
+        if (max <= 0.0f) return ChatFormatting.GRAY;
         float percentage = (current / max) * 100.0f;
-        if (percentage >= 100.0f) return Formatting.RED;
-        if (percentage >= 80.0f) return Formatting.GOLD;
-        if (percentage >= 50.0f) return Formatting.YELLOW;
-        return Formatting.GREEN;
+        if (percentage >= 100.0f) return ChatFormatting.RED;
+        if (percentage >= 80.0f) return ChatFormatting.GOLD;
+        if (percentage >= 50.0f) return ChatFormatting.YELLOW;
+        return ChatFormatting.GREEN;
     }
 
     public static boolean isOverloaded(float current, float max) {

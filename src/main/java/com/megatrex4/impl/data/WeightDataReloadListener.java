@@ -5,9 +5,9 @@ import com.megatrex4.network.InventoryWeightNetworking;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.resource.ResourceType;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.resources.ResourceManager;
 
 public final class WeightDataReloadListener {
     private static boolean registered;
@@ -23,14 +23,14 @@ public final class WeightDataReloadListener {
 
         InventoryWeight.LOGGER.info("Registering Inventory Weight datapack reload listener: {}:weight_data", InventoryWeight.MOD_ID);
 
-        ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(new SimpleSynchronousResourceReloadListener() {
+        ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new SimpleSynchronousResourceReloadListener() {
             @Override
             public Identifier getFabricId() {
-                return Identifier.of(InventoryWeight.MOD_ID, "weight_data");
+                return Identifier.fromNamespaceAndPath(InventoryWeight.MOD_ID, "weight_data");
             }
 
             @Override
-            public void reload(ResourceManager manager) {
+            public void onResourceManagerReload(ResourceManager manager) {
                 InventoryWeight.LOGGER.info("Loading Inventory Weight datapack data...");
                 long start = System.nanoTime();
 
@@ -54,7 +54,7 @@ public final class WeightDataReloadListener {
             if (success) {
                 InventoryWeight.LOGGER.info(
                         "Inventory Weight datapack reload completed successfully; syncing weight data to {} player(s).",
-                        server.getPlayerManager().getPlayerList().size()
+                        server.getPlayerList().getPlayers().size()
                 );
                 InventoryWeightNetworking.sendDataToAll(server);
             } else {

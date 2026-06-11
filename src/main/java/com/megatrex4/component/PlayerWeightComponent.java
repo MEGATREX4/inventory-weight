@@ -1,7 +1,7 @@
 package com.megatrex4.component;
 
-import net.minecraft.storage.ReadView;
-import net.minecraft.storage.WriteView;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.ladysnake.cca.api.v3.component.sync.AutoSyncedComponent;
 
 public interface PlayerWeightComponent extends AutoSyncedComponent {
@@ -18,21 +18,21 @@ public interface PlayerWeightComponent extends AutoSyncedComponent {
     void setWeightState(float currentInventoryWeight, float maxWeight, boolean overloaded);
 
     @Override
-    default void readData(ReadView readView) {
-        setCapacityBonus(readView.getFloat("capacityBonus", 0.0f));
+    default void readData(ValueInput input) {
+        setCapacityBonus(input.getFloatOr("capacityBonus", 0.0f));
 
         setWeightState(
-                readView.getFloat("currentInventoryWeight", 0.0f),
-                readView.getFloat("maxWeight", 0.0f),
-                readView.getBoolean("overloaded", false)
+                input.getFloatOr("currentInventoryWeight", 0.0f),
+                input.getFloatOr("maxWeight", 0.0f),
+                input.getBooleanOr("overloaded", false)
         );
     }
 
     @Override
-    default void writeData(WriteView writeView) {
-        writeView.putFloat("capacityBonus", getCapacityBonus());
-        writeView.putFloat("currentInventoryWeight", getCurrentInventoryWeight());
-        writeView.putFloat("maxWeight", getMaxWeight());
-        writeView.putBoolean("overloaded", isOverloaded());
+    default void writeData(ValueOutput output) {
+        output.putFloat("capacityBonus", getCapacityBonus());
+        output.putFloat("currentInventoryWeight", getCurrentInventoryWeight());
+        output.putFloat("maxWeight", getMaxWeight());
+        output.putBoolean("overloaded", isOverloaded());
     }
 }

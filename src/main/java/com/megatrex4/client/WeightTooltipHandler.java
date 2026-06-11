@@ -7,32 +7,43 @@ import com.megatrex4.impl.InventoryWeightServices;
 import com.megatrex4.impl.weight.WeightMath;
 import com.megatrex4.impl.weight.provider.BackpackWeightProvider;
 import com.megatrex4.impl.weight.provider.ShulkerBoxWeightProvider;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.util.InputUtil;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.tooltip.TooltipType;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
 
 public final class WeightTooltipHandler {
+
     private WeightTooltipHandler() {}
 
     public static void appendTooltip(
             ItemStack stack,
             Item.TooltipContext context,
-            TooltipType type,
-            List<Text> tooltip
+            TooltipFlag type,
+            List<Component> tooltip
     ) {
         if (!InventoryWeightConfig.getClient().showTooltips || stack == null || stack.isEmpty()) {
             return;
         }
 
-        MinecraftClient client = MinecraftClient.getInstance();
-        WeightContext weightContext = new WeightContext(client.world, client.player, 0);
+        Minecraft minecraft = Minecraft.getInstance();
+        ClientLevel level = minecraft.level;
+        LocalPlayer player = minecraft.player;
+
+        if (level == null || player == null) {
+            return;
+        }
+
+        WeightContext weightContext = new WeightContext(level, player, 0);
+
         WeightResult unit = InventoryWeightServices.weightService().getWeight(stack, weightContext);
         WeightResult total = unit.multiply(stack.getCount());
 
@@ -47,17 +58,27 @@ public final class WeightTooltipHandler {
             index = appendRegularTooltip(stack, tooltip, index, exact, unit, total);
         }
 
-        int pockets = InventoryWeightServices.pocketService().getPockets(stack, client.player).orElse(0);
+        int pockets = InventoryWeightServices.pocketService().getPockets(stack, player).orElse(0);
+
         if (pockets > 0) {
-            tooltip.add(index++, Text.translatable("inventoryweight.tooltip.pockets", pockets).formatted(Formatting.BLUE));
+            tooltip.add(index++, Component.translatable("inventoryweight.tooltip.pockets", pockets)
+                    .withStyle(ChatFormatting.BLUE));
         }
 
         if (!exact && shouldShowHint(stack, unit, total, container)) {
-            tooltip.add(index, Text.translatable("inventoryweight.tooltip.shift_hint").formatted(Formatting.DARK_GRAY));
+            tooltip.add(index, Component.translatable("inventoryweight.tooltip.shift_hint")
+                    .withStyle(ChatFormatting.DARK_GRAY));
         }
     }
 
-    private static int appendContainerTooltip(ItemStack stack, List<Text> tooltip, int index, boolean exact, WeightResult unit, WeightResult total) {
+    private static int appendContainerTooltip(
+            ItemStack stack,
+            List<Component> tooltip,
+            int index,
+            boolean exact,
+            WeightResult unit,
+            WeightResult total
+    ) {
         float insideWeight = unit.baseWeight();
         float totalInsideWeight = insideWeight * stack.getCount();
 
@@ -66,44 +87,61 @@ public final class WeightTooltipHandler {
         String totalText = format(total.weight(), exact);
         String totalInsideText = format(totalInsideWeight, exact);
 
-        tooltip.add(index++, Text.translatable("inventoryweight.tooltip.weight_inside", insideText).formatted(Formatting.DARK_GRAY));
-        tooltip.add(index++, Text.translatable("inventoryweight.tooltip.weight", unitText).formatted(Formatting.GRAY));
+        tooltip.add(index++, Component.translatable("inventoryweight.tooltip.weight_inside", insideText)
+                .withStyle(ChatFormatting.DARK_GRAY));
+
+        tooltip.add(index++, Component.translatable("inventoryweight.tooltip.weight", unitText)
+                .withStyle(ChatFormatting.GRAY));
 
         if (stack.getCount() > 1) {
-            tooltip.add(index++, Text.translatable("inventoryweight.tooltip.total_weight_inside", totalInsideText).formatted(Formatting.DARK_GRAY));
-            tooltip.add(index++, Text.translatable("inventoryweight.tooltip.total_weight", totalText).formatted(Formatting.GRAY));
+            tooltip.add(index++, Component.translatable("inventoryweight.tooltip.total_weight_inside", totalInsideText)
+                    .withStyle(ChatFormatting.DARK_GRAY));
+
+            tooltip.add(index++, Component.translatable("inventoryweight.tooltip.total_weight", totalText)
+                    .withStyle(ChatFormatting.GRAY));
         }
 
         return index;
     }
 
-    private static int appendRegularTooltip(ItemStack stack, List<Text> tooltip, int index, boolean exact, WeightResult unit, WeightResult total) {
+    private static int appendRegularTooltip(
+            ItemStack stack,
+            List<Component> tooltip,
+            int index,
+            boolean exact,
+            WeightResult unit,
+            WeightResult total
+    ) {
         String unitText = format(unit.weight(), exact);
         String totalText = format(total.weight(), exact);
         String baseText = format(unit.baseWeight(), exact);
 
-        tooltip.add(index++, Text.translatable("inventoryweight.tooltip.weight", unitText).formatted(Formatting.GRAY));
+        tooltip.add(index++, Component.translatable("inventoryweight.tooltip.weight", unitText)
+                .withStyle(ChatFormatting.GRAY));
 
         if (unit.hasModifier()) {
-            tooltip.add(index++, Text.translatable("inventoryweight.tooltip.base_weight", baseText).formatted(Formatting.DARK_GRAY));
+            tooltip.add(index++, Component.translatable("inventoryweight.tooltip.base_weight", baseText)
+                    .withStyle(ChatFormatting.DARK_GRAY));
         }
 
         if (stack.getCount() > 1 || unit.hasModifier()) {
-            tooltip.add(index++, Text.translatable("inventoryweight.tooltip.total_weight", totalText).formatted(Formatting.GRAY));
+            tooltip.add(index++, Component.translatable("inventoryweight.tooltip.total_weight", totalText)
+                    .withStyle(ChatFormatting.GRAY));
         }
 
         return index;
     }
 
     private static boolean isWeightContainer(ItemStack stack) {
-        return ShulkerBoxWeightProvider.isShulkerBox(stack) || BackpackWeightProvider.isBackpackStack(stack);
+        return ShulkerBoxWeightProvider.isShulkerBox(stack)
+                || BackpackWeightProvider.isBackpackStack(stack);
     }
 
     private static boolean shouldShowHint(ItemStack stack, WeightResult unit, WeightResult total, boolean container) {
         return stack.getCount() > 1
                 || total.weight() >= 1000.0f
                 || unit.hasModifier()
-                || (container && unit.baseWeight() >= 1000.0f);
+                || container && unit.baseWeight() >= 1000.0f;
     }
 
     private static String format(float weight, boolean exact) {
@@ -111,13 +149,12 @@ public final class WeightTooltipHandler {
     }
 
     private static boolean isShiftDown() {
-        MinecraftClient client = MinecraftClient.getInstance();
+        Minecraft minecraft = Minecraft.getInstance();
 
-        if (client.getWindow() == null) {
+        if (minecraft == null || minecraft.options == null) {
             return false;
         }
 
-        return InputUtil.isKeyPressed(client.getWindow(), GLFW.GLFW_KEY_LEFT_SHIFT)
-                || InputUtil.isKeyPressed(client.getWindow(), GLFW.GLFW_KEY_RIGHT_SHIFT);
+        return minecraft.options.keyShift.isDown();
     }
 }

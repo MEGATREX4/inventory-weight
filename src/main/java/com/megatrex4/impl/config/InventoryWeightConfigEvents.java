@@ -7,9 +7,9 @@ import com.megatrex4.network.InventoryWeightNetworking;
 import me.fzzyhmstrs.fzzy_config.api.ConfigApiJava;
 import me.fzzyhmstrs.fzzy_config.config.Config;
 import me.fzzyhmstrs.fzzy_config.event.api.OnUpdateServerListener;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier;
+import net.minecraft.server.level.ServerPlayer;
 
 public final class InventoryWeightConfigEvents {
     private static boolean registered;
@@ -49,7 +49,7 @@ public final class InventoryWeightConfigEvents {
             }
 
             InventoryWeight.LOGGER.info("Inventory Weight server config changed by {}; applying live runtime update.", player.getName().getString());
-            applyServerConfigChange(player.getEntityWorld().getServer(), "fzzy_config server update event");
+            applyServerConfigChange(player.level().getServer(), "fzzy_config server update event");
         });
     }
 
@@ -92,7 +92,7 @@ public final class InventoryWeightConfigEvents {
                 settings.overloadPenaltyStrength()
         );
 
-        for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
+        for (ServerPlayer player : server.getPlayerList().getPlayers()) {
             PlayerWeightController.updatePlayer(player);
         }
 

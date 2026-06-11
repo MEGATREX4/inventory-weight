@@ -4,34 +4,47 @@ import com.megatrex4.api.v1.InventoryWeightRegistrar;
 import com.megatrex4.api.v1.WeightContext;
 import com.megatrex4.api.v1.WeightLookup;
 import com.megatrex4.api.v1.WeightResult;
-import dev.emi.trinkets.api.TrinketComponent;
-import dev.emi.trinkets.api.TrinketsApi;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
+import eu.pb4.trinkets.api.TrinketAttachment;
+import eu.pb4.trinkets.api.TrinketsApi;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.ItemStack;
 
 import static com.megatrex4.InventoryWeight.MOD_ID;
 
 public final class TrinketsCompat {
+
     private TrinketsCompat() {}
 
     public static void register(InventoryWeightRegistrar registrar) {
         registrar.registerPlayerWeightSource(
-                Identifier.of(MOD_ID, "trinkets"),
+                Identifier.fromNamespaceAndPath(MOD_ID, "trinkets"),
                 1000,
-                (player, context, lookup) -> TrinketsApi.getTrinketComponent(player)
-                        .map(component -> calculate(component, context, lookup))
-                        .orElse(WeightResult.ZERO)
+                (player, context, lookup) -> calculate(
+                        TrinketsApi.getAttachment(player),
+                        context,
+                        lookup
+                )
         );
     }
 
-    private static WeightResult calculate(TrinketComponent component, WeightContext context, WeightLookup lookup) {
+    private static WeightResult calculate(
+            TrinketAttachment attachment,
+            WeightContext context,
+            WeightLookup lookup
+    ) {
         WeightResult total = WeightResult.ZERO;
-        for (var pair : component.getAllEquipped()) {
-            ItemStack stack = pair.getRight();
+
+        for (var pair : attachment.getAllEquipped()) {
+            ItemStack stack = pair.getB();
+
             if (!stack.isEmpty()) {
-                total = total.add(lookup.getWeight(stack, context).multiply(stack.getCount()));
+                total = total.add(
+                        lookup.getWeight(stack, context)
+                                .multiply(stack.getCount())
+                );
             }
         }
+
         return total;
     }
 }

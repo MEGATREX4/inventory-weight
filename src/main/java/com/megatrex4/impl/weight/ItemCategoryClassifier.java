@@ -1,14 +1,16 @@
 package com.megatrex4.impl.weight;
 
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
+
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
 
 public final class ItemCategoryClassifier {
     private ItemCategoryClassifier() {}
 
     public static ItemCategory classify(ItemStack stack) {
-        String itemId = Registries.ITEM.getId(stack.getItem()).toString().toLowerCase();
+        String itemId = BuiltInRegistries.ITEM.getKey(stack.getItem()).toString().toLowerCase();
 
         if (isCreative(itemId)) {
             return ItemCategory.CREATIVE;

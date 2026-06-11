@@ -5,18 +5,18 @@ import com.megatrex4.api.v1.WeightResult;
 import com.megatrex4.component.PlayerWeightComponentRegistry;
 import com.megatrex4.impl.InventoryWeightServices;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 
 public final class PlayerWeightController {
     private PlayerWeightController() {}
 
     public static void tickServer(MinecraftServer server) {
-        for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
+        for (ServerPlayer player : server.getPlayerList().getPlayers()) {
             updatePlayer(player);
         }
     }
 
-    public static void updatePlayer(ServerPlayerEntity player) {
+    public static void updatePlayer(ServerPlayer player) {
         WeightResult inventoryWeight = InventoryWeightServices.playerWeightService().getInventoryWeight(player);
         float maxWeight = InventoryWeightServices.capacityService().getMaxWeight(player);
         boolean ignored = player.isCreative() || player.isSpectator();

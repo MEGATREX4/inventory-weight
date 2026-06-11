@@ -1,44 +1,44 @@
 package com.megatrex4.impl.weight;
 
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.ListTag;
 import org.jetbrains.annotations.Nullable;
 
 public final class NbtCompat {
     private NbtCompat() {}
 
     @Nullable
-    public static NbtCompound compound(NbtCompound tag, String key) {
+    public static CompoundTag compound(CompoundTag tag, String key) {
         return tag.getCompound(key).orElse(null);
     }
 
-    public static NbtCompound compoundOrEmpty(NbtCompound tag, String key) {
-        return tag.getCompound(key).orElseGet(NbtCompound::new);
+    public static CompoundTag compoundOrEmpty(CompoundTag tag, String key) {
+        return tag.getCompound(key).orElseGet(CompoundTag::new);
     }
 
-    public static NbtList list(NbtCompound tag, String key) {
-        return tag.getList(key).orElseGet(NbtList::new);
+    public static ListTag list(CompoundTag tag, String key) {
+        return tag.getList(key).orElseGet(ListTag::new);
     }
 
     @Nullable
-    public static NbtCompound listCompound(NbtList list, int index) {
+    public static CompoundTag listCompound(ListTag list, int index) {
         return list.getCompound(index).orElse(null);
     }
 
-    public static String string(NbtCompound tag, String key) {
+    public static String string(CompoundTag tag, String key) {
         return tag.getString(key).orElse("");
     }
 
-    public static String string(NbtElement element) {
+    public static String string(Tag element) {
         return element.asString().orElse("");
     }
 
-    public static int intValue(NbtCompound tag, String key, int fallback) {
-        return tag.getInt(key, fallback);
+    public static int intValue(CompoundTag tag, String key, int fallback) {
+        return tag.getIntOr(key, fallback);
     }
 
-    public static short shortValue(NbtCompound tag, String key, short fallback) {
-        return tag.getShort(key, fallback);
+    public static short shortValue(CompoundTag tag, String key, short fallback) {
+        return tag.getShortOr(key, fallback);
     }
 }

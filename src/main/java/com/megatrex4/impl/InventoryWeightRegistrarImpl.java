@@ -2,7 +2,7 @@ package com.megatrex4.impl;
 
 import com.megatrex4.api.v1.*;
 import com.megatrex4.impl.registry.PrioritizedRegistry;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 
 public final class InventoryWeightRegistrarImpl implements InventoryWeightRegistrar {
     private final PrioritizedRegistry<ItemWeightProvider> itemWeightProviders;

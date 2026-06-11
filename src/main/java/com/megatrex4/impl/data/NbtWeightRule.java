@@ -2,12 +2,15 @@ package com.megatrex4.impl.data;
 
 import com.megatrex4.impl.weight.ItemStackData;
 import com.megatrex4.impl.weight.NbtCompat;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.ItemStack;
+
+import net.minecraft.nbt.CompoundTag;
+
 
 import java.util.Map;
 import java.util.Optional;
@@ -18,21 +21,21 @@ public record NbtWeightRule(
         Map<String, Float> valueWeights
 ) {
     public Optional<Float> find(ItemStack stack) {
-        if (!itemId.equals(Registries.ITEM.getId(stack.getItem()))) {
+        if (!itemId.equals(BuiltInRegistries.ITEM.getKey(stack.getItem()))) {
             return Optional.empty();
         }
 
-        NbtCompound nbt = ItemStackData.getCustomData(stack);
+        CompoundTag nbt = ItemStackData.getCustomData(stack);
 
         if (nbt == null || !nbt.contains(nbtKey)) {
             return Optional.empty();
         }
 
-        NbtElement element = nbt.get(nbtKey);
+        Tag element = nbt.get(nbtKey);
 
-        if (element instanceof NbtList list) {
+        if (element instanceof ListTag list) {
             for (int i = 0; i < list.size(); i++) {
-                NbtCompound compound = NbtCompat.listCompound(list, i);
+                CompoundTag compound = NbtCompat.listCompound(list, i);
 
                 if (compound == null) {
                     continue;

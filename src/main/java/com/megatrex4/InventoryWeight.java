@@ -76,7 +76,7 @@ public final class InventoryWeight implements ModInitializer {
 
         ServerLifecycleEvents.SERVER_STARTED.register(server -> LOGGER.info(
                 "Inventory Weight: server started. Online players: {}. Runtime is ready.",
-                server.getPlayerManager().getPlayerList().size()
+                server.getPlayerList().getPlayers().size()
         ));
 
         ServerLifecycleEvents.SERVER_STOPPING.register(server ->

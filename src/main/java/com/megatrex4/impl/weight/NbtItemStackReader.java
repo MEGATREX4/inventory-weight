@@ -1,24 +1,25 @@
 package com.megatrex4.impl.weight;
 
 import com.megatrex4.InventoryWeight;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 public final class NbtItemStackReader {
     private NbtItemStackReader() {}
 
-    public static ItemStack fromNbtSafely(NbtCompound tag) {
+    public static ItemStack fromNbtSafely(CompoundTag tag) {
         if (tag == null || !tag.contains("id")) {
             return ItemStack.EMPTY;
         }
 
         String id = NbtCompat.string(tag, "id");
         int count = NbtCompat.intValue(tag, "Count", 1);
-        NbtCompound itemNbt = NbtCompat.compound(tag, "tag");
+        CompoundTag itemNbt = NbtCompat.compound(tag, "tag");
 
         return fromIdCountSafely(id, count, itemNbt);
     }
@@ -26,7 +27,7 @@ public final class NbtItemStackReader {
     public static ItemStack fromIdCountSafely(
             String rawItemId,
             int count,
-            @Nullable NbtCompound itemNbt
+            @Nullable CompoundTag itemNbt
     ) {
         if (count <= 0) {
             return ItemStack.EMPTY;
@@ -39,12 +40,12 @@ public final class NbtItemStackReader {
             return ItemStack.EMPTY;
         }
 
-        if (!Registries.ITEM.containsId(itemId)) {
+        if (!BuiltInRegistries.ITEM.containsKey(itemId)) {
             InventoryWeight.LOGGER.debug("Skipping container item with unknown item id '{}'.", itemId);
             return ItemStack.EMPTY;
         }
 
-        Item item = Registries.ITEM.get(itemId);
+        Item item = BuiltInRegistries.ITEM.getValue(itemId);
         ItemStack stack = new ItemStack(item, count);
 
         if (itemNbt != null) {

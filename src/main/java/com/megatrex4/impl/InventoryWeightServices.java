@@ -16,7 +16,7 @@ import com.megatrex4.impl.weight.pocket.VanillaArmorPocketProvider;
 import com.megatrex4.impl.weight.provider.*;
 import com.megatrex4.impl.weight.source.VanillaInventoryWeightSource;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 
 import java.util.List;
 
@@ -152,6 +152,6 @@ public final class InventoryWeightServices {
     }
 
     private static Identifier id(String path) {
-        return Identifier.of(MOD_ID, path);
+        return Identifier.fromNamespaceAndPath(MOD_ID, path);
     }
 }

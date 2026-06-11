@@ -1,20 +1,20 @@
 package com.megatrex4.effects;
 
-import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.effect.MobEffect;
 
 import static com.megatrex4.InventoryWeight.MOD_ID;
 
 public final class InventoryWeightEffects {
-    public static final RegistryEntry<StatusEffect> OVERLOAD =
-            Registry.registerReference(
-                    Registries.STATUS_EFFECT,
-                    Identifier.of(MOD_ID, "overload"),
-                    new OverloadEffect()
-            );
+
+    public static final Holder<MobEffect> OVERLOAD = Registry.registerForHolder(
+            BuiltInRegistries.MOB_EFFECT,
+            Identifier.fromNamespaceAndPath(MOD_ID, "overload"),
+            new OverloadEffect()
+    );
 
     private static boolean registered;
 

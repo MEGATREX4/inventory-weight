@@ -1,6 +1,6 @@
 package com.megatrex4.impl.registry;
 
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
 import java.util.Comparator;

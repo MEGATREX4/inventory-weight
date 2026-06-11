@@ -4,27 +4,27 @@ import com.megatrex4.api.v1.WeightResult;
 import com.megatrex4.component.PlayerWeightComponentRegistry;
 import com.megatrex4.impl.InventoryWeightServices;
 import com.megatrex4.impl.player.WeightPenaltyService;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
+import org.spongepowered.asm.mixin.Dynamic;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(LivingEntity.class)
 public abstract class PlayerJumpMixin {
-    @Shadow
-    protected abstract float getJumpVelocity();
 
-    @Inject(method = "jump", at = @At("HEAD"), cancellable = true)
+    @Dynamic("Minecraft 26.1 mappings: LivingEntity#jumpFromGround exists in runtime/decompiled sources, but IDE Mixin plugin may not resolve it.")
+    @Inject(method = "jumpFromGround", at = @At("RETURN"))
     private void inventoryweight$modifyJump(CallbackInfo ci) {
         LivingEntity entity = (LivingEntity) (Object) this;
-        if (!(entity instanceof PlayerEntity player)) {
+
+        if (!(entity instanceof Player player)) {
             return;
         }
+
         if (player.isCreative() || player.isSpectator()) {
             return;
         }
@@ -33,6 +33,7 @@ public abstract class PlayerJumpMixin {
         float maxWeight;
 
         var component = PlayerWeightComponentRegistry.PLAYER_WEIGHT.maybeGet(player);
+
         if (component.isPresent()) {
             currentWeight = component.get().getCurrentInventoryWeight();
             maxWeight = component.get().getMaxWeight();
@@ -46,22 +47,24 @@ public abstract class PlayerJumpMixin {
             return;
         }
 
-        float base = getJumpVelocity();
-        float adjusted = WeightPenaltyService.getJumpVelocity(player, base, currentWeight, maxWeight);
+        Vec3 velocity = player.getDeltaMovement();
 
-        if (Float.compare(base, adjusted) == 0) {
+        float baseJumpVelocity = (float) velocity.y;
+        float adjustedJumpVelocity = WeightPenaltyService.getJumpVelocity(
+                player,
+                baseJumpVelocity,
+                currentWeight,
+                maxWeight
+        );
+
+        if (Float.compare(baseJumpVelocity, adjustedJumpVelocity) == 0) {
             return;
         }
 
-        Vec3d velocity = player.getVelocity();
-        player.setVelocity(velocity.x, adjusted, velocity.z);
-
-        if (player.isSprinting() && currentWeight < maxWeight) {
-            float yawRadians = player.getYaw() * 0.017453292F;
-            player.setVelocity(player.getVelocity().add(-MathHelper.sin(yawRadians) * 0.2F, 0.0, MathHelper.cos(yawRadians) * 0.2F));
-        }
-
-        player.velocityDirty = true;
-        ci.cancel();
+        player.setDeltaMovement(
+                velocity.x,
+                adjustedJumpVelocity,
+                velocity.z
+        );
     }
 }

@@ -9,14 +9,14 @@ import me.fzzyhmstrs.fzzy_config.api.ConfigApiJava;
 import me.fzzyhmstrs.fzzy_config.api.RegisterType;
 import me.fzzyhmstrs.fzzy_config.config.Config;
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedFloat;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerPlayer;
 
 import static com.megatrex4.InventoryWeight.MOD_ID;
 
 public final class InventoryWeightConfig {
-    public static final Identifier SERVER_CONFIG_ID = Identifier.of(MOD_ID, "server-config");
-    public static final Identifier CLIENT_CONFIG_ID = Identifier.of(MOD_ID, "client-config");
+    public static final Identifier SERVER_CONFIG_ID = Identifier.fromNamespaceAndPath(MOD_ID, "server-config");
+    public static final Identifier CLIENT_CONFIG_ID = Identifier.fromNamespaceAndPath(MOD_ID, "client-config");
 
     private static Server SERVER_INSTANCE;
     private static Client CLIENT_INSTANCE;
@@ -25,14 +25,14 @@ public final class InventoryWeightConfig {
 
     public static Server getServer() {
         if (SERVER_INSTANCE == null) {
-            SERVER_INSTANCE = ConfigApiJava.registerAndLoadConfig(Server::new, RegisterType.BOTH);
+            SERVER_INSTANCE = ConfigApiJava.registerAndLoadConfig(Server::new, RegisterType.SERVER);
         }
         return SERVER_INSTANCE;
     }
 
     public static Client getClient() {
         if (CLIENT_INSTANCE == null) {
-            CLIENT_INSTANCE = ConfigApiJava.registerAndLoadConfig(Client::new, RegisterType.BOTH);
+            CLIENT_INSTANCE = ConfigApiJava.registerAndLoadConfig(Client::new, RegisterType.CLIENT);
         }
         return CLIENT_INSTANCE;
     }
@@ -87,13 +87,13 @@ public final class InventoryWeightConfig {
         public float creativeWeight = InventoryWeightDefaults.CREATIVE_WEIGHT;
 
         @Override
-        public void onUpdateServer(ServerPlayerEntity playerEntity) {
-            if (playerEntity == null) {
+        public void onUpdateServer(ServerPlayer player) {
+            if (player == null) {
                 return;
             }
 
             InventoryWeightConfigEvents.applyServerConfigChange(
-                    playerEntity.getEntityWorld().getServer(),
+                    player.level().getServer(),
                     "fzzy_config direct Config.onUpdateServer"
             );
         }

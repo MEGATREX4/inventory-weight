@@ -1,18 +1,18 @@
 package com.megatrex4.component;
 
 import com.megatrex4.impl.InventoryWeightDefaults;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 
 public final class PlayerWeightComponentImpl implements PlayerWeightComponent {
     @SuppressWarnings("unused")
-    private final PlayerEntity player;
+    private final Player player;
 
     private float capacityBonus = 0.0f;
     private float currentInventoryWeight = 0.0f;
     private float maxWeight = InventoryWeightDefaults.MAX_WEIGHT;
     private boolean overloaded = false;
 
-    public PlayerWeightComponentImpl(PlayerEntity player) {
+    public PlayerWeightComponentImpl(Player player) {
         this.player = player;
     }
 

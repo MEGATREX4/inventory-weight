@@ -1,7 +1,7 @@
 package com.megatrex4.impl.data;
 
 import com.megatrex4.impl.config.ServerWeightSettings;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 
 import java.util.List;
 import java.util.Map;

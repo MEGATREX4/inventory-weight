@@ -2,8 +2,8 @@ package com.megatrex4.api.v1;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 
 public final class InventoryWeightEvents {
     private InventoryWeightEvents() {}
@@ -12,9 +12,11 @@ public final class InventoryWeightEvents {
             ModifyItemWeight.class,
             listeners -> (stack, context, current) -> {
                 WeightResult result = current;
+
                 for (ModifyItemWeight listener : listeners) {
                     result = listener.modify(stack, context, result).sanitized();
                 }
+
                 return result;
             }
     );
@@ -23,9 +25,11 @@ public final class InventoryWeightEvents {
             ModifyPlayerInventoryWeight.class,
             listeners -> (player, current) -> {
                 WeightResult result = current;
+
                 for (ModifyPlayerInventoryWeight listener : listeners) {
                     result = listener.modify(player, result).sanitized();
                 }
+
                 return result;
             }
     );
@@ -34,9 +38,11 @@ public final class InventoryWeightEvents {
             ModifyMaxWeight.class,
             listeners -> (player, current) -> {
                 float result = current;
+
                 for (ModifyMaxWeight listener : listeners) {
                     result = Math.max(1.0f, listener.modify(player, result));
                 }
+
                 return result;
             }
     );
@@ -57,16 +63,16 @@ public final class InventoryWeightEvents {
 
     @FunctionalInterface
     public interface ModifyPlayerInventoryWeight {
-        WeightResult modify(ServerPlayerEntity player, WeightResult current);
+        WeightResult modify(ServerPlayer player, WeightResult current);
     }
 
     @FunctionalInterface
     public interface ModifyMaxWeight {
-        float modify(ServerPlayerEntity player, float currentMaxWeight);
+        float modify(ServerPlayer player, float currentMaxWeight);
     }
 
     @FunctionalInterface
     public interface OverloadChanged {
-        void onOverloadChanged(ServerPlayerEntity player, boolean overloaded);
+        void onOverloadChanged(ServerPlayer player, boolean overloaded);
     }
 }

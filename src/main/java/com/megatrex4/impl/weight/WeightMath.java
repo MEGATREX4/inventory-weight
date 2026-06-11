@@ -1,10 +1,10 @@
 package com.megatrex4.impl.weight;
 
 import com.megatrex4.impl.config.ServerWeightSettings;
-import net.minecraft.component.type.ConsumableComponent;
-import net.minecraft.component.type.FoodComponent;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Rarity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.component.Consumable;
 
 public final class WeightMath {
     private WeightMath() {}
@@ -40,8 +40,8 @@ public final class WeightMath {
     }
 
     public static float foodWeight(
-            FoodComponent foodComponent,
-            ConsumableComponent consumableComponent
+            FoodProperties foodComponent,
+            Consumable consumableComponent
     ) {
         if (foodComponent == null) {
             return 0.0f;

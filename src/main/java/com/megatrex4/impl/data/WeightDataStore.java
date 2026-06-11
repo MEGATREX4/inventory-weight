@@ -4,13 +4,12 @@ import com.google.gson.*;
 import com.megatrex4.InventoryWeight;
 import com.megatrex4.impl.config.ServerWeightSettings;
 import com.megatrex4.impl.config.WeightSettings;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.resource.Resource;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
 
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
+import java.io.BufferedReader;
 import java.util.*;
 
 public final class WeightDataStore {
@@ -55,10 +54,10 @@ public final class WeightDataStore {
     }
 
     private void loadItemWeights(ResourceManager manager) {
-        Map<Identifier, Resource> resources = manager.findResources("inventory_weight/items", path -> path.getPath().endsWith(".json"));
+        Map<Identifier, Resource> resources = manager.listResources("inventory_weight/items", path -> path.getPath().endsWith(".json"));
         for (Map.Entry<Identifier, Resource> entry : resources.entrySet()) {
             Identifier file = entry.getKey();
-            try (InputStreamReader reader = new InputStreamReader(entry.getValue().getInputStream(), StandardCharsets.UTF_8)) {
+            try (BufferedReader reader = entry.getValue().openAsReader()) {
                 JsonElement root = JsonParser.parseReader(reader);
                 if (root.isJsonObject()) {
                     JsonObject object = root.getAsJsonObject();
@@ -81,13 +80,20 @@ public final class WeightDataStore {
     }
 
     private void loadPockets(ResourceManager manager) {
-        Map<Identifier, Resource> resources = manager.findResources("inventory_weight/pockets", path -> path.getPath().endsWith(".json"));
+        Map<Identifier, Resource> resources = manager.listResources(
+                "inventory_weight/pockets",
+                path -> path.getPath().endsWith(".json")
+        );
+
         for (Map.Entry<Identifier, Resource> entry : resources.entrySet()) {
             Identifier file = entry.getKey();
-            try (InputStreamReader reader = new InputStreamReader(entry.getValue().getInputStream(), StandardCharsets.UTF_8)) {
+
+            try (BufferedReader reader = entry.getValue().openAsReader()) {
                 JsonElement root = JsonParser.parseReader(reader);
+
                 if (root.isJsonObject()) {
                     JsonObject object = root.getAsJsonObject();
+
                     if (isSinglePocketObject(object)) {
                         parseSinglePocketObject(object, file.toString(), null);
                     } else {
@@ -307,7 +313,7 @@ public final class WeightDataStore {
         WeightSettings.setSyncedServerSettings(snapshot.settings());
     }
 
-    public static void encodeSnapshot(PacketByteBuf buf, WeightDataSnapshot snapshot) {
+    public static void encodeSnapshot(FriendlyByteBuf buf, WeightDataSnapshot snapshot) {
         writeSettings(buf, snapshot.settings());
 
         buf.writeVarInt(snapshot.itemWeights().size());
@@ -325,27 +331,29 @@ public final class WeightDataStore {
         buf.writeVarInt(snapshot.nbtWeightRules().size());
         for (NbtWeightRule rule : snapshot.nbtWeightRules()) {
             buf.writeIdentifier(rule.itemId());
-            buf.writeString(rule.nbtKey());
+            buf.writeUtf(rule.nbtKey());
             buf.writeVarInt(rule.valueWeights().size());
-            rule.valueWeights().forEach((value, weight) -> {
-                buf.writeString(value);
-                buf.writeFloat(weight);
-            });
+
+            for (Map.Entry<String, Float> valueEntry : rule.valueWeights().entrySet()) {
+                buf.writeUtf(valueEntry.getKey());
+                buf.writeFloat(valueEntry.getValue());
+            }
         }
 
         buf.writeVarInt(snapshot.nbtPocketRules().size());
         for (NbtPocketRule rule : snapshot.nbtPocketRules()) {
             buf.writeIdentifier(rule.itemId());
-            buf.writeString(rule.nbtKey());
+            buf.writeUtf(rule.nbtKey());
             buf.writeVarInt(rule.valuePockets().size());
-            rule.valuePockets().forEach((value, pocketCount) -> {
-                buf.writeString(value);
-                buf.writeVarInt(pocketCount);
-            });
+
+            for (Map.Entry<String, Integer> valueEntry : rule.valuePockets().entrySet()) {
+                buf.writeUtf(valueEntry.getKey());
+                buf.writeVarInt(valueEntry.getValue());
+            }
         }
     }
 
-    public static WeightDataSnapshot decodeSnapshot(PacketByteBuf buf) {
+    public static WeightDataSnapshot decodeSnapshot(FriendlyByteBuf buf) {
         ServerWeightSettings settings = readSettings(buf);
 
         Map<Identifier, Float> itemWeights = new HashMap<>();
@@ -364,11 +372,11 @@ public final class WeightDataStore {
         int weightRuleCount = buf.readVarInt();
         for (int i = 0; i < weightRuleCount; i++) {
             Identifier itemId = buf.readIdentifier();
-            String nbtKey = buf.readString();
+            String nbtKey = buf.readUtf();
             int valueCount = buf.readVarInt();
             Map<String, Float> values = new HashMap<>();
             for (int j = 0; j < valueCount; j++) {
-                values.put(buf.readString(), buf.readFloat());
+                values.put(buf.readUtf(), buf.readFloat());
             }
             weightRules.add(new NbtWeightRule(itemId, nbtKey, Map.copyOf(values)));
         }
@@ -377,11 +385,11 @@ public final class WeightDataStore {
         int pocketRuleCount = buf.readVarInt();
         for (int i = 0; i < pocketRuleCount; i++) {
             Identifier itemId = buf.readIdentifier();
-            String nbtKey = buf.readString();
+            String nbtKey = buf.readUtf();
             int valueCount = buf.readVarInt();
             Map<String, Integer> values = new HashMap<>();
             for (int j = 0; j < valueCount; j++) {
-                values.put(buf.readString(), buf.readVarInt());
+                values.put(buf.readUtf(), buf.readVarInt());
             }
             pocketRules.add(new NbtPocketRule(itemId, nbtKey, Map.copyOf(values)));
         }
@@ -389,7 +397,7 @@ public final class WeightDataStore {
         return new WeightDataSnapshot(settings, Map.copyOf(itemWeights), Map.copyOf(pockets), List.copyOf(weightRules), List.copyOf(pocketRules));
     }
 
-    private static void writeSettings(PacketByteBuf buf, ServerWeightSettings settings) {
+    private static void writeSettings(FriendlyByteBuf buf, ServerWeightSettings settings) {
         buf.writeFloat(settings.maxWeight());
         buf.writeFloat(settings.pocketWeight());
         buf.writeBoolean(settings.realisticMode());
@@ -403,7 +411,7 @@ public final class WeightDataStore {
         buf.writeFloat(settings.creativeWeight());
     }
 
-    private static ServerWeightSettings readSettings(PacketByteBuf buf) {
+    private static ServerWeightSettings readSettings(FriendlyByteBuf buf) {
         return new ServerWeightSettings(
                 buf.readFloat(),
                 buf.readFloat(),
