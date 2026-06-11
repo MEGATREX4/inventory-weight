@@ -1,5 +1,5 @@
 ---
-title: "MT Inventory Weight Add-on API"
+title: "MT Inventory API"
 description: "How to create add-ons for MT Inventory Weight using the public API."
 ---
 

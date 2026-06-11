@@ -1,6 +1,7 @@
 ---
-title: "MT Inventory Weight Mod Compatibility"
+title: "Compatibilities"
 description: "Compatibility information for MT Inventory Weight, including fzzy_config, Mod Menu, Trinkets, datapacks, backpack/container support, multiplayer, and add-on API support."
+order: 4
 ---
 
 # Compatibility of MT Inventory Weight

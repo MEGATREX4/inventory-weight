@@ -1,6 +1,7 @@
 ---
-title: "MT Inventory Weight Mod FAQ"
+title: "FAQ"
 description: "Frequently asked questions about MT Inventory Weight, including installation, fzzy_config, Mod Menu, Trinkets, datapacks, add-ons, HUD customization, multiplayer, and support."
+order: 3
 ---
 
 # Frequently Asked Questions
@@ -233,7 +234,7 @@ Add-ons can register:
 - pocket providers
 - events/listeners
 
-See the [Add-on API](./features/addon-api.md) page.
+See the [Add-on API](../сompatibilities/addon-api.md) page.
 
 ## Are there known conflicts with other mods?
 

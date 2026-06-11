@@ -16,8 +16,16 @@ Commands can be used to:
 - debug item weights
 - debug armor pocket values
 
-::: warning
-All commands listed here require permission level `4` by default.
+::: warning Command Permissions
+
+All commands on this page require **permission level `4`** by default.
+
+| Minecraft version | Required permission |
+| - | - |
+| Before `1.21.1` | Permission level `4` |
+| `1.21.1+` | `OWNERS_CHECK` |
+|`21.1+`| `LEVEL_OWNERS` |
+
 :::
 
 ## `/inventoryweight`

@@ -1,6 +1,7 @@
 ---
-title: "Installing MT Inventory Weight"
+title: "Installation process"
 description: "A step-by-step guide for installing MT Inventory Weight on Fabric, including required and optional dependencies."
+order: 2
 ---
 
 # Installing MT Inventory Weight

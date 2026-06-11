@@ -175,4 +175,4 @@ Example:
 - [Server Configuration](../options/inventory_weights_server.md)
 - [Items Configuration](../options/inventory_weights_items.md)
 - [Custom Item Weights](./item_custom_values.md)
-- [Datapack Customization](../datapacks.md)
+- [Datapack Customization](../сompatibilities/datapacks.md)

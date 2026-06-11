@@ -185,7 +185,7 @@ Depending on provider priority, an add-on may override or run before datapack we
 
 For developer integrations, see:
 
-- [Add-on API](./addon-api.md)
+- [Add-on API](././сompatibilities/addon-api.md)
 
 ## Migrating from Old Configs
 
@@ -222,5 +222,5 @@ config/inventoryweight/
 ## Related Pages
 
 - [Inventory Weights Items Configuration](../options/inventory_weights_items.md)
-- [Datapack Customization](../datapacks.md)
+- [Datapack Customization](../сompatibilities/datapacks.md)
 - [Default Item Values](./item_default_values.md)

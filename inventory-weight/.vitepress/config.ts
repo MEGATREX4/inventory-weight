@@ -30,12 +30,6 @@ export default defineConfig({
       lang: 'en',
       link: '/',
       ...enConfig,
-    },
-    ua: {
-      label: 'Українська',
-      lang: 'ua',
-      link: '/ua/',
-      ...uaConfig,
     }
   }
 })

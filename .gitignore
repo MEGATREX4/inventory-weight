@@ -2,3 +2,9 @@
 /build
 /run
 /.idea
+/node_modules
+/inventory-weight/.vitepress/cache
+../inventory-weight/.vitepress/cache
+./inventory-weight/.vitepress/cache/deps
+/inventory-weight/.vitepress/cache
+/inventory-weight/.vitepress/cache/deps

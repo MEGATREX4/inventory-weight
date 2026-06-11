@@ -1,6 +1,7 @@
 ---
 title: "Inventory Weight Docs"
 description: "Welcome to the English documentation of the MT Inventory Weight."
+order: 1
 ---
 
 # **MT Inventory Weight Documentation**

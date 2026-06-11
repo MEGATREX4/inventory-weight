@@ -219,4 +219,4 @@ For more details, see:
 
 - [Inventory Weights Items Configuration](../options/inventory_weights_items.md)
 - [Pockets](./pockets.md)
-- [Datapack Customization](../datapacks.md)
+- [Datapack Customization](../сompatibilities/datapacks.md)
