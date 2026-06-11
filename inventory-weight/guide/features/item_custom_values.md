@@ -185,7 +185,7 @@ Depending on provider priority, an add-on may override or run before datapack we
 
 For developer integrations, see:
 
-- [Add-on API](././сompatibilities/addon-api.md)
+- [Add-on API](././compatibilities/addon-api.md)
 
 ## Migrating from Old Configs
 
