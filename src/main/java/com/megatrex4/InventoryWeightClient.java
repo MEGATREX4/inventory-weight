@@ -1,9 +1,6 @@
 package com.megatrex4;
 
-import com.megatrex4.client.ClientInventoryWeightConfigEvents;
-import com.megatrex4.client.ClientInventoryWeightNetworking;
-import com.megatrex4.client.InventoryWeightHud;
-import com.megatrex4.client.WeightTooltipHandler;
+import com.megatrex4.client.*;
 import com.megatrex4.config.InventoryWeightConfig;
 import com.megatrex4.impl.InventoryWeightServices;
 import com.megatrex4.impl.config.WeightSettings;
@@ -38,14 +35,10 @@ public final class InventoryWeightClient implements ClientModInitializer {
                 InventoryWeightHud::render
         );
 
+        ClientKeyState.register();
         InventoryWeight.LOGGER.info("Registering Inventory Weight item tooltip handler...");
-        ItemTooltipCallback.EVENT.register((stack, context, tooltipFlag, lines) -> {
-            try {
-                WeightTooltipHandler.appendTooltip(stack, context, tooltipFlag, lines);
-            } catch (Throwable throwable) {
-                InventoryWeight.LOGGER.error("Inventory Weight tooltip handler failed", throwable);
-            }
-        });
+        ItemTooltipCallback.EVENT.register((stack, context, tooltipFlag, lines) ->
+        WeightTooltipHandler.appendTooltip(stack, context, tooltipFlag, lines));
 
         InventoryWeight.LOGGER.info("Inventory Weight client initialized successfully.");
     }

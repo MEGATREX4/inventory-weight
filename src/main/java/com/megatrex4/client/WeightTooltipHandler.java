@@ -149,12 +149,6 @@ public final class WeightTooltipHandler {
     }
 
     private static boolean isShiftDown() {
-        Minecraft minecraft = Minecraft.getInstance();
-
-        if (minecraft == null || minecraft.options == null) {
-            return false;
-        }
-
-        return minecraft.options.keyShift.isDown();
+        return ClientKeyState.isShiftDown();
     }
 }

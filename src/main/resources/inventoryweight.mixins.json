@@ -6,6 +6,9 @@
     "PlayerAttributeMixin",
     "PlayerJumpMixin"
   ],
+  "client": [
+    "client.ScreenShiftStateMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   }
