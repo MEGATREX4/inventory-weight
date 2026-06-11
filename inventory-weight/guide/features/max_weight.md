@@ -254,4 +254,4 @@ If a server config value is changed through fzzy_config, MT Inventory Weight app
 - [Server Configuration](../options/inventory_weights_server.md)
 - [Pockets](./pockets.md)
 - [Overload Effect](./overload_effect.md)
-- [Add-on API](././compatibilities/addon-api.md)
+- [Add-on API](../compatibilities/addon-api.md)

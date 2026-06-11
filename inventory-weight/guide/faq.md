@@ -183,7 +183,7 @@ There are several ways to customize item weights:
 3. NBT-specific datapack rules.
 4. Add-ons using the public API.
 
-See the [Datapack Customization](./datapacks.md) page for examples.
+See the [Datapack Customization](./compatibilities/datapacks.md) page for examples.
 
 ## Can armor pocket values be changed?
 
@@ -234,7 +234,7 @@ Add-ons can register:
 - pocket providers
 - events/listeners
 
-See the [Add-on API](../compatibilities/addon-api.md) page.
+See the [Add-on API](./compatibilities/addon-api.md) page.
 
 ## Are there known conflicts with other mods?
 

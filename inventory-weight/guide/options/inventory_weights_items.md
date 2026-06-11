@@ -190,7 +190,7 @@ com.megatrex4.api.v1
 
 Add-ons can register an `ItemWeightProvider` to calculate weights dynamically from item data, NBT, capabilities, or another mod's API.
 
-See the [Add-on API](./compatibilities/addon-api.md) page for examples.
+See the [Add-on API](../compatibilities/addon-api.md) page for examples.
 
 ## Example Datapack Structure
 
