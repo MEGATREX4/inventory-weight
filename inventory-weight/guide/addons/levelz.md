@@ -14,7 +14,7 @@ order: 10
 You can download the add-on from Modrinth:
 
 
-- [LevelZ Inventory Weight on Modrinth](++[https://modrinth.com/mod/levelz-inventory-weight](https://modrinth.com/mod/levelz-inventory-weight)++)
+- [LevelZ Inventory Weight on Modrinth](https://modrinth.com/mod/levelz-inventory-weight)
 
 
 It allows the player's **LevelZ overall character level** and/or a configured **LevelZ skill** to increase the player's maximum inventory weight capacity.
@@ -29,9 +29,9 @@ This add-on is **not standalone**. It requires both **LevelZ** and **MT Inventor
 You must install:
 
 
-- [LevelZ](++[https://modrinth.com/mod/levelz](https://modrinth.com/mod/levelz)++)
-- [MT Inventory Weight](++[https://modrinth.com/mod/inventory-weight](https://modrinth.com/mod/inventory-weight)++)
-- [Fabric API](++[https://modrinth.com/mod/fabric-api](https://modrinth.com/mod/fabric-api)++)
+- [LevelZ](https://modrinth.com/mod/levelz)
+- [MT Inventory Weight](https://modrinth.com/mod/inventory-weight)
+- [Fabric API](https://modrinth.com/mod/fabric-api)
 
 
 Recommended versions:
@@ -679,8 +679,8 @@ then LevelZ creates the `carrying` skill before dynamic creation runs, so the ad
 ## Related Documentation
 
 
-- [MT Inventory Weight](++[https://modrinth.com/mod/inventory-weight](https://modrinth.com/mod/inventory-weight)++)
-- [LevelZ](++[https://modrinth.com/mod/levelz](https://modrinth.com/mod/levelz)++)
-- [fzzy_config](++[https://modrinth.com/mod/fzzy-config](https://modrinth.com/mod/fzzy-config)++)
+- [MT Inventory Weight](https://modrinth.com/mod/inventory-weight)
+- [LevelZ](https://modrinth.com/mod/levelz)
+- [fzzy_config](https://modrinth.com/mod/fzzy-config)
 
 
