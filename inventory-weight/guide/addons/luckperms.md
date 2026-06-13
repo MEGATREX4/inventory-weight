@@ -16,14 +16,6 @@ Install these mods on the server:
 - [LuckPerms](https://modrinth.com/mod/luckperms)
 - [Fabric API](https://modrinth.com/mod/fabric-api)
 
-Recommended versions:
-
-| Dependency | Recommended Version |
-| --- | --- |
-| Minecraft | `1.20.1` |
-| MT Inventory Weight | `2.0.1-1.20.1` or newer |
-| LuckPerms | `v5.4.102-fabric` or newer |
-
 ## Environment
 
 This add-on is intended for server
