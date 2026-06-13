@@ -32,7 +32,8 @@ You must install:
 - [LevelZ](https://modrinth.com/mod/levelz)
 - [MT Inventory Weight](https://modrinth.com/mod/inventory-weight)
 - [Fabric API](https://modrinth.com/mod/fabric-api)
-
+- [Fabric Language Kotlin](https://modrinth.com/mod/fabric-language-kotlin)
+- [fzzy_config](https://modrinth.com/mod/fzzy-config)
 
 Recommended versions:
 
