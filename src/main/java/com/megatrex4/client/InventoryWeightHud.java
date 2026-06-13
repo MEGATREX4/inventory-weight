@@ -35,7 +35,7 @@ public final class InventoryWeightHud {
 
     public static void render(DrawContext context, float tickDelta) {
         MinecraftClient client = MinecraftClient.getInstance();
-        if (client.player == null || client.getDebugHud().shouldShowDebugHud()) {
+        if (client.player == null || client.getDebugHud().shouldShowDebugHud()  || client.options.hudHidden) {
             return;
         }
 
