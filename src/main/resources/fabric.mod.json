@@ -21,9 +21,6 @@
 		"client": [
 			"com.megatrex4.InventoryWeightClient"
 		],
-		"server": [
-			"com.megatrex4.InventoryWeightServer"
-		],
 		"cardinal-components-entity": [
 			"com.megatrex4.component.PlayerWeightComponentRegistry"
 		]
