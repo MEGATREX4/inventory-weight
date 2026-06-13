@@ -1,4 +1,8 @@
-# LuckPerms InventoryWeight Documentation
+---
+title: "LuckPerms"
+description: "LuckPerms InventoryWeight connects LuckPerms rank meta values with MT Inventory Weight, allowing server admins to grant flat, percent, or multiplier-based carry capacity bonuses through LuckPerms meta keys."
+---
+
 
 LuckPerms InventoryWeight is a server-side add-on that connects **LuckPerms** meta values with **MT Inventory Weight** max carry capacity.
 
