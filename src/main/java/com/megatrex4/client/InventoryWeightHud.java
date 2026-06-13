@@ -42,7 +42,9 @@ public final class InventoryWeightHud {
     public static void render(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
         Minecraft minecraft = Minecraft.getInstance();
 
-        if (minecraft.player == null) {
+        if (minecraft.player == null
+                || minecraft.options.hideGui
+                || minecraft.getDebugOverlay().showDebugScreen()) {
             return;
         }
 
