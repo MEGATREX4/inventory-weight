@@ -42,14 +42,6 @@ PlayerEX Inventory Weight depends on both PlayerEX and MT Inventory Weight. If e
 
 ## Mod IDs
 
-Important mod IDs:
-
-```text
-PlayerEX:             playerex
-MT Inventory Weight:  inventoryweight
-PlayerEX add-on:      playerex_inventoryweight
-```
-
 The MT Inventory Weight max-weight attribute is:
 
 ```text
