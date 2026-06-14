@@ -13,7 +13,7 @@ Install these mods on the server:
 
 - [MT Inventory Weight](https://modrinth.com/mod/inventory-weight)
 - [FTB Ranks](https://www.curseforge.com/minecraft/mc-mods/ftb-ranks-fabric)
-- [Architectury API](https://modrinth.com/mod/architectury-api)
+- [Architectury API](https://modrinth.com/mod/architectury-api) (not needed for 26.1+)
 - [Fabric API](https://modrinth.com/mod/fabric-api)
 
 ::: info
