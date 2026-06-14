@@ -370,19 +370,27 @@ body {
 }
 
 .custom-block.warning .custom-block-title::before {
-  content: "⚠ ";
+  content: "! ";
+  font-weight: bold;
+  font-size: 1.2em;
 }
 
 .custom-block.tip .custom-block-title::before {
   content: "✓ ";
+  font-weight: bold;
+  font-size: 1.2em;
 }
 
 .custom-block.danger .custom-block-title::before {
-  content: "✖ ";
+  content: "✕ ";
+  font-weight: bold;
+  font-size: 1.2em;
 }
 
 .custom-block.info .custom-block-title::before {
-  content: "ⓘ ";
+  content: "» ";
+  font-weight: bold;
+  font-size: 1.2em;
 }
 
 /* -------------------------------------------------------
