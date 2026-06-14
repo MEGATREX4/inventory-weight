@@ -19,7 +19,7 @@ It also ships an **optional, built-in "Carrying" skill tree** you can enable per
 - [MT Inventory Weight](https://modrinth.com/mod/inventory-weight)
 - [Pufferfish's Skills](https://modrinth.com/mod/puffish-skills)
 - [Fabric API](https://modrinth.com/mod/fabric-api)
-- [fzzy_config](https://modrinth.com/mod/fzzy-config) — used for the add-on's config
+- [fzzy_config](https://modrinth.com/mod/fzzy-config)
 
 ::: info
 Pufferfish's Skills is server-authoritative for skill levels, so this add-on runs on the
@@ -73,11 +73,11 @@ player's max weight increases.
 
 ### Operations
 
-| `operation`                                   | Effect                                    |
-| --------------------------------------------- | ----------------------------------------- |
-| `addition` / `add` / `add_value`              | Flat add (e.g. `+200`). **Recommended.**  |
-| `multiply_base` / `add_multiplied_base`       | Add a fraction of the attribute base.     |
-| `multiply_total` / `add_multiplied_total`     | Multiply the running total.               |
+| `operation`                               | Effect                                  |
+| ----------------------------------------- | --------------------------------------- |
+| `addition` / `add` / `add_value`          | Flat add (e.g. `+200`). **Recommended.**|
+| `multiply_base` / `add_multiplied_base`   | Add a fraction of the attribute base.   |
+| `multiply_total` / `add_multiplied_total` | Multiply the running total.             |
 
 ::: warning
 For `inventoryweight:generic.max_weight`, prefer `addition`. The attribute's base value is
@@ -93,7 +93,7 @@ skill **category's experience level** (read via Pufferfish's `SkillsAPI`):
 SkillsAPI.getCategory(id) -> Category.getExperience() -> Experience.getLevel(player)
 ```
 
-This is configured through the add-on's fzzy_config (`category` and `totalLevel` formulas).
+This is configured through the add-on's fzzy_config `category` and `totalLevel` formulas).
 See the config section below.
 
 ::: tip
@@ -129,7 +129,7 @@ There are three levels of control:
 1. **Use the default as-is** — enable the bundled "Carrying Skill Tree" built-in pack. No
    files needed.
 2. **Override the default** — ship your own datapack that defines the **same** category id
-   (`carrying`) under the **same** namespace (`puffish_skills`). Pufferfish loads packs in
+   `carrying`) under the **same** namespace `puffish_skills`). Pufferfish loads packs in
    order, and a later pack's files replace the built-in ones, so your `definitions.json` /
    `skills.json` / etc. win. Keep the built-in pack **disabled** (or override every file) to
    avoid mixing.
@@ -183,7 +183,7 @@ ways to load them (from the official docs):
 | **Config folder** | `config/puffish_skills/` | No | Dev only |
 
 ::: info
-A plain **datapack** only loads the `data/` side. Translations (`assets/.../lang`) and
+A plain **datapack** only loads the `data/` side. Translations `assets/.../lang`) and
 textures need the **resource pack** or **mod loader** method. This add-on uses the mod-jar
 (built-in pack) method, so it ships both `data/` and `assets/` together.
 :::
@@ -194,7 +194,7 @@ See the official tutorial:
 ## Category file structure
 
 A category is a folder under `data/<namespace>/puffish_skills/categories/<category>/`. The
-category folder name must only use `a`–`z` and `_`. Each category has these files
+category folder name must only use `az` and `_`. Each category has these files
 (from the official docs):
 
 ```text
@@ -223,7 +223,7 @@ data/<namespace>/puffish_skills/
 Pufferfish loads a single `puffish_skills/config.json` listing ALL categories. If two
 packs each ship this file, only one wins. If you add `carrying` alongside another pack
 (e.g. Default Skill Trees), make sure your `config.json` lists every category you want
-(`combat`, `mining`, `carrying`, ...).
+`combat`, `mining`, `carrying`, ...).
 :::
 
 See the official docs:
@@ -271,6 +271,167 @@ See the official docs:
 ```
 
 `category.json` and `experience.json` round out the category (title/icon and XP).
+
+---
+
+# Authoring skill trees with the Editor and Template Generator
+
+Writing `skills.json` and `connections.json` by hand works for a single root node, but
+gets painful fast — node coordinates, bidirectional connections, and root flags are easy
+to typo. Pufferfish's Skills ships **two official web tools** that produce the exact same
+files the mod expects:
+
+- **Template Generator** — produces a starter datapack ZIP with the correct folder layout,
+  `pack.mcmeta`, `config.json`, and (optionally) an example skill tree.
+- **Editor** — a browser-based visual editor for placing nodes, drawing connections, and
+  exporting `skills.json` + `connections.json` (and optionally `definitions.json`).
+
+Links:
+
+- [Editor](https://puffish.net/skillsmod/editor/)
+- [Template Generator](https://puffish.net/skillsmod/docs/creators/template-generator)
+- [Official tutorial: Creating custom skill trees](https://puffish.net/skillsmod/docs/creators/tutorials/creating-skill-trees)
+
+## Template Generator
+
+Use this to bootstrap a project — it gives you a clean datapack ZIP with the right folder
+layout so you can skip the boilerplate.
+
+**Settings:**
+
+| Field | Required | Notes |
+| --- | --- | --- |
+| **Name** | Yes | Project name. Cannot be empty. |
+| **Namespace** | Yes | Must be lowercase, digits, `_`, `-`. Make it unique per project to avoid collisions (e.g. `mymod`, not `puffish_skills`). |
+| **Description** | Yes | Goes into `pack.mcmeta`. |
+| **Example Skill Tree** | Optional | Generates a working `example` category so you can see the file layout before you write your own. **Recommended** for first-time authors. |
+| **Game Version** | Yes | `1.21.3 or later` vs `1.18.2 to 1.21.2` — pick the one your world runs. Affects `pack_format` in `pack.mcmeta`. |
+| **Support for Mod Loaders** | Optional | Adds the `mods/` folder + the metadata files so the resulting ZIP can be renamed to `.jar` and dropped into `mods/`. **Recommended** for distribution. |
+| **Assets Folder** | Optional | Adds the `assets/` folder. Requires Mod Loader support to actually take effect. |
+
+Click **Generate and download**, then:
+
+1. Extract the ZIP into `<world>/datapacks/<your-project>/`.
+2. Launch the world; you should see the example tree (if you enabled it) in the skills
+   screen (default key **K**).
+
+::: tip
+If you only ever need data-only trees for personal worlds, just enable **Example Skill
+Tree** and skip the mod-loader option. If you plan to distribute the tree to players
+(your mod's built-in pack, a modpack, a public release), turn on **Support for Mod
+Loaders** so the same ZIP doubles as a `.jar`.
+:::
+
+## Editor
+
+A browser-based visual editor at [puffish.net/skillsmod/editor](https://puffish.net/skillsmod/editor/).
+It does **not** define skills — only their **layout and connections**. Definitions still
+live in `definitions.json` (you edit that file by hand, then re-import it).
+
+### Panels and what each one imports/exports
+
+The editor has **three import/export pairs** (plus a metadata toggle):
+
+| Panel | File | What it controls |
+| --- | --- | --- |
+| **Project** | `category.json` | Category-wide metadata (title, icon, background, `unlocked_by_default`). |
+| **Definitions** | `definitions.json` | Skill templates (title, icon, rewards, costs). |
+| **Skills** | `skills.json` | Skill **nodes**: position on the grid, which definition they use, root flag. |
+| **Connections** | `connections.json` | Links between nodes. |
+| **Save metadata** *(toggle)* | — | When ON, exporting `skills.json` also embeds per-skill icon/title so the icons survive a browser-session reload. When OFF, only the bare layout (`x`, `y`, `definition`) is exported. |
+| **Save connections in legacy format** *(toggle)* | — | Older pack format. Leave OFF for new projects. |
+
+::: tip Workflow tip
+For a new category, import **only `definitions.json`** — the editor will give you an empty
+canvas. For an existing category you want to redesign, import all three (`definitions`,
+`skills`, `connections`) so you don't lose anything.
+:::
+
+### Editor settings
+
+These appear in the right sidebar:
+
+**Grid**
+
+- **Type**: `None` (free placement) / `Square` / `Hex` / `Radial`.
+- **Orientation** (Hex only): `Flat` / `Pointy`.
+- **Spacing**: distance between grid cells.
+- **Size**: node size on the canvas.
+
+**Connections**
+
+- **Type**: `Normal` (any node can connect to any unlocked node) / `Exclusive` (only one
+  branch can be active at a time, like a choice).
+- **Direction**: `Bidirectional` / `Unidirectional` (one-way prerequisite).
+
+**Definitions**
+
+- **Theme**: `Automatic` / `Light` / `Dark`.
+- **Show normal connections** / **Show exclusive connections**: visual toggles for the
+  canvas.
+
+### Mouse and keyboard shortcuts
+
+| Action | Shortcut |
+| --- | --- |
+| Move skill | `Left-Click` drag |
+| Pan view | `Middle-Click` drag |
+| Zoom view | `Scroll` |
+| Add skill | `A`, or `Right-Click` on empty canvas |
+| Add / edit / delete skill | `T`, or `Right-Click` on existing skill |
+| Edit skill | `E` |
+| Edit selected skills | `Shift + E` |
+| Delete skill | `D` |
+| Delete selected skills | `Shift + D` |
+| Set / unset root | `R` (or `Shift + R` for selected) |
+| Add / delete connection | `C`, or `Middle-Click` between two skills |
+| Delete all connections for skill | `X` (or `Shift + X` for selected) |
+
+### Editing session vs. on-disk files
+
+The editor keeps your work in browser session storage (cleared when you clear browser
+data). **Always export `skills.json` and `connections.json` (and `definitions.json` if
+you used "Save metadata") before closing the tab.** Exporting overwrites the files you
+imported from, so re-import on next visit to restore your work.
+
+## End-to-end workflow: a custom max-weight tree
+
+The fastest path from zero to a working custom max-weight skill tree:
+
+1. **Open the [Template Generator](https://puffish.net/skillsmod/docs/creators/template-generator)**.
+   - Set **Namespace** to something unique to your project (e.g. `mymod`).
+   - Enable **Example Skill Tree** if you want a known-good starting point to compare
+     against.
+   - Enable **Support for Mod Loaders** if this tree will ship inside a mod `.jar`.
+   - Click **Generate and download**.
+2. **Extract the ZIP** into `<world>/datapacks/<your-project>/`.
+3. **Edit `definitions.json`** to add your max-weight skill templates. The
+   [Minimal example](#minimal-example-a-max-weight-node) above is a good starting point —
+   copy the `+200 Max Weight` definition, change the `value` and the icon.
+4. **Open the [Editor](https://puffish.net/skillsmod/editor/)**.
+5. **Import your `definitions.json`** (and optionally `skills.json` + `connections.json`
+   from the example tree) into the corresponding panels.
+6. **Lay out your tree** using the grid settings, then click to add skills, drag to
+   position them, and middle-click between skills to draw connections. Mark the starting
+   skill as a **root** (`R`).
+7. **Export `skills.json` and `connections.json`**. Toggle **Save metadata** ON if you
+   want icons to persist between editor sessions.
+8. **Drop the exported files back** into `categories/<your-category>/` in your project,
+   overwriting the editor-side copies.
+9. **In-game**: `/reload` (or rejoin the world). Open the skills screen (**K**) and your
+   tree should appear.
+10. **Troubleshooting**: if you see "Invalid configuration, check game logs.", open
+    `logs/latest.log` and search for `puffish_skills` — the most common errors are JSON
+    syntax (missing comma/bracket), a typo in an attribute id, or `Unknown ...` because a
+    referenced reward type isn't installed.
+
+::: info
+For the add-on's built-in `carrying` tree, the same workflow applies — the tree is
+authored as a regular datapack and then placed under `src/main/resources/...` so Loom
+packs it as a Fabric **built-in** resource/data pack (NORMAL, disabled by default).
+Override any file you want by shipping your own datapack with the **same category id**;
+use a **different** category id to add an independent tree side by side.
+:::
 
 ---
 
@@ -336,9 +497,26 @@ base config, armor pockets, and other Inventory Weight add-ons.
 - Conditions must reference a **defined variable**, not the literal `true`. For
   unconditional XP, use a bare string expression like `"experience": "1"`.
 
+### "Invalid configuration, check game logs."
+
+Open `logs/latest.log` and search for `puffish_skills`. Common causes:
+
+- **"Could not parse JSON due to malformed syntax"** — missing/misplaced comma or
+  bracket. Validate the file with a JSON linter.
+- **"Expected ..."** — the mod expected a different shape than what you provided.
+  Cross-check the file against the relevant doc page.
+- **"Invalid ..."** — the value is the right shape but doesn't match the documented
+  set (typo in an operation name, wrong reward type, etc.).
+- **"Unknown ..."** — usually a typo in a referenced id (attribute, category, item).
+- **"Unused field ..."** — extra entry in the JSON that isn't part of the schema.
+  Remove it.
+
 ## Related Documentation
 
 - [MT Inventory Weight](https://modrinth.com/mod/inventory-weight)
 - [Pufferfish's Skills](https://modrinth.com/mod/puffish-skills)
+- [Pufferfish's Skills — Editor](https://puffish.net/skillsmod/editor/)
+- [Pufferfish's Skills — Template Generator](https://puffish.net/skillsmod/docs/creators/template-generator)
+- [Pufferfish's Skills — Creating custom skill trees tutorial](https://puffish.net/skillsmod/docs/creators/tutorials/creating-skill-trees)
 - [Pufferfish's Skills — Loading skill trees](https://puffish.net/skillsmod/docs/creators/tutorials/loading-skill-trees)
 - [Pufferfish's Skills — Categories](https://puffish.net/skillsmod/docs/creators/configuration/categories)
